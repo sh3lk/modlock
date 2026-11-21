@@ -3,6 +3,8 @@ package project
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
+	"io"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -29,6 +31,82 @@ func (e *CheckError) Error() string {
 // Unwrap returns the one-line description's error.
 func (e *CheckError) Unwrap() error {
 	return e.Err
+}
+
+// RustTarget is the target a Rust mod compiles for.
+const RustTarget = "wasm32-wasip1"
+
+// rustMissing says how to get what a Rust mod builds with.
+const rustMissing = "a Rust mod needs Rust: install it from https://rustup.rs/, run rustup target add " + RustTarget + ", open a new terminal and run this again"
+
+// cargoMessage is one line of cargo build --message-format json: a file
+// Cargo built, or a problem the compiler reported.
+type cargoMessage struct {
+	Reason    string   `json:"reason"`
+	Filenames []string `json:"filenames"`
+	Message   *struct {
+		Level    string `json:"level"`
+		Message  string `json:"message"`
+		Rendered string `json:"rendered"`
+		Code     *struct {
+			Code string `json:"code"`
+		} `json:"code"`
+		Spans []struct {
+			File    string `json:"file_name"`
+			Line    uint32 `json:"line_start"`
+			Column  uint32 `json:"column_start"`
+			Primary bool   `json:"is_primary"`
+		} `json:"spans"`
+	} `json:"message"`
+}
+
+// cargoMessages reads the output of cargo build --message-format json, run
+// in dir. It writes each problem to output as the compiler rendered it, and
+// returns the WebAssembly module Cargo built, if any, and where each error
+// and warning is.
+func cargoMessages(dir string, reported []byte, output io.Writer) (string, []*cli.Diagnostic) {
+	built := ""
+	var found []*cli.Diagnostic
+	for line := range bytes.Lines(reported) {
+		var message cargoMessage
+		if json.Unmarshal(line, &message) != nil {
+			continue
+		}
+		for _, name := range message.Filenames {
+			if message.Reason == "compiler-artifact" && filepath.Ext(name) == ".wasm" {
+				built = name
+			}
+		}
+		problem := message.Message
+		if message.Reason != "compiler-message" || problem == nil {
+			continue
+		}
+		_, _ = io.WriteString(output, problem.Rendered)
+		if problem.Level != "error" && problem.Level != "warning" {
+			continue
+		}
+
+		// A problem is at its primary span; one without is the build's
+		// summary, which locates nothing.
+		for _, span := range problem.Spans {
+			if !span.Primary {
+				continue
+			}
+			diagnostic := &cli.Diagnostic{
+				File:    absolute(dir, span.File),
+				Line:    span.Line,
+				Column:  span.Column,
+				Message: problem.Message,
+				Source:  "cargo build",
+			}
+			if problem.Code != nil {
+				diagnostic.Code = problem.Code.Code
+			}
+			found = append(found, diagnostic)
+			break
+		}
+	}
+	return built, found
 }
 
 // tsgoLine matches the first line of a tsgo diagnostic printed with

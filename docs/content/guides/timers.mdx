@@ -67,6 +67,17 @@ mod.Sequence(func(run int) (time.Duration, bool) {
 })
 ```
 
+```rust
+let heartbeat = every(1.0, |_: &mut Hello| log!("tick"));
+after(10.0, move |_: &mut Hello| heartbeat.cancel());
+
+// Three steps, two seconds apart.
+sequence(|_: &mut Hello, run| {
+    log!("Step {run}");
+    (run < 3).then_some(2.0)
+});
+```
+
 </Samples>
 
 ## How timers behave

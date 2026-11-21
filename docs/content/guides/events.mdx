@@ -94,6 +94,42 @@ func init() {
 func main() {}
 ```
 
+```rust
+use modlock::prelude::*;
+
+#[derive(Default)]
+struct Hello;
+
+impl Mod for Hello {
+    fn start(&mut self, event: &StartEvent) {
+        log!("started with {:?}", event.args);
+        command("hello", Self::hello);
+    }
+
+    fn world(&mut self, event: &WorldEvent) {
+        log!("world {} loaded", event.map);
+    }
+
+    fn frame(&mut self, _event: &FrameEvent) {
+        // Runs once per server frame, at event.time_seconds.
+    }
+}
+
+impl OnJoin for Hello {
+    fn player_joined(&mut self, event: &PlayerJoinedEvent) {
+        log!("{} joined", event.connection.name);
+    }
+}
+
+impl Hello {
+    fn hello(&mut self, player: Player, args: &str) {
+        player.chat(format!("You said {args}"));
+    }
+}
+
+modlock::run!(Hello);
+```
+
 </Samples>
 
 ## Every event
@@ -195,6 +231,16 @@ mod.OnPlayerLeave(func(left *mod.PlayerLeftEvent) {
 })
 ```
 
+```rust
+impl OnJoin for Hello {
+    fn player_left(&mut self, event: &PlayerLeftEvent) {
+        if event.disconnected {
+            log!("{} left: {:?}", event.connection.name, event.reason);
+        }
+    }
+}
+```
+
 </Samples>
 
 | Field          | On             | Holds                                                                                    |
@@ -233,6 +279,14 @@ def spawned(player: modlock.Player, pawn: modlock.Pawn) -> None:
 mod.OnSpawn(func(player mod.Player, pawn *mod.Pawn) {
 	mod.Log("slot", player.Slot(), "spawned with", pawn.GetHealth(), "health")
 })
+```
+
+```rust
+impl OnSpawn for Hello {
+    fn spawned(&mut self, player: Player, pawn: &Pawn) {
+        log!("{player} spawned with {} health", pawn.health);
+    }
+}
 ```
 
 </Samples>
@@ -297,6 +351,21 @@ mod.OnAbilityCast(func(cast *mod.AbilityCastEvent) {
 mod.OnModifierEvent("PRE_UNIT_HEALED", func(event *mod.ModifierFiredEvent) {
 	mod.Log("entity", event.GetCaster(), "is about to heal entity", event.GetTarget())
 })
+```
+
+```rust
+impl OnCast for Hello {
+    fn ability_cast(&mut self, event: &AbilityCastEvent) {
+        if let Some(player) = event.player.filter(|_| event.slot >= 0) {
+            log!("{player} cast {}", event.name);
+        }
+    }
+}
+
+// In the mod's start:
+modifier_event("PRE_UNIT_HEALED", |_: &mut Hello, event| {
+    log!("entity {} is about to heal entity {}", event.caster, event.target);
+});
 ```
 
 </Samples>
@@ -393,6 +462,24 @@ mod.OnHeal(func(heal *mod.HealEvent) {
 mod.OnLevelChange(func(change *mod.LevelEvent) {
 	mod.Log("slot", change.GetPlayer(), "reached level", change.GetLevel())
 })
+```
+
+```rust
+impl OnHeal for Hello {
+    fn healed(&mut self, event: &HealEvent) {
+        if let Some(player) = event.target_player {
+            log!("{player} regained {} health", event.applied);
+        }
+    }
+}
+
+impl OnLevel for Hello {
+    fn level_changed(&mut self, event: &LevelEvent) {
+        if let Some(player) = event.player {
+            log!("{player} reached level {}", event.level);
+        }
+    }
+}
 ```
 
 </Samples>

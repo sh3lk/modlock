@@ -8,3 +8,7 @@
 /.protoc-manifest.json
 /js/dist/
 /panorama/scripts/
+/rust/*/target/
+/rust/*/Cargo.lock
+/examples/*/target/
+/examples/*/build/

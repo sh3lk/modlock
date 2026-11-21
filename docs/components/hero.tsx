@@ -18,7 +18,7 @@ export function Hero() {
         <span className="hero-accent">in a language you already know.</span>
       </h1>
       <p className="hero-lead">
-        Write a mod in TypeScript, Luau, Python or Go, and the game server runs
+        Write a mod in TypeScript, Luau, Python, Go or Rust, and the game server runs
         it in a WebAssembly sandbox. While you work, <code>modlock dev</code>{' '}
         reloads the mod each time you save.
       </p>

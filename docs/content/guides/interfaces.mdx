@@ -91,13 +91,34 @@ func closePicks(p mod.Player) {
 }
 ```
 
+```rust
+// use modlock::ui::*;
+fn open_picks(player: Player) {
+    show(player, ui! {
+        <panel style={{ flow: Flow::Down, padding: 24, background: "#101820e0" }}>
+            <label text="Pick a hero" style={{ font_size: 28 }} />
+            <button on_press={|_: &mut Picks, player: Player| close_picks(player)}>"Ready"</button>
+        </panel>
+    });
+    free_cursor(player, true);
+    player.block_input(Buttons::ATTACK | Buttons::ALT_FIRE | Buttons::MELEE);
+}
+
+fn close_picks(player: Player) {
+    player.block_input(0);
+    hide(player);
+}
+```
+
 </Samples>
 
 ## Calls
 
 Luau spells each call as TypeScript does, Python in `snake_case`, and Go
 capitalizes it. In Go, `toast` with seconds is `ToastFor`, and `uiSound` is
-`Sound`.
+`Sound`. Rust writes the tree as tags in the `ui!` macro, as the
+[Rust page](/languages/rust#interfaces) shows, and spells each call in
+`snake_case`: `toast_for` and `sound`.
 
 | Call                                           | Effect                                                                                                                                                                                                        |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -393,6 +414,15 @@ show(player, top_strip(heading="Round 2")[score(points=(1, 0))])
 ```go
 // import "github.com/paralin/modlock/mod/hud"
 ui.Show(p, hud.TopStrip{Heading: "Round 2", Children: hud.Score{Points: [2]int{1, 0}}})
+```
+
+```rust
+// use modlock::hud;
+show(player, ui! {
+    <hud::top_strip heading="Round 2">
+        <hud::score near={1} far={0} />
+    </hud::top_strip>
+});
 ```
 
 </Samples>

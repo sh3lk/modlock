@@ -7,6 +7,7 @@ export const languages = [
   { id: 'luau', name: 'Luau' },
   { id: 'python', name: 'Python' },
   { id: 'go', name: 'Go' },
+  { id: 'rust', name: 'Rust' },
 ] as const
 
 /** LanguageId names one language. */
@@ -28,6 +29,8 @@ const aliases: Record<string, LanguageId> = {
   python: 'python',
   py: 'python',
   go: 'go',
+  rust: 'rust',
+  rs: 'rust',
 }
 
 /** languageOf returns the language a code fence samples, if it is one. */

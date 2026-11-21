@@ -1,6 +1,7 @@
 package project
 
 import (
+	"io"
 	"path/filepath"
 	"testing"
 
@@ -48,6 +49,19 @@ func TestDiagnostics(t *testing.T) {
 			}},
 		},
 		{
+			name: "cargo",
+			got: cargo(dir, `{"reason":"compiler-message","message":{"level":"error","message":"mismatched types",`+
+				`"code":{"code":"E0308"},"rendered":"error[E0308]: mismatched types\n",`+
+				`"spans":[{"file_name":"src/lib.rs","line_start":9,"column_start":3,"is_primary":false},`+
+				`{"file_name":"src/lib.rs","line_start":12,"column_start":21,"is_primary":true}]}}`+"\n"+
+				`{"reason":"compiler-message","message":{"level":"error","message":"aborting due to 1 previous error","spans":[]}}`+"\n"+
+				`{"reason":"compiler-artifact","filenames":["/mods/demo/target/demo.wasm"]}`+"\n"),
+			want: []*cli.Diagnostic{{
+				File: filepath.Join(dir, "src", "lib.rs"), Line: 12, Column: 21, Source: "cargo build", Code: "E0308",
+				Message: "mismatched types",
+			}},
+		},
+		{
 			name: "pyright",
 			got: pyrightDiagnostics([]byte(`{"generalDiagnostics": [` +
 				`{"file": "/mods/demo/main.py", "severity": "error", "message": "Cannot access attribute \"nope\"", ` +
@@ -77,4 +91,11 @@ func TestDiagnostics(t *testing.T) {
 			}
 		}
 	}
+}
+
+// cargo returns the problems cargoMessages locates in reported, the output
+// of a build in dir.
+func cargo(dir, reported string) []*cli.Diagnostic {
+	_, found := cargoMessages(dir, []byte(reported), io.Discard)
+	return found
 }

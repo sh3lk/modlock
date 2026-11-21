@@ -93,6 +93,8 @@ func (p *Project) Build(ctx context.Context, output io.Writer, mode Mode) error 
 		return p.buildLuau(ctx, output)
 	case wasm.Manifest_LANGUAGE_PYTHON:
 		return p.buildPython(ctx, output)
+	case wasm.Manifest_LANGUAGE_RUST:
+		return p.buildRust(ctx, output)
 	default:
 		return errors.Errorf("modlock cannot build %s mods yet", p.Manifest.GetLanguage())
 	}
@@ -132,6 +134,47 @@ func (p *Project) buildGo(ctx context.Context, output io.Writer) error {
 	}
 
 	// Replace the module, then the manifest that names it.
+	if err := fileretry.Rename(staged, filepath.Join(p.Output(), Entry)); err != nil {
+		return errors.Wrap(err, "write the module")
+	}
+	return p.writeBuiltManifest(wasm.Manifest_RUNTIME_WASM, Entry)
+}
+
+// buildRust compiles the Rust project to a WebAssembly module with Cargo.
+func (p *Project) buildRust(ctx context.Context, output io.Writer) error {
+	// Compile for WASI in the project directory. Cargo writes its progress to
+	// output, and reports each problem and each file it built as a line of
+	// JSON.
+	if _, err := exec.LookPath("cargo"); err != nil {
+		return errors.New(rustMissing)
+	}
+	var reported bytes.Buffer
+	cmd := exec.CommandContext(ctx, "cargo", "build", "--release", "--target", RustTarget, "--message-format", "json")
+	cmd.Dir = p.Dir
+	cmd.Stdout = &reported
+	cmd.Stderr = output
+	err := cmd.Run()
+
+	// Print the problems as the compiler wrote them, and locate them.
+	built, diagnostics := cargoMessages(p.Dir, reported.Bytes(), output)
+	if err != nil {
+		return &CheckError{Err: errors.Wrap(err, "cargo build"), Diagnostics: diagnostics}
+	}
+
+	// The module is the package's cdylib among the files Cargo built.
+	if built == "" {
+		return errors.New(`cargo built no WebAssembly module; the package's [lib] needs crate-type = ["cdylib"]`)
+	}
+
+	// Replace the module, then the manifest that names it.
+	module, err := os.ReadFile(built)
+	if err != nil {
+		return errors.Wrap(err, "read the module")
+	}
+	staged := filepath.Join(p.Output(), Entry+".tmp")
+	if err := os.WriteFile(staged, module, 0o644); err != nil {
+		return errors.Wrap(err, "write the module")
+	}
 	if err := fileretry.Rename(staged, filepath.Join(p.Output(), Entry)); err != nil {
 		return errors.Wrap(err, "write the module")
 	}

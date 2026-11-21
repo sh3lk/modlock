@@ -1,0 +1,13 @@
+[package]
+name = "modlock"
+version = "0.1.0"
+edition = "2021"
+description = "Write Modlock mods for Deadlock in Rust."
+license = "MIT"
+
+[dependencies]
+modlock-macros = { path = "../modlock-macros", version = "0.1.0" }
+
+[lib]
+# The schema's comments are not Rust examples.
+doctest = false

@@ -65,6 +65,20 @@ func init() {
 }
 ```
 
+```rust
+use std::collections::hash_map::RandomState;
+use std::hash::BuildHasher;
+
+use modlock::ui::toast;
+
+// In the mod's start: command("roll", Self::roll);
+fn roll(&mut self, player: Player, args: &str) {
+    let sides = args.parse().ok().filter(|sides| *sides >= 1).unwrap_or(6);
+    let roll = 1 + RandomState::new().hash_one(sides) % sides;
+    toast(player, format!("You rolled {roll} out of {sides}."));
+}
+```
+
 </Samples>
 
 Save, then type `/roll 20` in the game's chat. A notice slides in at the lower left with your roll, and it fades after four seconds.
@@ -132,9 +146,22 @@ func init() {
 }
 ```
 
+```rust
+// In the mod's start: command("where", Self::place);
+fn place(&mut self, player: Player) {
+    let Some(pawn) = player.pawn().filter(|pawn| pawn.health > 0) else {
+        player.chat("You have no living hero.");
+        return;
+    };
+    let at = pawn.position;
+    let health = pawn.health;
+    player.chat(format!("You stand at {:.0}, {:.0} with {health} health.", at.x, at.y));
+}
+```
+
 </Samples>
 
-Type `/where` once your hero has spawned. The TypeScript sample answers in a notice, as `/roll` does; the Luau, Python and Go samples answer with a line in your chat. Before your hero spawns, or while it is dead, the answer is "You have no living hero."
+Type `/where` once your hero has spawned. The TypeScript sample answers in a notice, as `/roll` does; the Luau, Python, Go and Rust samples answer with a line in your chat. Before your hero spawns, or while it is dead, the answer is "You have no living hero."
 
 A player's pawn is their hero as it is in the current frame: its health, team, position, aim direction and souls. `pawn()` returns nothing until the hero has spawned, and a hero whose health is zero is dead. The sample checks both before it reads the position.
 
@@ -219,6 +246,28 @@ func init() {
 			}
 		})
 	})
+}
+```
+
+```rust
+#[derive(Default)]
+struct Brawl {
+    /// live is whether the round has begun.
+    live: bool,
+}
+
+// In the mod's start: command("start", Self::begin);
+fn begin(&mut self, _player: Player) {
+    for connection in players() {
+        connection.player.freeze(None);
+    }
+    after(5.0, |brawl: &mut Brawl| {
+        brawl.live = true;
+        for connection in players() {
+            connection.player.freeze(Some(false));
+            connection.player.announce("Fight!", "The round is live.");
+        }
+    });
 }
 ```
 
@@ -314,6 +363,31 @@ func init() {
 		}
 		defeats[scorer]++
 	})
+}
+```
+
+```rust
+// The mod also keeps defeats: HashMap<Player, u32>.
+impl OnDamage for Brawl {
+    // Nobody gets hurt until the round is live.
+    fn damage(&mut self, _event: &DamageEvent) -> DamageResult {
+        DamageResult {
+            block: (!self.live).then_some(true),
+            ..DamageResult::default()
+        }
+    }
+}
+
+impl OnKill for Brawl {
+    // A hero's defeat scores for the player who landed the killing hit.
+    fn killed(&mut self, event: &KillEvent) {
+        let (Some(scorer), Some(victim)) = (event.attacker_player, event.victim_player) else {
+            return;
+        };
+        if scorer != victim {
+            *self.defeats.entry(scorer).or_default() += 1;
+        }
+    }
 }
 ```
 
@@ -429,6 +503,26 @@ func drawScore(p mod.Player, defeats int) {
 }
 ```
 
+```rust
+use modlock::prelude::*;
+use modlock::ui::*;
+
+fn draw_score(player: Player, defeats: u32) {
+    show(player, ui! {
+        <panel style={{
+            horizontal_align: Align::End,
+            vertical_align: Align::Start,
+            margin: [80, 24],
+            padding: 10,
+            background: "#101820d0",
+            border_radius: 6,
+        }}>
+            <label text={format!("{defeats} defeats")} style={{ font_size: 24, bold: true }} />
+        </panel>
+    });
+}
+```
+
 </Samples>
 
 Draw the HUD from the main module on every frame:
@@ -475,6 +569,17 @@ func init() {
 			drawScore(p, defeats[p])
 		}
 	})
+}
+```
+
+```rust
+impl Mod for Brawl {
+    fn frame(&mut self, _event: &FrameEvent) {
+        for connection in players() {
+            let defeats = self.defeats.get(&connection.player).copied().unwrap_or(0);
+            draw_score(connection.player, defeats);
+        }
+    }
 }
 ```
 
@@ -602,6 +707,33 @@ func init() {
 }
 ```
 
+```rust
+// The mod also keeps sign: Option<WorldObject>.
+impl Mod for Brawl {
+    // A new world has removed the sign.
+    fn world(&mut self, _event: &WorldEvent) {
+        self.sign = None;
+    }
+}
+
+// In the mod's start: command("sign", Self::sign);
+fn sign(&mut self, player: Player, args: &str) {
+    let Some(pawn) = player.pawn() else {
+        return;
+    };
+    if let Some(sign) = self.sign.take() {
+        sign.remove();
+    }
+    let at = pawn.position;
+    self.sign = create_text(&TextOptions {
+        text: if args.is_empty() { "Hello!" } else { args }.to_owned(),
+        position: Vector::new(at.x, at.y, at.z + 120.0),
+        face_camera: Some(true),
+        ..TextOptions::default()
+    });
+}
+```
+
 </Samples>
 
 Type `/sign Meet here` once your hero has spawned. The words float in white 120 units above where you stood and turn to face whoever looks at them. Type `/sign` again somewhere else, and the old sign goes as the new one appears.
@@ -652,6 +784,14 @@ if choice, _ := p.Setting("corner"); choice == "left" {
 	corner = ui.Left
 }
 _ = scorer.AddMetric("brawl.defeats", 1, nil)
+```
+
+```rust
+let corner = match player.setting("corner").as_deref() {
+    Some("left") => Align::Start,
+    _ => Align::End,
+};
+scorer.add_metric("brawl.defeats", 1.0, None);
 ```
 
 </Samples>

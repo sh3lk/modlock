@@ -50,6 +50,9 @@ message Manifest {
 
     // LANGUAGE_PYTHON runs on CPython.
     LANGUAGE_PYTHON = 5;
+
+    // LANGUAGE_RUST builds with Cargo into a module of its own.
+    LANGUAGE_RUST = 6;
   }
 
   // Slug identifies the mod: lowercase letters, digits and hyphens.

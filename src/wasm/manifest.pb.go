@@ -84,6 +84,8 @@ const (
 	Manifest_LANGUAGE_LUAU Manifest_Language = 4
 	// LANGUAGE_PYTHON runs on CPython.
 	Manifest_LANGUAGE_PYTHON Manifest_Language = 5
+	// LANGUAGE_RUST builds with Cargo into a module of its own.
+	Manifest_LANGUAGE_RUST Manifest_Language = 6
 )
 
 // Enum value maps for Manifest_Language.
@@ -95,6 +97,7 @@ var (
 		3: "LANGUAGE_JAVASCRIPT",
 		4: "LANGUAGE_LUAU",
 		5: "LANGUAGE_PYTHON",
+		6: "LANGUAGE_RUST",
 	}
 	Manifest_Language_value = map[string]int32{
 		"LANGUAGE_UNKNOWN":    0,
@@ -103,6 +106,7 @@ var (
 		"LANGUAGE_JAVASCRIPT": 3,
 		"LANGUAGE_LUAU":       4,
 		"LANGUAGE_PYTHON":     5,
+		"LANGUAGE_RUST":       6,
 	}
 )
 

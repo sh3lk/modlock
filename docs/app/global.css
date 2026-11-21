@@ -190,19 +190,23 @@ html[data-lang='ts'] [data-sample='ts'],
 html[data-lang='luau'] [data-sample='luau'],
 html[data-lang='python'] [data-sample='python'],
 html[data-lang='go'] [data-sample='go'],
+html[data-lang='rust'] [data-sample='rust'],
 html[data-lang='ts'] [data-missing='ts'],
 html[data-lang='luau'] [data-missing='luau'],
 html[data-lang='python'] [data-missing='python'],
 html[data-lang='go'] [data-missing='go'],
+html[data-lang='rust'] [data-missing='rust'],
 html[data-lang='ts'] [data-only~='ts'],
 html[data-lang='luau'] [data-only~='luau'],
 html[data-lang='python'] [data-only~='python'],
 html[data-lang='go'] [data-only~='go'],
+html[data-lang='rust'] [data-only~='rust'],
 /* A block without the reader's language shows its first sample. */
 html[data-lang='ts'] [data-samples]:not([data-langs~='ts']) > [data-sample]:first-of-type,
 html[data-lang='luau'] [data-samples]:not([data-langs~='luau']) > [data-sample]:first-of-type,
 html[data-lang='python'] [data-samples]:not([data-langs~='python']) > [data-sample]:first-of-type,
-html[data-lang='go'] [data-samples]:not([data-langs~='go']) > [data-sample]:first-of-type {
+html[data-lang='go'] [data-samples]:not([data-langs~='go']) > [data-sample]:first-of-type,
+html[data-lang='rust'] [data-samples]:not([data-langs~='rust']) > [data-sample]:first-of-type {
   display: revert;
 }
 
@@ -274,6 +278,10 @@ html[data-lang='go']
   [data-samples-bar]
   > [data-language-buttons]
   > [data-language='go'],
+html[data-lang='rust']
+  [data-samples-bar]
+  > [data-language-buttons]
+  > [data-language='rust'],
 html[data-lang='ts']
   [data-samples]:not([data-langs~='ts'])
   [data-language-buttons]
@@ -289,6 +297,10 @@ html[data-lang='python']
 html[data-lang='go']
   [data-samples]:not([data-langs~='go'])
   [data-language-buttons]
+  > button:first-child,
+html[data-lang='rust']
+  [data-samples]:not([data-langs~='rust'])
+  [data-language-buttons]
   > button:first-child {
   @apply border-fd-primary text-fd-foreground;
 }
@@ -302,7 +314,10 @@ html[data-lang='python']
   [data-language='python'],
 html[data-lang='go']
   :is(.language-select, .hero-language)
-  [data-language='go'] {
+  [data-language='go'],
+html[data-lang='rust']
+  :is(.language-select, .hero-language)
+  [data-language='rust'] {
   @apply bg-fd-background text-fd-foreground shadow-sm;
 }
 

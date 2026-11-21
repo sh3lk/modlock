@@ -12,13 +12,16 @@ import (
 	"github.com/pkg/errors"
 )
 
+// cargoDir is where Cargo keeps what it builds of a Rust mod.
+const cargoDir = "target"
+
 // settle is how long the sources stay unchanged before Watch reports them;
 // an editor's save writes several events.
 const settle = 150 * time.Millisecond
 
 // Watch calls changed after the project's sources change, once per burst of
-// changes, until ctx ends. It skips the build directory, the installed
-// library, hidden directories and log files.
+// changes, until ctx ends. It skips the build directory, Cargo's target
+// directory, the installed library, hidden directories and log files.
 func (p *Project) Watch(ctx context.Context, changed func()) error {
 	// Watch every source directory; fsnotify watches one level each.
 	watcher, err := fsnotify.NewWatcher()
@@ -65,8 +68,9 @@ func (p *Project) Watch(ctx context.Context, changed func()) error {
 }
 
 // skip reports whether path is outside the sources: the build directory, the
-// installed packages, a log file, or within a hidden file or directory. A log
-// written into the project would otherwise rebuild the mod on every line.
+// installed packages, what Cargo builds of a Rust mod, a log file, or within
+// a hidden file or directory. A log written into the project would otherwise
+// rebuild the mod on every line, as would Cargo's own files on every build.
 func (p *Project) skip(path string) bool {
 	relative, err := filepath.Rel(p.Dir, path)
 	if err != nil || relative == "." {
@@ -76,7 +80,7 @@ func (p *Project) skip(path string) bool {
 		return true
 	}
 	parts := strings.Split(relative, string(filepath.Separator))
-	return parts[0] == BuildDir || parts[0] == "node_modules" || slices.ContainsFunc(parts, func(part string) bool {
+	return parts[0] == BuildDir || parts[0] == "node_modules" || parts[0] == cargoDir || relative == "Cargo.lock" || slices.ContainsFunc(parts, func(part string) bool {
 		return strings.HasPrefix(part, ".")
 	})
 }

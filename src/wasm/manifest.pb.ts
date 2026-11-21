@@ -336,6 +336,11 @@ export enum Manifest_Language {
    * LANGUAGE_PYTHON runs on CPython.
    */
   PYTHON = 5,
+
+  /**
+   * LANGUAGE_RUST builds with Cargo into a module of its own.
+   */
+  RUST = 6,
 }
 
 export const Manifest_Language_Enum = /* @__PURE__ */ createEnumType(
@@ -347,6 +352,7 @@ export const Manifest_Language_Enum = /* @__PURE__ */ createEnumType(
     [3, 'LANGUAGE_JAVASCRIPT'],
     [4, 'LANGUAGE_LUAU'],
     [5, 'LANGUAGE_PYTHON'],
+    [6, 'LANGUAGE_RUST'],
   ],
 )
 

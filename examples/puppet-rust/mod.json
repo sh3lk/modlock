@@ -1,0 +1,6 @@
+{
+  "slug": "puppet-rust",
+  "name": "Puppet Rust",
+  "version": "0.1.0",
+  "language": "LANGUAGE_RUST"
+}

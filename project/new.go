@@ -36,6 +36,8 @@ func LanguageExtension(language wasm.Manifest_Language) string {
 		return "johnnymorganz.luau-lsp"
 	case wasm.Manifest_LANGUAGE_GO:
 		return "golang.go"
+	case wasm.Manifest_LANGUAGE_RUST:
+		return "rust-lang.rust-analyzer"
 	default:
 		return ""
 	}
@@ -97,6 +99,108 @@ func init() {
 // main is required by Go and never runs; the server calls the handlers.
 func main() {}
 `
+
+// rustMain is a new Rust mod's src/lib.rs.
+const rustMain = `//! {{slug}} is a Modlock mod.
+use modlock::console;
+use modlock::prelude::*;
+
+/// {{type}} is the mod: one value the server calls for each event.
+#[derive(Default)]
+struct {{type}};
+
+impl Mod for {{type}} {
+    /// start sets the server up when the mod starts: no troopers in the lanes
+    /// or creeps in the jungle, and any number of players on the same hero.
+    fn start(&mut self, _event: &StartEvent) {
+        console::apply(&[
+            console::citadel_trooper_spawn_enabled().to(false),
+            console::citadel_neutral_spawn_enabled().to(false),
+            console::citadel_allow_duplicate_heroes().to(true),
+        ]);
+
+        // Bring a fallen hero back after 3 seconds.
+        set_respawn_delay(Some(3.0));
+
+        // Greet each player who types /hello in chat.
+        command("hello", Self::hello);
+    }
+}
+
+impl OnJoin for {{type}} {
+    /// player_joined gives each player who joins a hero on the smaller team,
+    /// skipping the game's team and hero screens, and welcomes them.
+    /// HeroPick::Named("haze".into()) names the hero and Some(2) the team.
+    fn player_joined(&mut self, event: &PlayerJoinedEvent) {
+        let connection = &event.connection;
+        connection.player.seat(Seating {
+            hero: HeroPick::Any,
+            team: None,
+        });
+        let welcome = format!("Welcome, {}.", connection.name);
+        connection.player.announce({{name}}, welcome);
+    }
+}
+
+impl {{type}} {
+    fn hello(&mut self, player: Player) {
+        player.chat({{greeting}});
+    }
+}
+
+modlock::run!({{type}});
+`
+
+// rustManifest is a new Rust mod's Cargo.toml. The profile builds a small
+// module: the mod is all the game loads of it.
+const rustManifest = `[package]
+name = "{{slug}}"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+modlock = { {{library}} }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+`
+
+// rustConfig is a new Rust mod's .cargo/config.toml, which builds for the
+// mod's target without naming it, so cargo check and the editor read the
+// sources as the build does.
+const rustConfig = `[build]
+target = "` + RustTarget + `"
+`
+
+// rustLibrary returns how a Rust mod's Cargo.toml names the Modlock library
+// at version, such as "v0.2.0" or "latest": the crate in Modlock's
+// repository, at the release's tag.
+func rustLibrary(version string) string {
+	source := `git = "https://` + Module + `"`
+	if version == "" || version == "latest" {
+		return source
+	}
+	return source + `, tag = "` + version + `"`
+}
+
+// rustType returns the name of the mod's type in a new Rust mod named slug,
+// such as ZombieTag for zombie-tag. A slug that starts with a digit gets a
+// letter first.
+func rustType(slug string) string {
+	name := strings.ReplaceAll(title(slug), " ", "")
+	if name == "" || (name[0] >= '0' && name[0] <= '9') {
+		return "Mod" + name
+	}
+	return name
+}
 
 // scriptMainSource is a new TypeScript or JavaScript mod's entry.
 const scriptMainSource = `import { command, onPlayerJoin, onStart, setRespawnDelay } from 'modlock'
@@ -243,6 +347,14 @@ func New(ctx context.Context, dir, name string, language wasm.Manifest_Language,
 		}
 	}
 
+	// A Rust project builds with Cargo, which fetches its library on the
+	// first build.
+	if language == wasm.Manifest_LANGUAGE_RUST {
+		if _, err := exec.LookPath("cargo"); err != nil {
+			return nil, errors.New(rustMissing)
+		}
+	}
+
 	// Choose the language's sources. Every project ignores its build and
 	// .modlock, which holds the generated library and the records play keeps.
 	greeting := "Hello from " + name + "!"
@@ -277,6 +389,15 @@ func New(ctx context.Context, dir, name string, language wasm.Manifest_Language,
 			"main.py":            quoted.Replace(pythonMain),
 			"pyrightconfig.json": pythonConfig,
 			".gitignore":         "/" + BuildDir + "/\n/.modlock/\n",
+		}
+	case wasm.Manifest_LANGUAGE_RUST:
+		rust := strings.NewReplacer("{{slug}}", slug, "{{type}}", rustType(slug), "{{library}}", rustLibrary(version),
+			"{{name}}", strconv.Quote(name), "{{greeting}}", strconv.Quote(greeting))
+		files = map[string]string{
+			"Cargo.toml":         rust.Replace(rustManifest),
+			"src/lib.rs":         rust.Replace(rustMain),
+			".cargo/config.toml": rustConfig,
+			".gitignore":         "/" + BuildDir + "/\n/" + cargoDir + "/\n",
 		}
 	default:
 		return nil, errors.Errorf("modlock cannot create %s mods yet", language)
@@ -314,6 +435,8 @@ func New(ctx context.Context, dir, name string, language wasm.Manifest_Language,
 			return nil, err
 		}
 		return created, installLibrary(library, dir)
+	case wasm.Manifest_LANGUAGE_RUST:
+		return created, nil
 	}
 	for _, arguments := range [][]string{{"get", Module + "@" + version}, {"mod", "tidy"}} {
 		cmd := exec.CommandContext(ctx, "go", arguments...)

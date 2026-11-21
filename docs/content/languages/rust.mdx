@@ -1,0 +1,135 @@
+---
+title: Rust
+description: 'Rust mods: one value that takes the events, a trait per event, and interfaces written as tags.'
+---
+
+A Rust mod is a library crate. It depends on the
+[`modlock`](https://github.com/paralin/modlock/tree/master/rust/modlock) crate,
+and its mod is one value that implements `Mod`:
+
+```rust
+use modlock::prelude::*;
+
+#[derive(Default)]
+struct Hello;
+
+impl Mod for Hello {
+    fn start(&mut self, _event: &StartEvent) {
+        command("hello", Self::hello);
+    }
+}
+
+impl Hello {
+    fn hello(&mut self, player: Player) {
+        player.chat("Hello from Rust!");
+    }
+}
+
+modlock::run!(Hello);
+```
+
+Choose Rust with the switch in the sidebar, and the [guides](/guides/events)
+show the calls that have a Rust sample; a block without one shows another
+language and says so.
+
+## The build
+
+`modlock dev` and `modlock build` compile the crate with Cargo for
+`wasm32-wasip1`, so a Rust mod needs [Rust](https://rustup.rs/) and that
+target:
+
+```sh
+rustup target add wasm32-wasip1
+```
+
+`modlock new` writes a `Cargo.toml` whose `[lib]` is a `cdylib`, which is what
+the game loads, and whose release profile builds a small module. A mod that
+shows no interface is about 175 KB. The project's `.cargo/config.toml` names
+the target, so `cargo check`, `cargo clippy` and your editor read the sources
+as the build does. A build that fails reports each error where it is, as the
+other languages' builds do.
+
+## The mod and its events
+
+The mod's state is the value's fields, and every handler takes `&mut self`,
+so a mod needs no globals. The server calls the mod on one thread, one event
+at a time.
+
+| Where a handler goes                                      | For                                                                                                 |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| A method of `Mod`, such as `start` and `frame`            | The events every mod receives.                                                                      |
+| A trait of its own, such as `OnDamage`, `OnKill`, `OnChat` | The events the game sends only to a mod that asks. Implementing the trait asks.                     |
+| `command`, `after`, `every`, a button's `on_press`        | A method of the mod, such as `Self::hello`, or a closure that takes the mod: `\|hello: &mut Hello\| …` |
+
+A player the game may leave out, such as the victim of a kill that was a unit,
+is an `Option<Player>`. A `Player` is equal to another only while both name the
+same connection, so a map keyed by `Player` never hands a newcomer the entry of
+the player who left the slot.
+
+## Interfaces
+
+The `ui!` macro writes an interface as tags, and `#[component]` makes a
+function a tag of your own whose attributes are its parameters:
+
+```rust
+use modlock::prelude::*;
+use modlock::ui::*;
+
+#[component]
+fn score(name: String, points: u32, own: bool) -> Element {
+    ui! {
+        <panel style={{ flow: Flow::Right }}>
+            <label text={name} style={{ bold: own }} />
+            <label text={points.to_string()} />
+        </panel>
+    }
+}
+
+fn draw(player: Player) {
+    show(player, ui! {
+        <panel style={{ width: FILL, height: FILL }}>
+            <score name="Ann" points={3} own />
+            <button on_press={|_: &mut Hello, player: Player| { player.chat("Ready"); }}>"Ready"</button>
+        </panel>
+    });
+}
+```
+
+`show` sends the player only the nodes that changed. The
+[`modlock::hud`](https://github.com/paralin/modlock/tree/master/rust/modlock/src/hud.rs)
+module has the HUD's parts as tags, such as `<hud::top_strip>` and
+`<hud::roster>`, and `modlock::theme` their colors and sizes.
+
+## Typed entities and the console
+
+`modlock::entity` has a type for every entity class with a method for every
+field and input, and `modlock::console` a function for every console variable
+and command. Their names are the game's own:
+
+```rust
+use modlock::console;
+use modlock::entity::{CCitadelPlayerPawn, Class};
+
+// Set a hero's health.
+let hero = CCitadelPlayerPawn::of(pawn.entity);
+hero.m_iHealth().set(500);
+
+// Raise the trooper bounty and change the map.
+console::citadel_trooper_gold_reward().set(40);
+console::changelevel().run(&["street_test"]);
+```
+
+## The rest of the library
+
+The helpers the TypeScript library has are in the crate under the same names
+in `snake_case`: vectors add and scale with `+` and `*`, and `format`,
+`rotation`, `curve`, `camera`, `persist`, `dropper`, `racegate` and
+`frame_clock` are modules. `Cast`, `Puppet`, `Strays`, `Stragglers`, `Hook` and
+`ProbeRun` are types, and `ground`, `load_spot`, `restore_hero`,
+`replay_damage`, `report_score` and `show_chat_lines` functions.
+
+The [`hello-rust`](https://github.com/paralin/modlock/tree/master/examples/hello-rust),
+[`hero-build-rust`](https://github.com/paralin/modlock/tree/master/examples/hero-build-rust),
+[`hud-rust`](https://github.com/paralin/modlock/tree/master/examples/hud-rust) and
+[`puppet-rust`](https://github.com/paralin/modlock/tree/master/examples/puppet-rust)
+examples are whole mods.

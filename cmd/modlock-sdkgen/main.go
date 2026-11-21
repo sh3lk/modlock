@@ -15,6 +15,10 @@
 //     handwritten luau/library.luau.
 //   - python/modlock/__init__.py: the same for Python, followed by the
 //     handwritten python/library.py.
+//   - rust/modlock/src/host.gen.rs: the same for Rust, with the encoding of
+//     the messages it carries.
+//   - rust/modlock/src/heroes.gen.rs: the Rust table of released heroes, from
+//     the Go library's in mod/heroes.go.
 //   - src/wasm/host_service.gen.h: one interface per part of the host that
 //     src/wasm/host_calls.txt names, the dispatch of each call by name to
 //     its part, and the client that delivers events to a mod.
@@ -54,6 +58,8 @@ var outputs = []struct {
 	{"mod/host.gen.go", writeGo},
 	{"luau/modlock/init.luau", writeLuau},
 	{"python/modlock/__init__.py", writePython},
+	{"rust/modlock/src/host.gen.rs", writeRust},
+	{"rust/modlock/src/heroes.gen.rs", writeRustHeroes},
 	{"src/wasm/host_service.gen.h", writeCpp},
 }
 

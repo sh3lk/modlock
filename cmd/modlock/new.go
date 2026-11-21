@@ -31,6 +31,7 @@ var languages = []language{
 	{flag: "luau", label: "Luau", manifest: wasm.Manifest_LANGUAGE_LUAU},
 	{flag: "python", label: "Python", manifest: wasm.Manifest_LANGUAGE_PYTHON},
 	{flag: "go", label: "Go", manifest: wasm.Manifest_LANGUAGE_GO},
+	{flag: "rust", label: "Rust", manifest: wasm.Manifest_LANGUAGE_RUST},
 }
 
 // newCommand creates a mod project. At a terminal it asks for whatever the
@@ -42,7 +43,7 @@ func newCommand(out *printer) *cli.Command {
 		ArgsUsage: "[DIRECTORY]",
 		Flags: []cli.Flag{
 			&cli.StringFlag{Name: "name", Usage: "the mod's display name (default: the directory name in title case)"},
-			&cli.StringFlag{Name: "language", Usage: "the source language: typescript, javascript, luau, python or go (default: asks, or typescript without a terminal)"},
+			&cli.StringFlag{Name: "language", Usage: "the source language: typescript, javascript, luau, python, go or rust (default: asks, or typescript without a terminal)"},
 		},
 		Action: func(c *cli.Context) error {
 			// Ask a person at a terminal for what the arguments leave out.
@@ -149,7 +150,7 @@ func newLanguage(ask *prompt.Terminal, flag string) (language, error) {
 		}
 	}
 	if flag != "" {
-		return language{}, errors.Errorf("modlock cannot create %s mods yet; choose typescript, javascript, luau, python or go", flag)
+		return language{}, errors.Errorf("modlock cannot create %s mods yet; choose typescript, javascript, luau, python, go or rust", flag)
 	}
 	if ask == nil {
 		return languages[0], nil
@@ -161,6 +162,9 @@ func newLanguage(ask *prompt.Terminal, flag string) (language, error) {
 		options[i] = prompt.Option{Label: l.label}
 		if _, err := exec.LookPath("go"); l.manifest == wasm.Manifest_LANGUAGE_GO && err != nil {
 			options[i].Hint = "install Go first, from https://go.dev/dl/"
+		}
+		if _, err := exec.LookPath("cargo"); l.manifest == wasm.Manifest_LANGUAGE_RUST && err != nil {
+			options[i].Hint = "install Rust first, from https://rustup.rs/"
 		}
 	}
 	selected, err := ask.Select("Language", options, 0)

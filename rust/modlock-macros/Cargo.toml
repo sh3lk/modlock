@@ -1,0 +1,11 @@
+[package]
+name = "modlock-macros"
+version = "0.1.0"
+edition = "2021"
+description = "The macros of the modlock crate."
+license = "MIT"
+
+[lib]
+proc-macro = true
+# The examples in the comments are fragments of a mod.
+doctest = false

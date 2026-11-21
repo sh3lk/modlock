@@ -1,6 +1,6 @@
 ---
 title: Modlock
-description: Write custom game modes for Deadlock in TypeScript, JavaScript, Luau, Python or Go.
+description: Write custom game modes for Deadlock in TypeScript, JavaScript, Luau, Python, Go or Rust.
 ---
 
 <Hero />
@@ -49,11 +49,32 @@ func init() {
 func main() {}
 ```
 
+```rust
+use modlock::prelude::*;
+
+#[derive(Default)]
+struct Hello;
+
+impl Mod for Hello {
+    fn start(&mut self, _event: &StartEvent) {
+        command("hello", Self::hello);
+    }
+}
+
+impl Hello {
+    fn hello(&mut self, player: Player) {
+        player.chat("Hello from Rust!");
+    }
+}
+
+modlock::run!(Hello);
+```
+
 </Samples>
 
 <Callout title="Early development">
-  You can write, run and publish mods in TypeScript, JavaScript, Luau, Python
-  and Go today, but the library may still change between releases.
+  You can write, run and publish mods in TypeScript, JavaScript, Luau, Python,
+  Go and Rust today, but the library may still change between releases.
 </Callout>
 
 ## Where to go
