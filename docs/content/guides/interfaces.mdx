@@ -4,7 +4,8 @@ description: Draw a HUD, a menu or a notice on a player's screen.
 ---
 
 Each language has an interface library: JSX in TypeScript, `@modlock/ui` in
-Luau, `modlock.ui` in Python and `mod/ui` in Go. Each library has a HUD kit
+Luau, `modlock.ui` in Python, `mod/ui` in Go and `modlock::ui` in Rust. Each
+library has a HUD kit
 (`hud`) and style tokens (`theme`). This screen asks the player to click. The mod frees the
 cursor and blocks the buttons a click would fire, and `closePicks` releases them:
 
@@ -118,7 +119,7 @@ Luau spells each call as TypeScript does, Python in `snake_case`, and Go
 capitalizes it. In Go, `toast` with seconds is `ToastFor`, and `uiSound` is
 `Sound`. Rust writes the tree as tags in the `ui!` macro, as the
 [Rust page](/languages/rust#interfaces) shows, and spells each call in
-`snake_case`: `toast_for` and `sound`.
+`snake_case`: `toast_for`, and `sound` or, with a delay, `sound_after`.
 
 | Call                                           | Effect                                                                                                                                                                                                        |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -137,7 +138,7 @@ capitalizes it. In Go, `toast` with seconds is `ToastFor`, and `uiSound` is
 | `inHudFrame(player, on)`                       | Draw the interface in the HUD's frame, the middle 16:9 of a wider screen whose player keeps the HUD there.                                                                                                    |
 | `abilityDisplay(viewer, rows?)`                | Show players' replaced abilities on Tab and the ability bar; no rows brings back the game's own.                                                                                                              |
 | `cursorFree(player)`                           | Read whether the player's cursor is up now, however it got there.                                                                                                                                             |
-| `items`, `item(name)`                          | The shop's items: id, slot, tier, active, imbue and icon. TypeScript only.                                                                                                                                    |
+| `items`, `item(name)`                          | The shop's items: id, slot, tier, active, imbue and icon. TypeScript and Rust only; Rust spells the list `ITEMS`.                                                                                             |
 | `player.screenEffect(effect, timing?)`         | Play `'black'`, `'killed'`, `'blinded'`, `'darkness'` or `'matchIntro'` over the view.                                                                                                                        |
 | `player.clearScreenEffect(effect)`             | End that effect, such as lifting a black screen at a round's start.                                                                                                                                           |
 | `route(player, name, value)`                   | Hand every layout of the mod `value` under `name`; see [Layouts](/guides/layouts).                                                                                                                            |

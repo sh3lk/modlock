@@ -57,6 +57,7 @@ The mod boundary's calls are in
 [`src/wasm/wasm.proto`](https://github.com/paralin/modlock/blob/master/src/wasm/wasm.proto),
 and their messages are in the packages beside it. `bun run gen` regenerates all
 of the Go, TypeScript, Luau, Python, and C++ code with the protobuf toolchain
-the repository pins. [Building
+the repository pins, and the Rust library's `host.gen.rs` with
+`modlock-sdkgen`. [Building
 Modlock](/internals/building#run-the-command-from-a-clone) says where
 `modlock build` gets the TypeScript library.

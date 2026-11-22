@@ -4,8 +4,8 @@ description: Run a lobby through one fight at a time, with a fair line and balan
 ---
 
 A rotation mode, such as a duel ring or a two against two pit, runs a lobby
-through one fight at a time, and the TypeScript library has a call for each
-part of one.
+through one fight at a time, and the TypeScript and Rust libraries have a call
+for each part of one.
 
 A player joins the line, waits in the stands, fights when their turn comes and
 goes to the back again, and each part of that has its calls:
@@ -21,11 +21,15 @@ goes to the back again, and each part of that has its calls:
 | The leaderboard                      | `leaderboard`, `Roster`                     |
 | Heroes left behind by a swap         | `Strays`                                    |
 
-The rotation calls are TypeScript only, and they and `holdBystander` and
-`Strays` import from `modlock/kit`; `Cast`, `playCamera`, `curve` and `Roster`
-import from `modlock`. Each rotation call is pure: your mod keeps the line
+The rotation calls are in TypeScript and Rust only; TypeScript imports them,
+`holdBystander` and `Strays` from `modlock/kit`, and `Cast`, `playCamera`,
+`curve` and `Roster` from `modlock`. Each rotation call is pure: your mod keeps
+the line
 and the standings, and each call reads only what you pass it. Because the calls
 are pure, `js/test/rotation.test.ts` runs a whole session without the game.
+Rust spells them in `snake_case` in the `modlock::rotation` module, and its
+`Standings` keeps each record by Steam ID, with your own fields beside the
+standing as the record's `extra`.
 
 ## The line and the standings
 
@@ -40,6 +44,8 @@ beside one `Standings`:
   a turn never jumps the line.
 - A function passed to `Standings` adds your own fields to each new standing,
   such as matches played as each hero:
+
+<Samples>
 
 ```ts
 import { Cast } from 'modlock'
@@ -64,6 +70,53 @@ const cast = new Cast({
 })
 ```
 
+```rust
+use modlock::rotation::Standings;
+
+/// Entrant is one player in the line.
+#[derive(Clone, PartialEq)]
+struct Entrant {
+    player: Player,
+    name: String,
+    steam_id: u64,
+}
+
+struct Arena {
+    /// standings keeps, beside each record, the matches played as each hero.
+    standings: Standings<[u32; 2]>,
+    line: Vec<Entrant>,
+    cast: Cast<Entrant>,
+}
+
+impl Mod for Arena {
+    fn frame(&mut self, event: &FrameEvent) {
+        let (mut joined, mut left) = (Vec::new(), Vec::new());
+        self.cast.frame(
+            event.time_seconds,
+            |connection| {
+                let entrant = Entrant {
+                    player: connection.player,
+                    name: connection.name.clone(),
+                    steam_id: connection.steam_id,
+                };
+                joined.push(entrant.clone());
+                entrant
+            },
+            |entrant, _| left.push(entrant),
+            |_| Want::default(),
+        );
+        for entrant in joined {
+            let present = self.line.iter().map(|each| each.steam_id);
+            self.standings.join(entrant.steam_id, present);
+            self.line.push(entrant);
+        }
+        self.line.retain(|each| !left.contains(each));
+    }
+}
+```
+
+</Samples>
+
 ## The stands
 
 A waiting player can sit in the stands with a hero that the fight does not
@@ -81,6 +134,8 @@ the point the camera turns around, at the ring's center with a long `distance`.
 The player circles that view with the mouse. Each param snaps
 back when its curve ends. Hold each curve longer than any wait, and clear
 the context when the player leaves the stands:
+
+<Samples>
 
 ```ts
 import {
@@ -122,6 +177,34 @@ function unseat(player: Player, pawn: number): void {
 }
 ```
 
+```rust
+use modlock::camera::Play;
+use modlock::curve;
+
+const CONTEXT: &str = "arena.stands";
+
+fn seat(player: Player, pawn: u32, position: Vector, facing: Angles) -> bool {
+    player.teleport(&position, &facing, None);
+    hold_bystander(pawn, true);
+    player.clear_camera(Some(CONTEXT));
+    let play = Play::new()
+        .context(CONTEXT)
+        .priority(4)
+        .track(CameraParam::Target, curve::hold(Vector::new(0.0, 0.0, 60.0), 3600.0))
+        .track(CameraParam::Distance, curve::hold(1400, 3600.0))
+        .track(CameraParam::VerticalOffset, curve::hold(0, 3600.0))
+        .track(CameraParam::HorizontalOffset, curve::hold(0, 3600.0));
+    play_camera(player, play).is_some()
+}
+
+fn unseat(player: Player, pawn: u32) {
+    hold_bystander(pawn, false);
+    player.clear_camera(Some(CONTEXT));
+}
+```
+
+</Samples>
+
 `playCamera` returns nothing while the player has no hero. Mark the seat taken
 only once `seat` returns true, and try again each frame. A bystander
 can still die from a fall or world damage, so respawn it and seat it again.
@@ -140,6 +223,8 @@ who fights, in two steps:
 While too few players wait, `nextMatch` returns nothing, and your HUD can show
 that as waiting for players.
 
+<Samples>
+
 ```ts
 const sides = nextMatch(line, size, (each) => each.standing)
 if (sides) {
@@ -149,6 +234,19 @@ if (sides) {
 }
 ```
 
+```rust
+let sides = next_match(&self.line, size, |each| self.standings.standing(each.steam_id));
+if let Some((first, second)) = sides {
+    for fighter in first.iter().chain(&second) {
+        if let Some(record) = self.standings.get_mut(fighter.steam_id) {
+            record.standing.played += 1;
+        }
+    }
+}
+```
+
+</Samples>
+
 Count the match as played when it is seated, not when it ends, so a fighter who leaves mid-match still goes to the back of the order.
 
 ## An even share of heroes
@@ -157,10 +255,21 @@ When the mode picks each fighter's hero from a short list, count each
 player's matches per hero. `leastUsed(counts, prefer)` returns the one played
 least, or `prefer` on a tie, so everyone plays every hero about equally and two fighters can start on different heroes by preferring different ones.
 
+<Samples>
+
 ```ts
 const choice = leastUsed(fighter.standing.heroes, side === 0 ? 0 : 1)
 fighter.standing.heroes[choice]++
 ```
+
+```rust
+if let Some(record) = self.standings.get_mut(fighter.steam_id) {
+    let choice = least_used(&record.extra, if side == 0 { 0 } else { 1 });
+    record.extra[choice] += 1;
+}
+```
+
+</Samples>
 
 ## The result
 
@@ -173,6 +282,12 @@ When the fight ends, these calls record it and move the line on:
 | `step` option              | Replaces `ratingStep` (32) for matches that should count more or less.                                                                                                  |
 | `afterMatch(line, fought)` | Sends the fighters to the back of the line, everyone else keeping their order.                                                                                          |
 
+In Rust, `settle` and `rating_change` always take the step, and `RATING_STEP`
+is the usual one. `Standings` has a `settle` of its own that takes each side's
+Steam IDs.
+
+<Samples>
+
 ```ts
 const change = settle(
   winners.map((each) => each.standing),
@@ -180,6 +295,15 @@ const change = settle(
 )
 line = afterMatch(line, [...winners, ...losers])
 ```
+
+```rust
+let ids = |side: &[Entrant]| side.iter().map(|each| each.steam_id).collect::<Vec<u64>>();
+let change = self.standings.settle(&ids(&winners), &ids(&losers), RATING_STEP);
+let fought: Vec<Entrant> = winners.iter().chain(&losers).cloned().collect();
+self.line = after_match(&self.line, &fought);
+```
+
+</Samples>
 
 ## The leaderboard
 
@@ -189,7 +313,11 @@ fall off. `Roster` draws each row's hero, avatar and a line of activity. Its
 `groups` put players under headings, such as one per team, and its rows shrink
 and then run in columns as players join, so every row fits between `top` and
 `bottom`. `rosterBottom` takes the same props and gives the line where the
-roster ends, for a panel drawn under it:
+roster ends, for a panel drawn under it. Rust's `hud::roster` takes its rows
+alone, as `hud::row` children, shows the first six, and has no groups, columns
+or `rosterBottom`:
+
+<Samples>
 
 ```ts
 const rows = leaderboard(line, (each) => each.standing, 8, viewer)
@@ -207,6 +335,27 @@ show(
 )
 ```
 
+```rust
+// use modlock::hud;
+let standing = |each: &Entrant| self.standings.standing(each.steam_id);
+let rows = leaderboard(&self.line, standing, 8, Some(&viewer));
+let rows = rows.iter().map(|each| {
+    let standing = standing(each);
+    ui! {
+        <hud::row
+            name={each.name.clone()}
+            own={*each == viewer}
+            hero={each.player.pawn().map_or(0, |pawn| pawn.hero)}
+            steam_id={each.steam_id}
+            activity={format!("{}-{} · {}", standing.wins, standing.losses, standing.rating)}
+        />
+    }
+});
+show(viewer.player, ui! { <panel><hud::roster>{rows}</hud::roster></panel> });
+```
+
+</Samples>
+
 ## Heroes left behind
 
 Swapping a player's hero, or moving them to the spectators and back, can
@@ -218,6 +367,8 @@ off its respawn for good. The sweep checks once a second, with one entity
 listing and two field reads per hero. Keep one `Strays` and call `sweep(now)`
 each frame:
 
+<Samples>
+
 ```ts
 import { onFrame } from 'modlock'
 import { Strays } from 'modlock/kit'
@@ -225,6 +376,15 @@ import { Strays } from 'modlock/kit'
 const strays = new Strays()
 onFrame(({ timeSeconds }) => strays.sweep(timeSeconds))
 ```
+
+```rust
+// In the mod: strays: Strays::new()
+fn frame(&mut self, event: &FrameEvent) {
+    self.strays.sweep(event.time_seconds);
+}
+```
+
+</Samples>
 
 The sweep leaves a stray's abilities in place, because killing a live hero's
 ability entities has crashed the server.

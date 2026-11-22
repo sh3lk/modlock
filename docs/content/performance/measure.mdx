@@ -40,7 +40,7 @@ reproduce it with `modlock play` without `--release`.
 
 ## Time the parts of a frame
 
-In TypeScript, [`frameClock`](/guides/toolkit#time-your-frames) times named
+In TypeScript and Rust, [`frameClock`](/guides/toolkit#time-your-frames) times named
 parts of your frame handler. Once a minute it logs the median and slowest
 frame, each part's mean and slowest time, and the parts that cost most in the
 slowest frame. Use it when the sampler shows time spread across many functions,

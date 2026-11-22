@@ -127,9 +127,11 @@ You can also find a connection from a Steam ID, and make a Player from a slot:
 | Luau       | `modlock.connection(steamId)`, with a string         | `modlock.Player.new(slot)` |
 | Python     | `modlock.connection(steam_id)`, a number above 65535 | `modlock.Player(slot)`     |
 | Go         | `mod.ConnectionOfSteamID(steamID)`                   | `mod.PlayerOf(slot)`       |
+| Rust       | `connection_of_steam_id(steam_id)`, with a `u64`     | `Player::of(slot)`         |
 
 Each gives the player who holds the slot now. In Go, the zero `mod.Player`
-names nobody. The same `connection` call also takes a player or a slot.
+names nobody. The same `connection` call also takes a player or a slot. Rust's
+takes a Steam ID alone, and `Player::of(slot).connection()` reads a slot's.
 
 ### Roles
 
@@ -356,9 +358,13 @@ hero. The function it returns ends the view: the player returns to their hero,
 the freeze and the hold end, and the hero goes back where it stood, unless you
 pass `false` because the mod respawns or moves it itself. Pass a fourth
 argument to park the hero at a spot of your own.
-`spectateFrom` is TypeScript only, imported from `modlock/kit`; in other
-languages, compose it from
-`holdModifierState`, `teleport`, `freeze`, `freeCamera` and `unwatch`.
+`spectateFrom` is in TypeScript (from `modlock/kit`) and Rust only; in the other
+languages, compose it from `holdModifierState`, `teleport`, `freeze`,
+`freeCamera` and `unwatch`. Rust's `spectate_from` returns a `Spectating`,
+whose `end(restore)` ends the view, and takes the spot to park the hero at as
+an `Option`.
+
+<Samples>
 
 ```ts
 import { type Player } from 'modlock'
@@ -381,6 +387,38 @@ function bringBack(player: Player) {
   player.respawn()
 }
 ```
+
+```rust
+use std::collections::HashMap;
+
+#[derive(Default)]
+struct Hello {
+    watching: HashMap<Player, Spectating>,
+}
+
+impl Hello {
+    fn knock_out(&mut self, player: Player) {
+        let view = spectate_from(
+            player,
+            Vector::new(0.0, 0.0, 2400.0),
+            Angles::new(60.0, 90.0, 0.0),
+            None,
+        );
+        if let Some(view) = view {
+            self.watching.insert(player, view);
+        }
+    }
+
+    fn bring_back(&mut self, player: Player) {
+        if let Some(view) = self.watching.remove(&player) {
+            view.end(false);
+        }
+        player.respawn();
+    }
+}
+```
+
+</Samples>
 
 ## Add bots
 
@@ -430,7 +468,7 @@ if let Some(bot) = bot {
 
 ## Every call
 
-Python spells each call in `snake_case`, and Go capitalizes it.
+Python and Rust spell each call in `snake_case`, and Go capitalizes it.
 
 | Call                                                                                                                              | Effect                                                                           |
 | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
@@ -455,7 +493,7 @@ Python spells each call in `snake_case`, and Go capitalizes it.
 | `readBoard(board, read, done)`                                                                                                    | Read a page of a board, such as its top five.                                    |
 | `player.handoff(text)`, `handedOff()`                                                                                             | Hand the player's state to the next build, and read it back.                     |
 | `player.watchMovement(true)`                                                                                                      | Add the hero's movement, landings and wall jumps to each frame.                  |
-| `playCamera(player, options)`, `cameraPulse`, `cameraShake`                                                                       | Play curves on the camera, TypeScript only; see [Camera moves](/guides/camera).  |
+| `playCamera(player, options)`, `cameraPulse`, `cameraShake`                                                                       | Play curves on the camera, TypeScript and Rust only; see [Camera moves](/guides/camera). |
 | `setOrbitCamera(player, enabled)`                                                                                                 | Switch the hero to the hideout's zoom camera and HUD, or back.                   |
 | `entityCamera(player, options)`                                                                                                   | Show the player a 6-DOF `point_camera` with full roll, TypeScript and Go only.   |
 | `addBot(options)`, `player.removeBot()`                                                                                           | Add or remove a bot player.                                                      |
@@ -518,10 +556,10 @@ fn hero(&mut self, player: Player, args: &str) {
 
 </Samples>
 
-| Call                      | Returns                                                                                                                                                                     | Languages  |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| `heroes`                  | The released heroes by title, each with its game name, title and fixed id. Python spells it `HEROES`.                                                                       | All        |
-| `heroNamed(name)`         | The hero whose name matches exactly, as the calls above read names, or nothing. A misspelled name finds no hero rather than another one.                                    | All        |
-| `findHero(typed)`         | The hero a player typed: an exact name or title first, then the first title that starts with or contains it, such as `geist`.                                               | All        |
-| `findTitled(list, typed)` | The same match over your own list of entries with `name` and `title`.                                                                                                       | TypeScript |
-| `Hook`                    | Watches one Bebop's hook. `update(player, now)` each frame reports the hero it holds and each new throw, keeps it fully upgraded and sets its cooldown. From `modlock/kit`. | TypeScript |
+| Call                      | Returns                                                                                                                                                                                   | Languages        |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `heroes`                  | The released heroes by title, each with its game name, title and fixed id. Python and Rust spell it `HEROES`.                                                                             | All              |
+| `heroNamed(name)`         | The hero whose name matches exactly, as the calls above read names, or nothing. A misspelled name finds no hero rather than another one.                                                  | All              |
+| `findHero(typed)`         | The hero a player typed: an exact name or title first, then the first title that starts with or contains it, such as `geist`.                                                             | All              |
+| `findTitled(list, typed)` | The same match over your own list of entries with `name` and `title`.                                                                                                                     | TypeScript       |
+| `Hook`                    | Watches one Bebop's hook. `update(player, now)` each frame reports the hero it holds and each new throw, keeps it fully upgraded and sets its cooldown. From `modlock/kit` in TypeScript. | TypeScript, Rust |

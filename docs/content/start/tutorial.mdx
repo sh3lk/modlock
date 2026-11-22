@@ -403,7 +403,7 @@ Each connection also has [`roles`](/guides/players#roles), which tell you which 
 
 ## 5. Show a HUD
 
-The mod counts defeats now but keeps them to itself, so next you'll put each player's count in the top right corner of their screen. Write the HUD in its own module beside the main one: `hud.tsx`, `hud.luau` or `hud.py`, or in Go a `hud.go` in the same package:
+The mod counts defeats now but keeps them to itself, so next you'll put each player's count in the top right corner of their screen. Write the HUD in its own module beside the main one: `hud.tsx`, `hud.luau` or `hud.py`, or in Go a `hud.go` in the same package; the Rust sample is a function for `src/lib.rs`:
 
 <Samples>
 
@@ -587,7 +587,7 @@ impl Mod for Brawl {
 
 Each player now sees a panel in the top right corner that reads "0 defeats". The number goes up each time they defeat a hero after `/start`.
 
-An interface is a tree of elements. In TypeScript you write it as JSX in a `.tsx` module, and in the other languages you build it with calls to the `ui` library. `drawScore` builds a panel with one label and passes it to `show`. The frame handler redraws every player's HUD from `defeats` on each frame. `show` compares the tree with the one it sent that player last and sends only what changed, so a redraw on every frame costs little. When a player presses a button in a tree, the mod calls its `onPress` with that player.
+An interface is a tree of elements. In TypeScript you write it as JSX in a `.tsx` module, in Rust as tags in the `ui!` macro, and in the other languages you build it with calls to the `ui` library. `drawScore` builds a panel with one label and passes it to `show`. The frame handler redraws every player's HUD from `defeats` on each frame. `show` compares the tree with the one it sent that player last and sends only what changed, so a redraw on every frame costs little. When a player presses a button in a tree, the mod calls its `onPress` with that player.
 
 [Interfaces](/guides/interfaces) lists every element and style.
 

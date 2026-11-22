@@ -41,10 +41,14 @@ round. The mod then checks the outcome, logs PASS or FAIL and quits with
 [`examples/arena`](https://github.com/paralin/modlock/blob/master/examples/arena/probe.ts)
 does.
 
-In TypeScript, `ProbeRun` keeps track of the probe's steps. Call `tick` on each
+In TypeScript and Rust, `ProbeRun` keeps track of the probe's steps. Call `tick` on each
 frame with the step the probe waits on and a check. The check returns `true` to
 pass, a message to fail, or `false` to keep waiting. `ProbeRun` logs each new step
-once and fails the run when its timeout passes. Then it logs `<name> probe PASS` or `FAIL` and quits:
+once and fails the run when its timeout passes. Then it logs `<name> probe PASS` or `FAIL` and quits.
+A Rust check that may answer all three returns a `Check`: `Pass`, `Fail` with
+the message, or `Wait`:
+
+<Samples>
 
 ```ts
 const run = new ProbeRun('Duel', 120)
@@ -52,6 +56,16 @@ onFrame((frame) => {
   run.tick(frame.timeSeconds, 'two fighters', () => fighters() >= 2)
 })
 ```
+
+```rust
+// In the mod: run: ProbeRun::new("Duel", 120.0)
+fn frame(&mut self, event: &FrameEvent) {
+    let fighters = self.fighters.len();
+    self.run.tick(event.time_seconds, "two fighters", || fighters >= 2);
+}
+```
+
+</Samples>
 
 A probe that seats a full server of bots also shows whether the mod keeps
 within its [frame budget](/performance/frame-budget).

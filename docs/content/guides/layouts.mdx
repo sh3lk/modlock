@@ -41,7 +41,7 @@ element, and routes. `route(player, 'scores', scores)` hands its value to every
 layout your mod shows that player, so several layouts share one value without a parent passing
 it down. A value travels as JSON, and the layout sees a change only
 when your mod sends a different value. `route(player, name, undefined)` removes the route. Go's `ui.Route`
-takes the value as JSON text, and an empty one removes it. The layout's
+and Rust's `route` take the value as JSON text, and an empty one removes it. The layout's
 script includes the library `scripts/modlock/layout.js` and reads them:
 
 ```xml

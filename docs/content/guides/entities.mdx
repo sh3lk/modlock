@@ -6,9 +6,10 @@ description: Read and write any field of a live entity, create entities and send
 The calls on this page read and write any schema field of the game's entities,
 create any entity by its designer name and send any input, in every language. The
 [Luau](/languages/luau#typed-entities),
-[Python](/languages/python#typed-entities-and-the-console) and
-[Go](/languages/go#typed-entities-and-the-console) pages describe their typed
-classes.
+[Python](/languages/python#typed-entities-and-the-console),
+[Go](/languages/go#typed-entities-and-the-console) and
+[Rust](/languages/rust#typed-entities-and-the-console) pages describe their
+typed classes.
 
 ## Read and write fields
 
@@ -50,6 +51,12 @@ The Go sample writes `int64(500)` because Go's `WriteField` takes only a `bool`,
 `float64`, `int64`, `string` or `*mod.Vector`. An integer is passed as an
 `int64` even when the field is narrower, as the 32-bit `m_iHealth` is. A plain
 `500` is an `int`, and `WriteField` returns an error for it.
+
+The Rust sample writes `FieldValue::Number(500.0)` because Rust's `write_field`
+takes a `FieldValue`: a `Boolean`, a `Number`, an `Integer`, a `Text` or a
+`Vector`. Rust spells each call in `snake_case`, and a name that is a Rust
+keyword takes `r#`, as `FieldWrite`'s `r#type` and a world object's `r#move`
+do.
 
 For an animated prop, the host finds `CBaseAnimGraphController` fields through
 the prop's body component. This sample sets a sequence that does not use the
@@ -203,8 +210,9 @@ spawn_npc(&NpcOptions {
 
 The entities module has a type for each server entity class, with a getter and a
 setter for each field except string fields. In Go, each field's method drops the
-field's `m_` prefix. To reach a base class's fields, convert the entity to the
-base class:
+field's `m_` prefix. In Rust, each field is a method under the game's own name,
+such as `m_iHealth()`, with a `get` and a `set`. To reach a base class's fields,
+convert the entity to the base class:
 
 <Samples>
 
@@ -360,9 +368,10 @@ The values passed to `fireInput` already have the type each input takes, because
 an input does not convert text. `Alpha` takes an integer, and `Color` takes a
 color written as `0xRRGGBBAA`. `entities.json` lists the type each input takes.
 In Go, an `int32` is sent as an integer, a `float32` is sent as a number and a
-`uint32` is sent as a color.
+`uint32` is sent as a color. In Rust the `EntityValue` names the type:
+`Integer`, `Number` or `Color`.
 
-The Luau, Python and Go samples check the created entity before they send
+The Luau, Python, Go and Rust samples check the created entity before they send
 inputs. `createEntity` returns no entity for a designer name the server does not
 know, and `fireInput` returns false for an input the entity does not have. The
 host logs why, and in Go both calls return an error. Only that call fails: the
@@ -390,7 +399,9 @@ or on players' clients, or load scripts and entities no check sees:
 only that entity's spawn keys, each as the type the entity reads. It returns the
 entity as its class, with a method per input. In Go each designer name is a
 value, such as `entity.NpcTrooperBoss`, whose `Create` takes the options and a
-struct of the keys:
+struct of the keys. In Rust each is a function, such as
+`entity::npc_trooper_boss()`, whose `create` takes the options and whose
+`create_with` also sets the keys in a closure:
 
 <Samples>
 

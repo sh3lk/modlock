@@ -253,7 +253,8 @@ and rewards, so a mod should leave the scoreboard fields alone.
 ## What fails, and how
 
 Every entity call fails on its own: it logs, returns `undefined` or `false`
-in TypeScript and Luau and an error in Go, and the mod keeps running. The
+in TypeScript and Luau, an error in Go and `None` or `false` in Rust, and the
+mod keeps running. The
 failures a mod can meet:
 
 | Message                                       | Cause                                                        |

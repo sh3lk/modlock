@@ -6,8 +6,11 @@ description: Pull back, aim and shake the camera, and play curves on it.
 `playCamera` moves a player's camera along a curve for each camera param, all
 on one timeline. The host sends each curve to the game as the game's own lerps,
 and the game plays them smoothly with no timers in your mod. Camera
-curves exist only in TypeScript, so this page's samples are TypeScript only. The
-calls they build on, `moveCamera` and `clearCamera`, are in every language.
+curves exist only in TypeScript and Rust, so this page's samples are in those
+two only. The calls they build on, `moveCamera` and `clearCamera`, are in every
+language.
+
+<Samples>
 
 ```ts
 // Pull back while the view widens, ease back in after two seconds.
@@ -35,6 +38,58 @@ const tour = playCamera(player, {
 after(30, () => tour?.cancel())
 ```
 
+```rust
+use modlock::camera::Play;
+use modlock::curve::{self, Ease, Key, Orbit};
+
+// Pull back while the view widens, ease back in after two seconds.
+play_camera(
+    player,
+    Play::new()
+        .relative()
+        .track(
+            CameraParam::Distance,
+            curve::chain([
+                curve::line(0, 300, 0.4, Ease::Out),
+                curve::hold(300, 2.0),
+                curve::line(300, 0, 0.6, Ease::InOut),
+            ]),
+        )
+        .track(
+            CameraParam::FieldOfView,
+            curve::keyframes(
+                &[
+                    Key::new(0.0, 0),
+                    Key::new(0.4, 15).ease(Ease::Out),
+                    Key::new(3.0, 0).ease(Ease::Sine),
+                ],
+                false,
+            ),
+        ),
+);
+
+// Circle a point of interest until the round starts.
+let tour = play_camera(
+    player,
+    Play::new().looping().track(
+        CameraParam::Target,
+        curve::orbit(Orbit {
+            center: spot,
+            radius: 400.0,
+            duration: 12.0,
+            ..Orbit::default()
+        }),
+    ),
+);
+after(30.0, move |_: &mut Hello| {
+    if let Some(tour) = tour {
+        tour.cancel();
+    }
+});
+```
+
+</Samples>
+
 ## Options
 
 | Option            | Does                                                                                                                                                                                   |
@@ -48,6 +103,10 @@ after(30, () => tour?.cancel())
 `playCamera` returns a move with `duration` and `cancel()`, or nothing when the
 player has no hero. Each param snaps back to its usual value when its curve
 ends, so end a curve at rest.
+
+In Rust the options are methods of `camera::Play`: `track(param, curve)` once
+for each param, `relative()`, `looping()`, `rate(rate)`, `context(name)` and
+`priority(priority)`.
 
 ## Curves
 
@@ -65,6 +124,14 @@ builder returns a curve, so you can pass one builder's result to another:
 | `curve.durationOf(c)`, `curve.valueAt(c, seconds)`                   | How long a curve plays, and its value at a time.                                                      |
 | `cameraPulse`                                                        | Moves a param out, holds it and brings it back, as an ability pulls the camera back while it charges. |
 | `cameraShake`                                                        | Shakes one param.                                                                                     |
+
+Rust spells the builders in `snake_case` in the `curve` module. `keyframes`
+takes `Key`s and whether to smooth, and `through`, `orbit` and `wave` take
+their options as a `Through`, an `Orbit` and a `Wave`. `repeat`, `reverse`,
+`ping_pong`, `duration` and `value_at` are methods of a curve, and
+`camera_pulse` and `camera_shake` take a `camera::Pulse` and a `camera::Shake`.
+An ease is a variant of `Ease`, such as `Ease::Out` and `Ease::Bias(0.3)`, and
+`line` always takes one.
 
 | Ease                                                                    | Plays as                                                                                                                                                               |
 | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

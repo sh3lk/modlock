@@ -141,9 +141,12 @@ and place them again.
 
 ## Every call
 
-Python spells each call in `snake_case`, and Go capitalizes it. `Dropper`
-is TypeScript only. TypeScript imports `loadSpot` and `Dropper` from
-`modlock/kit`, and the rest from `modlock`.
+Python and Rust spell each call in `snake_case`, and Go capitalizes it. A Rust
+object's `move` is `r#move`. `Dropper` is in TypeScript and Rust only.
+TypeScript imports `loadSpot` and `Dropper` from `modlock/kit`, and the rest
+from `modlock`. Rust's `Dropper::new(catalog, spot, held_by)`, in the `dropper`
+module, also takes a function that returns the dropper from the mod that keeps
+it.
 
 | Call                                                   | Effect                                                                                                |
 | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |

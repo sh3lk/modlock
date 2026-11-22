@@ -8,17 +8,17 @@ repeat. TypeScript imports `Stragglers` and `RaceGate` from `modlock/kit`, the
 module of parts that game modes build from the library, and the rest from
 `modlock`:
 
-| Helper                                | Does                                                                                | Languages  |
-| ------------------------------------- | ----------------------------------------------------------------------------------- | ---------- |
-| [`seat`](#seat-the-players)           | Gives a player a hero on a team, with no team or hero screen.                       | All        |
-| [`setFreeForAll`](#play-free-for-all) | Makes every hero an enemy of every other.                                           | All        |
-| [`Cast`](#keep-the-players-with-cast) | Keeps one member per human, with the hero each wants.                               | All        |
-| [`Stragglers`](#clear-stragglers)     | Kicks players stuck joining and kills heroes a player left behind.                  | TypeScript |
-| [`vector`](#vectors-and-hud-text)     | Places points and turns heroes to face them.                                        | TypeScript |
-| [`format`](#vectors-and-hud-text)     | Writes numbers as a HUD shows them.                                                 | TypeScript |
-| [`ground`](#find-the-floor)           | Finds the floor under a point. `trace`, which it is built on, is in every language. | TypeScript |
-| [`RaceGate`](#stand-a-race-gate)      | Stands a glowing gate across a lane.                                                | TypeScript |
-| [`frameClock`](#time-your-frames)     | Shows which part of the mod spends a slow frame.                                    | TypeScript |
+| Helper                                | Does                                                                                | Languages        |
+| ------------------------------------- | ----------------------------------------------------------------------------------- | ---------------- |
+| [`seat`](#seat-the-players)           | Gives a player a hero on a team, with no team or hero screen.                       | All              |
+| [`setFreeForAll`](#play-free-for-all) | Makes every hero an enemy of every other.                                           | All              |
+| [`Cast`](#keep-the-players-with-cast) | Keeps one member per human, with the hero each wants.                               | All              |
+| [`Stragglers`](#clear-stragglers)     | Kicks players stuck joining and kills heroes a player left behind.                  | TypeScript, Rust |
+| [`vector`](#vectors-and-hud-text)     | Places points and turns heroes to face them.                                        | TypeScript, Rust |
+| [`format`](#vectors-and-hud-text)     | Writes numbers as a HUD shows them.                                                 | TypeScript, Rust |
+| [`ground`](#find-the-floor)           | Finds the floor under a point. `trace`, which it is built on, is in every language. | TypeScript, Rust |
+| [`RaceGate`](#stand-a-race-gate)      | Stands a glowing gate across a lane.                                                | TypeScript, Rust |
+| [`frameClock`](#time-your-frames)     | Shows which part of the mod spends a slow frame.                                    | TypeScript, Rust |
 
 ## Seat the players
 
@@ -287,18 +287,23 @@ impl Mod for Hello {
 | `bots`  | Makes bots members or kicks them; without it bots are left out.                                                                                                                  |
 | `want`  | A hero, team and respawn delay for everyone, or a function of the member read each frame. Without a team, a member keeps their hero's team or joins the side with fewer members. |
 
+In Rust, `Cast::new(bots)` takes only what to do with bots, `Bots::Skip`,
+`Bots::Join` or `Bots::Kick`, and `cast.frame(seconds, join, leave, want)`
+takes the other three as functions on each frame, `want` always as a function
+of the member.
+
 On each frame, Cast reads each member's hero once. At most once a second, it
 asks the game again for the hero, team or respawn delay a member wants but does
 not have yet. Cast learns of joins from the host's player reports, so on a
 frame where nobody joined or left it does not walk the player list.
 Read the hero back from the cast rather than asking the game again:
 
-| TypeScript and Luau | Python      | Go        | Returns                                   |
-| ------------------- | ----------- | --------- | ----------------------------------------- |
-| `size`              | `size`      | `Size`    | How many members there are.               |
-| `members`           | `members()` | `Members` | Every member.                             |
-| `get(player)`       | `get`       | `Get`     | The member for a player, if they are one. |
-| `pawn(player)`      | `pawn`      | `Pawn`    | The member's hero as Cast last read it.   |
+| TypeScript and Luau | Python      | Go        | Rust        | Returns                                   |
+| ------------------- | ----------- | --------- | ----------- | ----------------------------------------- |
+| `size`              | `size`      | `Size`    | `len()`     | How many members there are.               |
+| `members`           | `members()` | `Members` | `members()` | Every member.                             |
+| `get(player)`       | `get`       | `Get`     | `get`       | The member for a player, if they are one. |
+| `pawn(player)`      | `pawn`      | `Pawn`    | `pawn`      | The member's hero as Cast last read it.   |
 
 ## Clear stragglers
 
@@ -309,6 +314,8 @@ standing in the world, and revives it on its own timer with no player.
 kills each hero no player holds, as [`Strays`](/mechanics/rotation#heroes-left-behind)
 does. Keep one and call `sweep(now)` each frame:
 
+<Samples>
+
 ```ts
 import { onFrame } from 'modlock'
 import { Stragglers } from 'modlock/kit'
@@ -317,8 +324,28 @@ const stragglers = new Stragglers({ connectSeconds: 120 })
 onFrame(({ timeSeconds }) => stragglers.sweep(timeSeconds))
 ```
 
+```rust
+struct Hello {
+    stragglers: Stragglers,
+}
+
+impl Default for Hello {
+    fn default() -> Self {
+        Hello { stragglers: Stragglers::new().connect_seconds(120.0) }
+    }
+}
+
+impl Mod for Hello {
+    fn frame(&mut self, event: &FrameEvent) {
+        self.stragglers.sweep(event.time_seconds);
+    }
+}
+```
+
+</Samples>
+
 `sweepStragglers(options?)` does the same in one line, with the library calling
-`sweep` each frame for as long as the mod runs:
+`sweep` each frame for as long as the mod runs. Rust has no `sweepStragglers`:
 
 ```ts
 import { sweepStragglers } from 'modlock/kit'
@@ -330,6 +357,9 @@ sweepStragglers()
 | ---------------- | ------- | ----------------------------------------------------------------------------------------------- |
 | `connectSeconds` | 120     | Kicks a human still joining this long after the sweep first saw them. Zero or less never kicks. |
 | `heroes`         | `true`  | Kills each hero that has had no player for `strayGraceSeconds` and holds off its respawn.       |
+
+In Rust, `Stragglers::new()` takes both defaults, `connect_seconds(seconds)`
+sets the first and `leave_heroes()` turns the second off.
 
 The sweep checks once a second and kicks each connection once, by name, with
 `kick "name"`; a name that is empty or holds a quote is logged instead. A
@@ -350,6 +380,10 @@ pitch positive looking down.
 | `vector.distance`, `flatDistance`, `toward`, `lerp`, arithmetic | Measure and combine points.                          |
 | `yawToward`, `level`, `aimAt`, `forward`                        | Turn a hero to face a point, or read where it looks. |
 
+In Rust these are methods of `Vector` and `Angles` in `snake_case`, such as
+`from.distance(to)`, `from.aim_at(to)` and `Angles::level(yaw)`, and vectors
+add, subtract and scale with `+`, `-` and `*`.
+
 `format` writes numbers the way players read them, since the game's scripts
 have no locale data:
 
@@ -363,13 +397,18 @@ have no locale data:
 | `count(3, 'kill')`            | `3 kills` |
 | `clip('Lady Geist wins', 10)` | `Lady…`   |
 
+In Rust, `format` is the `modlock::format` module, and its `count_of` takes a
+plural that is not the thing with an `s`.
+
 ## Find the floor
 
 `ground(point)` returns the floor under a point, or nothing when no floor is
 in reach, the point is inside a wall, or the world's collision is not ready
 yet. `ground(spawn) ?? spawn` keeps the point when there is no floor. It
 traces straight down through solid and player clip, from 64 units above to
-1024 below; `above`, `below` and `layers` change the reach.
+1024 below; `above`, `below` and `layers` change the reach. In Rust,
+`ground(point, Ground::default())` returns an `Option`, and the three are the
+fields of `Ground`.
 
 ## Stand a race gate
 
@@ -378,6 +417,8 @@ glowing lines inside a racing checker band, Tron cyan by default. `foot` is
 the road point under the middle of the opening and `yaw` the direction a
 runner passes through, in degrees. Precache `raceGateResources` in
 `onStart`:
+
+<Samples>
 
 ```ts
 import { ground, onStart, precache } from 'modlock'
@@ -389,17 +430,41 @@ const gate = RaceGate.stand({ foot: ground(spot) ?? spot, yaw: 90 })
 gate.remove()
 ```
 
+```rust
+use modlock::racegate::{RaceGate, RaceGateOptions, RACE_GATE_RESOURCES};
+
+impl Mod for Hello {
+    fn start(&mut self, _event: &StartEvent) {
+        precache(&PrecacheOptions {
+            resources: RACE_GATE_RESOURCES.map(str::to_owned).to_vec(),
+            ..Default::default()
+        });
+    }
+}
+
+let foot = ground(spot, Ground::default()).unwrap_or(spot);
+let mut gate = RaceGate::stand(&RaceGateOptions::at(foot, 90.0));
+gate.remove();
+```
+
+</Samples>
+
 | Option            | Default    | Does                                                                                                                                  |
 | ----------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `width`, `height` | 112 by 144 | Size the opening, rounded to whole 8-unit cells.                                                                                      |
 | `color`, `faded`  | Cyan       | Color the band's inner and outer rings. World text and beams ignore alpha, so the outer ring uses a darker shade to look see-through. |
 | `viewer`          | Everyone   | Shows the gate to one player slot only.                                                                                               |
 
+In Rust the options are the fields of `RaceGateOptions`, which
+`RaceGateOptions::at(foot, yaw)` fills with the defaults.
+
 ## Time your frames
 
 `frameClock` shows how much of a slow server frame is your mod's, and which
 part spends it. Call `begin` as a frame starts, `lap` with a name after each
 part, and `end` with the frame's tick:
+
+<Samples>
 
 ```ts
 import { frameClock, onFrame } from 'modlock'
@@ -413,6 +478,23 @@ onFrame((frame) => {
   frameClock.end(frame.tick)
 })
 ```
+
+```rust
+use modlock::frame_clock;
+
+impl Mod for Hello {
+    fn frame(&mut self, event: &FrameEvent) {
+        frame_clock::begin();
+        self.move_bots();
+        frame_clock::lap("bots");
+        self.draw_hud();
+        frame_clock::lap("hud");
+        frame_clock::end(event.tick);
+    }
+}
+```
+
+</Samples>
 
 Once a minute `frameClock` logs the median and slowest frame, each part's mean and
 slowest milliseconds, and the parts that cost most in the minute's slowest

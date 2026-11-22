@@ -25,7 +25,7 @@ impl Hello {
     }
 }
 
-modlock::run!(Hello);
+modlock::run!(Hello::default());
 ```
 
 Choose Rust with the switch in the sidebar, and the [guides](/guides/events)
@@ -127,6 +127,8 @@ in `snake_case`: vectors add and scale with `+` and `*`, and `format`,
 `frame_clock` are modules. `Cast`, `Puppet`, `Strays`, `Stragglers`, `Hook` and
 `ProbeRun` are types, and `ground`, `load_spot`, `restore_hero`,
 `replay_damage`, `report_score` and `show_chat_lines` functions.
+The crate has no `hideHudForAll`, `sweepStragglers`, `findTitled` or
+`rosterBottom`, and its roster takes rows alone, without groups.
 
 The [`hello-rust`](https://github.com/paralin/modlock/tree/master/examples/hello-rust),
 [`hero-build-rust`](https://github.com/paralin/modlock/tree/master/examples/hero-build-rust),

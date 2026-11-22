@@ -137,7 +137,10 @@ modlock::run!(Hello);
 Python spells each as a `snake_case` decorator, such as
 `@modlock.on_player_join`, and Go as an exported function, such as
 `mod.OnPlayerJoin`. A call that takes a name takes it in the decorator, as
-`@modlock.on_modifier_event("PRE_UNIT_HEALED")` does.
+`@modlock.on_modifier_event("PRE_UNIT_HEALED")` does. In Rust each is a method
+of `Mod`, such as `start`, `world` and `frame`, or of a trait of its own, such
+as `OnJoin`'s `player_joined` and `OnKill`'s `killed`, and `command` and
+`modifier_event` are calls the mod makes in `start`.
 
 | Call                                                | Runs the handler                                                                           |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -493,7 +496,8 @@ target at full health. To hear regeneration, listen for the `PRE_UNIT_HEALED`
 heal and every tick of regeneration, with no amount. Each of the four events
 arrives before the next frame.
 Python spells the fields in `snake_case`, and Go reads each player as a slot,
-such as `heal.GetTargetPlayer()`.
+such as `heal.GetTargetPlayer()`. Rust spells the fields in `snake_case`, and
+each player is an `Option<Player>`, `None` where the table says slot -1.
 
 | Field            | On           | Holds                                                                             |
 | ---------------- | ------------ | --------------------------------------------------------------------------------- |

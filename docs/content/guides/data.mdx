@@ -295,4 +295,6 @@ for that player and board in the game.
 
 Python spells them in `snake_case` with keyword options. Go spells them
 `Player.ReportScore`, `ReportMatch` and `ReadBoard`, and returns the host's
-error where the others return false.
+error where the others return false. Rust spells them in `snake_case`, takes a
+`ScoreReport`, a `MatchReport` or a `BoardQuery` in place of the board and its
+options, and hands `done` a `Result`.
