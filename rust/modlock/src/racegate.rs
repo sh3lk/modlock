@@ -5,7 +5,7 @@
 //!
 //! ```ignore
 //! let foot = ground(spot, Ground::default()).unwrap_or(spot);
-//! let gate = RaceGate::stand(&RaceGateOptions::at(foot, 90.0));
+//! let mut gate = RaceGate::stand(&RaceGateOptions::at(foot, 90.0));
 //! gate.remove();
 //! ```
 //!
