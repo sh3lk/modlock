@@ -241,11 +241,16 @@ impl<M: 'static> Dropper<M> {
     /// input applies a builder's key presses.
     pub fn input(&mut self, player: Player, pressed: u64) {
         // Find the player's builder.
-        let Some(entry) = self.builders.get(&player.slot()).map(|held| held.entry) else {
+        if !self.building(player) {
             return;
-        };
+        }
 
-        // Run the action of each pressed button.
+        // Run the action of each pressed button. Each paging key steps from
+        // the entry selected when its turn comes.
+        let entry = |dropper: &Self| {
+            let builder = dropper.builders.get(&player.slot());
+            builder.map_or(0, |held| held.entry as i64)
+        };
         if pressed & Buttons::ATTACK != 0 {
             self.drop_held(player);
         }
@@ -259,10 +264,10 @@ impl<M: 'static> Dropper<M> {
             self.turn(player, TURN_DEGREES);
         }
         if pressed & Buttons::ABILITY1 != 0 {
-            self.select(player, entry as i64 - 1);
+            self.select(player, entry(self) - 1);
         }
         if pressed & Buttons::ABILITY2 != 0 {
-            self.select(player, entry as i64 + 1);
+            self.select(player, entry(self) + 1);
         }
         if pressed & Buttons::ABILITY3 != 0 {
             self.undo(player);
