@@ -21,8 +21,26 @@
 //!     show_chat_lines(ChatLines::default());
 //! }
 //! ```
+//!
+//! A mode whose sides are not the game's teams, or that keeps a hero secret,
+//! says how each viewer sees a speaker with a method of the mod:
+//!
+//! ```ignore
+//! fn start(&mut self, _event: &StartEvent) {
+//!     show_chat_lines(ChatLines::default().speaker(Self::seen));
+//! }
+//!
+//! fn seen(&mut self, speaker: Player, _viewer: Player) -> ChatSpeaker {
+//!     ChatSpeaker {
+//!         out: self.found.contains(&speaker),
+//!         ..ChatSpeaker::default()
+//!     }
+//! }
+//! ```
 
+use std::any::Any;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 use super::element::{image, label, panel, Element};
 use super::engine;
@@ -52,7 +70,7 @@ const SAPPHIRE: u32 = 0x8fb1_f0ff;
 const BAND: u32 = 0x1013_0d9e;
 
 /// ChatLines shape the lines show_chat_lines draws.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub struct ChatLines {
     /// seconds is how long a line stays up, 6 by default.
     pub seconds: f64,
@@ -69,12 +87,47 @@ pub struct ChatLines {
     /// portraits shows each speaker's portrait before their name, as it does
     /// by default.
     pub portraits: bool,
-    /// speaker says how the second player, the viewer, sees the first, a
-    /// line's speaker, for a mode whose sides are not the game's teams or
-    /// that keeps a hero secret. Without it, and for each part it leaves
+    /// speaker says how a viewer sees a line's speaker, for a mode whose
+    /// sides are not the game's teams or that keeps a hero secret; the
+    /// speaker method sets it. Without it, and for each part it leaves
     /// unset, a speaker shows their hero, and their name in their game
     /// team's color.
-    pub speaker: Option<fn(Player, Player) -> ChatSpeaker>,
+    pub speaker: Option<SpeakerLook>,
+}
+
+impl ChatLines {
+    /// speaker takes the mod's say of how the second player, the viewer,
+    /// sees the first, a line's speaker: a method of the mod, such as
+    /// Self::seen, or a closure that takes the mod and the two players. It
+    /// runs on the mod each time the lines change: when a line is heard,
+    /// when one leaves, and for a player who joins while lines show.
+    pub fn speaker<M: 'static>(
+        mut self,
+        look: impl Fn(&mut M, Player, Player) -> ChatSpeaker + 'static,
+    ) -> Self {
+        self.speaker = Some(SpeakerLook(Rc::new(move |m, speaker, viewer| {
+            match m.downcast_mut::<M>() {
+                Some(m) => look(m, speaker, viewer),
+                None => ChatSpeaker::default(),
+            }
+        })));
+        self
+    }
+}
+
+/// Looking runs the mod's say of how a viewer sees a speaker on the mod,
+/// with the speaker and the viewer.
+type Looking = dyn Fn(&mut dyn Any, Player, Player) -> ChatSpeaker;
+
+/// SpeakerLook is the mod's say of how a viewer sees a line's speaker, as
+/// ChatLines keeps it; ChatLines::speaker makes one.
+#[derive(Clone)]
+pub struct SpeakerLook(Rc<Looking>);
+
+impl std::fmt::Debug for SpeakerLook {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("SpeakerLook").finish_non_exhaustive()
+    }
 }
 
 impl Default for ChatLines {
@@ -133,6 +186,7 @@ pub fn show_chat_lines(options: ChatLines) {
     runtime::hook(|hooks| hooks.chat = Some(heard));
     engine::layer(engine::Layer {
         lines: chat_lines,
+        on_mod: speaker_set,
         expire,
         forget,
     });
@@ -143,10 +197,20 @@ pub fn chat_shown() -> bool {
     CHAT.with(|chat| chat.borrow().shown.is_some())
 }
 
-/// heard shows a chat line to every player who may read it.
-fn heard(line: &ChatEvent) {
+/// speaker_set reports whether the mod says how a speaker is seen, so the
+/// lines read the mod.
+fn speaker_set() -> bool {
+    CHAT.with(|chat| {
+        let shown = &chat.borrow().shown;
+        shown.as_ref().is_some_and(|shown| shown.speaker.is_some())
+    })
+}
+
+/// heard shows a chat line to every player who may read it. It runs on the
+/// mod, for the mod's say of each speaker.
+fn heard(m: &mut dyn Any, line: &ChatEvent) {
     if hear(line, engine::now()) {
-        engine::draw_everyone();
+        engine::draw_everyone(m);
     }
 }
 
@@ -157,7 +221,8 @@ fn hear(line: &ChatEvent, now: f64) -> bool {
     if text.is_empty() || text.starts_with('/') {
         return false;
     }
-    let Some(seconds) = CHAT.with(|chat| chat.borrow().shown.map(|shown| shown.seconds)) else {
+    let Some(seconds) = CHAT.with(|chat| chat.borrow().shown.as_ref().map(|shown| shown.seconds))
+    else {
         return false;
     };
 
@@ -210,8 +275,8 @@ struct Said {
 }
 
 /// chat_lines draws the fresh lines viewer may read, newest at the bottom,
-/// or None with nothing to draw.
-fn chat_lines(viewer: Player) -> Option<Element> {
+/// or None with nothing to draw. The mod's say of each speaker runs on m.
+fn chat_lines(m: &mut dyn Any, viewer: Player) -> Option<Element> {
     // Nothing to draw is the common case.
     let (shown, held) = CHAT.with(|chat| {
         let chat = chat.borrow();
@@ -220,7 +285,7 @@ fn chat_lines(viewer: Player) -> Option<Element> {
             text: line.text.clone(),
             team: line.team,
         });
-        (chat.shown, held.collect::<Vec<Said>>())
+        (chat.shown.clone(), held.collect::<Vec<Said>>())
     });
     let shown = shown.filter(|_| !held.is_empty())?;
 
@@ -238,10 +303,12 @@ fn chat_lines(viewer: Player) -> Option<Element> {
 
     // The lane is centred above the ability bar and gives way to the game's
     // chat box; each line keeps its speaker's key, so a new line adds one
-    // subtitle and dims the rest in place.
+    // subtitle and dims the rest in place. The chat is free while the mod
+    // says how a speaker is seen, since its code may show chat lines.
     let count = kept.len();
     let subtitles = kept.iter().enumerate().map(|(at, line)| {
-        let seen = shown.speaker.map(|speaker| speaker(line.speaker, viewer));
+        let look = shown.speaker.as_ref();
+        let seen = look.map(|look| (look.0)(m, line.speaker, viewer));
         subtitle(line, seen.unwrap_or_default(), count - 1 - at, &size)
     });
     let lane = Style {

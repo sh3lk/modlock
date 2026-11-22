@@ -94,8 +94,9 @@ pub(crate) struct Hooks {
     pub restored: Option<fn(&mut dyn Any, &RestoredEvent)>,
     /// puppets moves the playing puppets with each frame.
     pub puppets: Option<fn(&FrameEvent)>,
-    /// chat shows a chat line, once the mod shows chat lines.
-    pub chat: Option<fn(&ChatEvent)>,
+    /// chat shows a chat line, once the mod shows chat lines; it runs on the
+    /// mod, whose say of each speaker the lines may take.
+    pub chat: Option<fn(&mut dyn Any, &ChatEvent)>,
 }
 
 /// hook changes the parts the library's helpers take in the events.
@@ -106,15 +107,17 @@ pub(crate) fn hook(change: impl FnOnce(&mut Hooks)) {
 }
 
 /// Interface is the interface library's part in the events: what it does
-/// with a frame, a press, an input's change and a new player list. The
-/// library joins the events with the first interface the mod shows, so a mod
-/// that shows none carries none of the interface library.
+/// with a frame, a press, an input's change and a new player list. Each runs
+/// on the mod: a frame and a new player list may lay the chat lines out
+/// again, which may take the mod's say of each speaker. The library joins the
+/// events with the first interface the mod shows, so a mod that shows none
+/// carries none of the interface library.
 #[derive(Clone, Copy)]
 pub(crate) struct Interface {
-    pub tick: fn(f64),
+    pub tick: fn(&mut dyn Any, f64),
     pub press: fn(&mut dyn Any, &UiPressEvent),
     pub changed: fn(&mut dyn Any, &UiInputEvent),
-    pub forget: fn(&[Connection]),
+    pub forget: fn(&mut dyn Any, &[Connection]),
 }
 
 /// join gives the interface library its part in the events, and returns
@@ -518,7 +521,7 @@ pub(crate) fn deliver<M: Mod + 'static>(
             let event = FrameEvent::decode(request)?;
             advance(m, event.time_seconds);
             if let Some(interface) = INTERFACE.get() {
-                (interface.tick)(event.time_seconds);
+                (interface.tick)(m, event.time_seconds);
             }
             if let Some(puppets) = HOOKS.get().puppets {
                 puppets(&event);
@@ -561,7 +564,7 @@ pub(crate) fn deliver<M: Mod + 'static>(
                 let event = ChatEvent::decode(request)?;
                 after(0.0, move |m: &mut M| {
                     if let Some(heard) = heard {
-                        heard(&event);
+                        heard(m, &event);
                     }
                     if let Some(handle) = handle {
                         handle(m, &event);
@@ -630,7 +633,7 @@ pub(crate) fn deliver<M: Mod + 'static>(
             let mut event = PlayersChangedEvent::decode(request)?;
             follow(&mut event);
             if let Some(interface) = INTERFACE.get() {
-                (interface.forget)(&event.players);
+                (interface.forget)(m, &event.players);
             }
             m.players_changed(&event);
         }

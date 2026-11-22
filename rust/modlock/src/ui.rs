@@ -59,7 +59,7 @@ mod element;
 mod engine;
 mod style;
 
-pub use chat::{chat_shown, show_chat_lines, ChatLines, ChatSpeaker};
+pub use chat::{chat_shown, show_chat_lines, ChatLines, ChatSpeaker, SpeakerLook};
 pub use element::{
     avatar, button, dropdown, entry, hero, image, label, layout, panel, slider, tag, text, toggle,
     Children, Element, Tag,

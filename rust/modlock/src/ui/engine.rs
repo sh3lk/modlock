@@ -124,6 +124,10 @@ struct Library {
     /// layer draws the chat lines over every player's interface, once the
     /// mod shows them.
     layer: Option<Layer>,
+    /// lines holds what each player sees of a layer that reads the mod, by
+    /// slot, as it was last laid out on the mod; a player who sees nothing
+    /// of it has none.
+    lines: HashMap<i32, Element>,
 }
 
 thread_local! {
@@ -136,6 +140,7 @@ thread_local! {
         next_cue: 1,
         sheets: Vec::new(),
         layer: None,
+        lines: HashMap::new(),
     });
 }
 
@@ -153,7 +158,7 @@ fn join() {
     if runtime::join(interface) {
         LIBRARY.with(|library| library.borrow_mut().now = runtime::now());
         if let Some((_, players)) = runtime::reported() {
-            forget(&players);
+            note(&players);
         }
     }
 }
@@ -172,12 +177,19 @@ fn change(player: Player, edit: impl FnOnce(&mut Library, i32)) -> bool {
 }
 
 /// Layer is a layer of every player's interface that the library draws
-/// itself, beside the mod's own tree: the chat lines. lines draws what one
-/// player sees of it, expire drops what is past its time and forget what
-/// the player who left a slot had in it; both report whether any went.
+/// itself, beside the mod's own tree: the chat lines. lines draws on the mod
+/// what one player sees of it, and on_mod reports whether lines reads the
+/// mod. expire drops what is past its time and forget what the player who
+/// left a slot had in it; both report whether any went.
+///
+/// A layer that reads the mod is laid out only when what it shows changes,
+/// inside the event that changed it, where the library holds the mod; every
+/// draw between shows the player what was laid out then. A layer that does
+/// not is laid out with every draw.
 #[derive(Clone, Copy)]
 pub(crate) struct Layer {
-    pub lines: fn(Player) -> Option<Element>,
+    pub lines: fn(&mut dyn Any, Player) -> Option<Element>,
+    pub on_mod: fn() -> bool,
     pub expire: fn(f64) -> bool,
     pub forget: fn(i32) -> bool,
 }
@@ -194,11 +206,41 @@ pub(crate) fn now() -> f64 {
     LIBRARY.with(|library| library.borrow().now)
 }
 
-/// draw_everyone draws every player in the game, as after a change all of
-/// them see.
-pub(crate) fn draw_everyone() {
+/// draw_everyone lays the layer out on the mod for every player in the game
+/// and draws them, as after a change to the layer all of them see.
+pub(crate) fn draw_everyone(m: &mut dyn Any) {
     join();
+    let everyone: Vec<Player> = players()
+        .iter()
+        .map(|connection| connection.player)
+        .collect();
+    lay(m, &everyone);
     LIBRARY.with(|library| library.borrow_mut().everyone());
+}
+
+/// lay lays out on the mod what each of players sees of a layer that reads
+/// the mod, and keeps it for their draws.
+fn lay(m: &mut dyn Any, players: &[Player]) {
+    let layer = LIBRARY.with(|library| library.borrow().layer);
+    let Some(layer) = layer.filter(|layer| (layer.on_mod)()) else {
+        return;
+    };
+
+    // The library is free while the layer runs on the mod, since the mod's
+    // code may show an interface.
+    let laid: Vec<(i32, Option<Element>)> = players
+        .iter()
+        .map(|player| (player.slot(), (layer.lines)(m, *player)))
+        .collect();
+    LIBRARY.with(|library| {
+        let lines = &mut library.borrow_mut().lines;
+        for (slot, seen) in laid {
+            match seen {
+                Some(seen) => lines.insert(slot, seen),
+                None => lines.remove(&slot),
+            };
+        }
+    });
 }
 
 impl Library {
@@ -240,15 +282,29 @@ impl Library {
         let view = self.views.get_mut(&slot).expect("keep made the view");
         let player = view.player;
         let display = display_rows(view);
-        let mut lines = self.layer.and_then(|layer| (layer.lines)(player));
+
+        // A layer that reads the mod shows what was last laid out on it: a
+        // draw has no mod to lay it out on, and a player it laid nothing out
+        // for sees none of it until it changes. Another is laid out now, on
+        // no mod.
+        let mut fresh;
+        let mut lines = match self.layer {
+            Some(layer) if (layer.on_mod)() => self.lines.get_mut(&slot),
+            Some(layer) => {
+                fresh = (layer.lines)(&mut (), player);
+                fresh.as_mut()
+            }
+            None => None,
+        };
         let previous = self.screens.get(&slot);
-        let next = render(previous, view, &self.sheets, &display, &mut lines);
+        let laid = lines.as_deref_mut();
+        let next = render(previous, view, &self.sheets, &display, laid);
 
         // Send the change; a failed send means the player may have left, so
         // send the screen whole.
         let sent = match diff(previous, &next) {
             Some(change) if !send(player, &change) => {
-                let whole = render(None, view, &self.sheets, &display, &mut lines);
+                let whole = render(None, view, &self.sheets, &display, lines);
                 let sent = diff(None, &whole).is_some_and(|change| send(player, &change));
                 sent.then_some(whole)
             }
@@ -401,7 +457,7 @@ fn render(
     view: &mut View,
     sheets: &[String],
     display: &[AbilityRow],
-    lines: &mut Option<Element>,
+    lines: Option<&mut Element>,
 ) -> Screen {
     // The screen is about as large as the one before it.
     let (nodes, handlers, next) = previous.map_or((0, 0, 0), |previous| {
@@ -903,17 +959,20 @@ pub(crate) fn changed(m: &mut dyn Any, event: &UiInputEvent) {
 }
 
 /// tick advances the clock to the frame at seconds and fades expiring
-/// notices.
-pub(crate) fn tick(seconds: f64) {
-    LIBRARY.with(|library| {
-        // A chat line past its time redraws everyone.
+/// notices. It runs on the mod, which the chat lines may read.
+pub(crate) fn tick(m: &mut dyn Any, seconds: f64) {
+    // A chat line past its time redraws everyone.
+    let expired = LIBRARY.with(|library| {
         let mut library = library.borrow_mut();
         library.now = seconds;
-        if library.layer.is_some_and(|layer| (layer.expire)(seconds)) {
-            library.everyone();
-        }
-
+        library.layer.is_some_and(|layer| (layer.expire)(seconds))
+    });
+    if expired {
+        draw_everyone(m);
+    }
+    LIBRARY.with(|library| {
         // Redraw only a view that lost a notice.
+        let mut library = library.borrow_mut();
         let mut lost = Vec::new();
         for view in library.views.values_mut() {
             let before = view.notices.len();
@@ -929,8 +988,24 @@ pub(crate) fn tick(seconds: f64) {
 }
 
 /// forget drops the view and screen of each slot whose player left or was
-/// replaced, so a new player in the slot starts with nothing shown.
-pub(crate) fn forget(players: &[Connection]) {
+/// replaced, so a new player in the slot starts with nothing shown. It runs
+/// on the mod, which the chat lines may read.
+pub(crate) fn forget(m: &mut dyn Any, players: &[Connection]) {
+    // A line that left with its speaker redraws everyone. Otherwise each
+    // player who came gets the lines laid out, for their first screen: it
+    // may come from the mod's own call, where the library holds no mod.
+    let (lost, came) = note(players);
+    if lost {
+        draw_everyone(m);
+    } else {
+        lay(m, &came);
+    }
+}
+
+/// note notes who holds each slot and drops what the library kept for each
+/// slot whose player left or was replaced. It reports whether a line of the
+/// layer left with its speaker, and returns the players who came.
+fn note(players: &[Connection]) -> (bool, Vec<Player>) {
     LIBRARY.with(|library| {
         // Find each slot whose connection is gone or new.
         let mut library = library.borrow_mut();
@@ -948,15 +1023,18 @@ pub(crate) fn forget(players: &[Connection]) {
         for slot in gone {
             library.views.remove(&slot);
             library.screens.remove(&slot);
+            library.lines.remove(&slot);
             lost |= library.layer.is_some_and(|layer| (layer.forget)(slot));
         }
+        let held = |connection: &&Connection| {
+            let slot = connection.player.slot();
+            library.generations.get(&slot) == Some(&connection.generation)
+        };
+        let came = players.iter().filter(|connection| !held(connection));
+        let came = came.map(|connection| connection.player).collect();
         library.generations = current;
-
-        // A line that left with its speaker redraws everyone.
-        if lost {
-            library.everyone();
-        }
-    });
+        (lost, came)
+    })
 }
 
 /// is_json reports whether text is one JSON value.
