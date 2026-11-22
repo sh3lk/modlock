@@ -171,6 +171,60 @@ func init() {
 func main() {}
 ```
 
+```rust
+use std::collections::HashMap;
+
+use modlock::prelude::*;
+
+const GOAL: u32 = 10;
+
+#[derive(Default)]
+struct Deathmatch {
+    /// kills holds each player's kills this round.
+    kills: HashMap<Player, u32>,
+}
+
+impl Mod for Deathmatch {}
+
+impl OnKill for Deathmatch {
+    fn killed(&mut self, kill: &KillEvent) {
+        let Some(victim) = kill.victim_player else {
+            return; // a unit, not a hero
+        };
+        after(3.0, move |_: &mut Deathmatch| {
+            victim.respawn();
+        });
+        let Some(scorer) = kill.attacker_player.filter(|scorer| *scorer != victim) else {
+            return; // a hazard, a unit or the hero's own hit
+        };
+        let name = scorer
+            .connection()
+            .map_or_else(|| "Someone".to_owned(), |connection| connection.name);
+        let total = self.kills.entry(scorer).or_default();
+        *total += 1;
+        let won = *total >= GOAL;
+        for connection in players() {
+            if won {
+                connection.player.announce(format!("{name} wins"), "A new round starts now.");
+            } else {
+                connection.player.center_text(format!("{name}: {total} / {GOAL}"));
+            }
+        }
+        if won {
+            self.kills.clear();
+        }
+    }
+}
+
+impl OnJoin for Deathmatch {
+    fn player_left(&mut self, event: &PlayerLeftEvent) {
+        self.kills.remove(&event.connection.player);
+    }
+}
+
+modlock::run!(Deathmatch::default());
+```
+
 </Samples>
 
 Bring a second player or a bot into the game and defeat them.

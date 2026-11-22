@@ -56,6 +56,19 @@ mod.Command("who", func(p mod.Player, args string) {
 })
 ```
 
+```rust
+// In the mod's start: command("who", Self::who);
+fn who(&mut self, player: Player) {
+    for connection in players() {
+        player.chat(if connection.bot {
+            format!("{} (bot)", connection.name)
+        } else {
+            connection.name
+        });
+    }
+}
+```
+
 </Samples>
 
 A player's connection has their name, Steam ID, whether they are a bot and
@@ -94,6 +107,14 @@ mod.Command("me", func(p mod.Player, args string) {
 	}
 	_ = p.Chat(name)
 })
+```
+
+```rust
+// In the mod's start: command("me", Self::me);
+fn me(&mut self, player: Player) {
+    let name = player.connection().map(|connection| connection.name);
+    player.chat(name.as_deref().unwrap_or("Nobody"));
+}
 ```
 
 </Samples>
@@ -191,6 +212,28 @@ func init() {
 }
 ```
 
+```rust
+use std::collections::HashMap;
+
+#[derive(Default)]
+struct Hello {
+    greetings: HashMap<Player, u32>,
+}
+
+impl OnJoin for Hello {
+    fn player_left(&mut self, event: &PlayerLeftEvent) {
+        self.greetings.remove(&event.connection.player);
+    }
+}
+
+// In the mod's start: command("hi", Self::hi);
+fn hi(&mut self, player: Player) {
+    let count = self.greetings.entry(player).or_default();
+    *count += 1;
+    player.chat(format!("Hello {count} times"));
+}
+```
+
 </Samples>
 
 The leave handler keys by `connection.player`, because a connection does not
@@ -233,6 +276,12 @@ if pawn is not None and pawn.health > 0:
 pawn, err := p.Pawn()
 if err == nil && pawn != nil && pawn.GetHealth() > 0 {
 	_ = p.CenterText(fmt.Sprintf("%d / %d", pawn.GetHealth(), pawn.GetMaxHealth()))
+}
+```
+
+```rust
+if let Some(pawn) = player.pawn().filter(|pawn| pawn.health > 0) {
+    player.center_text(format!("{} / {}", pawn.health, pawn.max_health));
 }
 ```
 
@@ -282,6 +331,15 @@ _ = p.Teleport(&mod.Vector{Z: 256}, &mod.Angles{Yaw: 90}, nil)
 _ = p.Freeze(nil) // nil freezes; pass a pointer to false to release
 _ = p.AdjustSouls(500, nil)
 _ = p.Heal(250)
+```
+
+```rust
+player.select_hero(&SelectHero::HeroName("abrams".to_owned()), 2);
+player.respawn();
+player.teleport(&Vector::new(0.0, 0.0, 256.0), &Angles::new(0.0, 90.0, 0.0), None);
+player.freeze(None); // None freezes; Some(false) releases
+player.adjust_souls(500, None);
+player.heal(250);
 ```
 
 </Samples>
@@ -354,6 +412,17 @@ if bot is not None:
 bot, err := mod.AddBot(&mod.BotOptions{Name: "Sparring partner", Team: 3})
 if err == nil {
 	_ = bot.RemoveBot()
+}
+```
+
+```rust
+let bot = add_bot(&BotOptions {
+    name: "Sparring partner".to_owned(),
+    team: 3,
+    ..BotOptions::default()
+});
+if let Some(bot) = bot {
+    bot.remove_bot();
 }
 ```
 
@@ -436,6 +505,15 @@ mod.Command("hero", func(p mod.Player, args string) {
 		_, _ = p.SelectHero(hero.Name, 2)
 	}
 })
+```
+
+```rust
+// In the mod's start: command("hero", Self::hero);
+fn hero(&mut self, player: Player, args: &str) {
+    if let Some(hero) = find_hero(args) {
+        player.select_hero(&SelectHero::HeroName(hero.name.to_owned()), 2);
+    }
+}
 ```
 
 </Samples>

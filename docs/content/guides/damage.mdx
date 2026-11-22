@@ -53,6 +53,18 @@ mod.OnDamage(func(hit *mod.DamageEvent) *mod.DamageResult {
 })
 ```
 
+```rust
+impl OnDamage for Hello {
+    // Headshots deal double damage.
+    fn damage(&mut self, event: &DamageEvent) -> DamageResult {
+        DamageResult {
+            amount: (event.hit_group == 1).then_some(event.amount * 2.0),
+            ..DamageResult::default()
+        }
+    }
+}
+```
+
 </Samples>
 
 ## Block a hit
@@ -116,6 +128,24 @@ func init() {
 }
 ```
 
+```rust
+#[derive(Default)]
+struct Hello {
+    /// shielded are the entities your mod protects from every hit, such as
+    /// heroes that just spawned.
+    shielded: HashSet<u32>,
+}
+
+impl OnDamage for Hello {
+    fn damage(&mut self, event: &DamageEvent) -> DamageResult {
+        DamageResult {
+            block: self.shielded.contains(&event.victim).then_some(true),
+            ..DamageResult::default()
+        }
+    }
+}
+```
+
 </Samples>
 
 ## React to a kill
@@ -156,6 +186,16 @@ mod.OnKill(func(kill *mod.KillEvent) {
 		mod.Log("slot", kill.GetAttackerPlayer(), "defeated slot", kill.GetVictimPlayer())
 	}
 })
+```
+
+```rust
+impl OnKill for Hello {
+    fn killed(&mut self, event: &KillEvent) {
+        if let (Some(attacker), Some(victim)) = (event.attacker_player, event.victim_player) {
+            log!("slot {} defeated slot {}", attacker.slot(), victim.slot());
+        }
+    }
+}
 ```
 
 </Samples>

@@ -41,6 +41,14 @@ _ = console.CitadelTrooperGoldReward.Set(40)
 _ = console.Changelevel.Run("street_test")
 ```
 
+```rust
+use modlock::console;
+
+console::citadel_allow_purchasing_anywhere().set(true);
+console::citadel_trooper_gold_reward().set(40);
+console::changelevel().run(&["street_test"]);
+```
+
 </Samples>
 
 Every call runs one console line through `serverCommand`, which can also set a
@@ -81,6 +89,15 @@ import "github.com/paralin/modlock/mod/console"
 
 // Arena returns its settings as a slice, and To makes a setting of your own.
 console.Apply(append(console.Arena(), console.CitadelAllowDuplicateHeroes.To(true))...)
+```
+
+```rust
+use modlock::console;
+
+// arena returns its settings as a Vec, and to makes a setting of your own.
+let mut settings = console::arena();
+settings.push(console::citadel_allow_duplicate_heroes().to(true));
+console::apply(&settings);
 ```
 
 </Samples>

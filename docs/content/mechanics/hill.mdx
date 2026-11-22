@@ -226,6 +226,69 @@ func init() {
 func main() {}
 ```
 
+```rust
+use std::collections::HashMap;
+
+use modlock::prelude::*;
+
+const HILL: Vector = Vector::new(0.0, 0.0, 0.0);
+const RADIUS: f64 = 400.0;
+const GOAL: u32 = 30;
+
+#[derive(Default)]
+struct Hill {
+    /// points holds each player's seconds alone on the hill.
+    points: HashMap<Player, u32>,
+}
+
+impl Mod for Hill {
+    fn start(&mut self, _event: &StartEvent) {
+        every(1.0, Self::score);
+    }
+
+    // Mark the hill each time a world loads, and start the score over.
+    fn world(&mut self, _event: &WorldEvent) {
+        self.points.clear();
+        create_text(&TextOptions {
+            text: "HILL".to_owned(),
+            position: Vector::new(HILL.x, HILL.y, HILL.z + 200.0),
+            face_camera: Some(true),
+            ..TextOptions::default()
+        });
+    }
+}
+
+impl Hill {
+    fn score(&mut self) {
+        let connections = players();
+        let mut holders = connections.iter().filter(|connection| on_hill(connection.player));
+        let (Some(holder), None) = (holders.next(), holders.next()) else {
+            return; // empty or contested
+        };
+        let total = self.points.entry(holder.player).or_default();
+        *total += 1;
+        holder.player.center_text(format!("{total} / {GOAL}"));
+        if *total >= GOAL {
+            for connection in &connections {
+                connection.player.announce(
+                    format!("{} holds the hill", holder.name),
+                    "A new round starts now.",
+                );
+            }
+            self.points.clear();
+        }
+    }
+}
+
+fn on_hill(player: Player) -> bool {
+    player
+        .pawn()
+        .is_some_and(|pawn| pawn.health > 0 && pawn.position.flat_distance(HILL) <= RADIUS)
+}
+
+modlock::run!(Hill::default());
+```
+
 </Samples>
 
 Put the hill where your hero stands, as the first variation below shows, and

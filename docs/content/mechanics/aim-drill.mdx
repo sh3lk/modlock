@@ -276,6 +276,93 @@ func init() {
 func main() {}
 ```
 
+```rust
+use modlock::prelude::*;
+
+const SECONDS: u32 = 30;
+
+struct Drill {
+    player: Player,
+    target: Player,
+    hits: u32,
+    damage: i32,
+    /// finish ends the drill when its time is up.
+    finish: Timer,
+}
+
+#[derive(Default)]
+struct AimDrill {
+    /// drill is the drill that is running, if one is.
+    drill: Option<Drill>,
+}
+
+impl Mod for AimDrill {
+    fn start(&mut self, _event: &StartEvent) {
+        command("drill", Self::begin);
+    }
+
+    // A new world has already removed the target, so forget the drill.
+    fn world(&mut self, _event: &WorldEvent) {
+        if let Some(drill) = self.drill.take() {
+            drill.finish.cancel();
+        }
+    }
+}
+
+impl OnDamaged for AimDrill {
+    // Count the player's hits, and keep the target standing.
+    fn damaged(&mut self, hit: &DamagedEvent) {
+        let Some(drill) = &mut self.drill else {
+            return;
+        };
+        if hit.victim != entity_of(drill.target) || hit.attacker != entity_of(drill.player) {
+            return;
+        }
+        drill.hits += 1;
+        drill.damage += hit.health_lost;
+        drill.target.heal(hit.health_lost);
+    }
+}
+
+impl AimDrill {
+    fn begin(&mut self, player: Player) {
+        if self.drill.is_some() {
+            player.chat("A drill is already running.");
+            return;
+        }
+        // The target joins the other team, so hits on it count.
+        let on_team_two = player.pawn().is_some_and(|pawn| pawn.team == 2);
+        let Some(target) = add_bot(&BotOptions {
+            name: "Target".to_owned(),
+            team: if on_team_two { 3 } else { 2 },
+            ..BotOptions::default()
+        }) else {
+            return;
+        };
+        player.announce("Aim drill", format!("Hit the target for {SECONDS} seconds."));
+        let finish = after(f64::from(SECONDS), Self::finish);
+        self.drill = Some(Drill { player, target, hits: 0, damage: 0, finish });
+    }
+
+    fn finish(&mut self) {
+        let Some(drill) = self.drill.take() else {
+            return;
+        };
+        let (hits, damage) = (drill.hits, drill.damage);
+        drill.player.announce("Time!", format!("{hits} hits, {damage} damage"));
+        drill.player.add_metric("drill.damage", f64::from(damage), None);
+        drill.target.remove_bot();
+    }
+}
+
+/// entity_of returns the entity of a player's hero, or 0 without one.
+fn entity_of(player: Player) -> u32 {
+    player.pawn().map_or(0, |pawn| pawn.entity)
+}
+
+modlock::run!(AimDrill::default());
+```
+
 </Samples>
 
 Save, then type `/drill` in chat.

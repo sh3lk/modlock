@@ -75,6 +75,23 @@ func setBoost(player mod.Player, on bool) {
 }
 ```
 
+```rust
+const BOOST: &str = "modifier_street_brawl_round_start_zipline_boost";
+
+// The mod also keeps boosted: HashSet<i32>.
+fn set_boost(&mut self, player: Player, on: bool) {
+    if self.boosted.contains(&player.slot()) == on {
+        return;
+    }
+    if on {
+        self.boosted.insert(player.slot());
+    } else {
+        self.boosted.remove(&player.slot());
+    }
+    player.hold_modifier(BOOST, Some(on));
+}
+```
+
 </Samples>
 
 Clear the record for a player who leaves, so a new player in the slot starts
@@ -168,6 +185,20 @@ func init() {
 		next = (next + 1) % len(all)
 		checkHiding(mod.PlayerOf(all[next].GetPlayer()))
 	})
+}
+```
+
+```rust
+// The mod also keeps next: usize.
+impl Mod for Hello {
+    fn frame(&mut self, _event: &FrameEvent) {
+        let all = players();
+        if all.is_empty() {
+            return;
+        }
+        self.next = (self.next + 1) % all.len();
+        check_hiding(all[self.next].player);
+    }
 }
 ```
 

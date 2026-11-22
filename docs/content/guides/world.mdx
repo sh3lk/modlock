@@ -69,6 +69,21 @@ if err == nil {
 }
 ```
 
+```rust
+let label = create_text(&TextOptions {
+    text: "START".to_owned(),
+    position: Vector::new(0.0, 0.0, 200.0),
+    font_size: Some(96.0),
+    face_camera: Some(true),
+    ..Default::default()
+});
+if let Some(label) = label {
+    label.set_text("GO!");
+    label.r#move(&Vector::new(0.0, 0.0, 260.0), None);
+    label.remove();
+}
+```
+
 </Samples>
 
 ## Load heroes and resources
@@ -103,6 +118,17 @@ def load(args: list[str]) -> None:
 mod.OnStart(func([]string) {
 	_ = mod.Precache(&mod.PrecacheOptions{Heroes: []string{"hero_atlas", "hero_haze"}})
 })
+```
+
+```rust
+impl Mod for Hello {
+    fn start(&mut self, _event: &StartEvent) {
+        precache(&PrecacheOptions {
+            heroes: vec!["hero_atlas".to_owned(), "hero_haze".to_owned()],
+            ..Default::default()
+        });
+    }
+}
 ```
 
 </Samples>

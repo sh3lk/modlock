@@ -44,6 +44,13 @@ volume, _ := p.SettingNumber("volume") // a number
 _ = p.SetSetting("layout", "full")
 ```
 
+```rust
+let layout = player.setting("layout"); // Some("full") or Some("compact")
+let sounds = player.setting_on("sounds"); // a switch, as an Option<bool>
+let volume = player.setting_number("volume"); // a number, as an Option<f64>
+player.set_setting("layout", "full");
+```
+
 </Samples>
 
 A player may change a setting outside the mod, such as on a profile page. The
@@ -84,6 +91,16 @@ mod.OnSettingChanged(func(p mod.Player, key, value string) {
 })
 ```
 
+```rust
+impl Mod for Hello {
+    fn setting_changed(&mut self, event: &SettingChangedEvent) {
+        if event.key == "layout" {
+            event.player.chat(format!("Layout is now {}.", event.value));
+        }
+    }
+}
+```
+
 </Samples>
 
 ## Metrics
@@ -113,6 +130,11 @@ player.add_metric("hud.opened", 1, "compact")
 _ = p.AddMetric("round.wins", 1, nil)
 label := "compact"
 _ = p.AddMetric("hud.opened", 1, &label)
+```
+
+```rust
+player.add_metric("round.wins", 1.0, None);
+player.add_metric("hud.opened", 1.0, Some("compact"));
 ```
 
 </Samples>
@@ -215,6 +237,46 @@ mod.Command("top", func(p mod.Player, args string) {
 		}
 	})
 })
+```
+
+```rust
+// Enroll while the player is connected. Keep this proof with the run.
+if let Some(enrolled) = bind_score_player(&connection) {
+    let partition = |key: &str, value: &str| ScoreReportPartitionEntry {
+        key: key.to_owned(),
+        value: value.to_owned(),
+    };
+    let report = ScoreReport {
+        board: "aim.score".to_owned(),
+        value: 4210,
+        partition: vec![partition("scenario", "tracking"), partition("difficulty", "hard")],
+        key: run_id,
+        ..ScoreReport::default()
+    };
+    report_score(&enrolled, report, |_: &mut Hello, result| {
+        if let Err(refusal) = result {
+            log!("{refusal}");
+        }
+    });
+}
+
+command("top", |_: &mut Hello, player: Player| {
+    let query = BoardQuery {
+        board: "aim.score".to_owned(),
+        limit: 5,
+        ..BoardQuery::default()
+    };
+    read_board(query, None, move |_: &mut Hello, page| match page {
+        Ok(page) => {
+            for row in page.rows {
+                player.chat(format!("{}. {} {}", row.rank, row.name, row.value));
+            }
+        }
+        Err(error) => {
+            player.chat(error);
+        }
+    });
+});
 ```
 
 </Samples>

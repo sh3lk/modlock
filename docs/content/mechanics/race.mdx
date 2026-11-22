@@ -245,6 +245,81 @@ func init() {
 func main() {}
 ```
 
+```rust
+use std::collections::HashMap;
+
+use modlock::prelude::*;
+
+// The first point is the start line and the last is the finish.
+const COURSE: [Vector; 3] = [
+    Vector::new(0.0, 0.0, 64.0),
+    Vector::new(1200.0, 0.0, 64.0),
+    Vector::new(1200.0, 1600.0, 64.0),
+];
+const REACH: f64 = 150.0;
+
+struct Run {
+    /// next is the course point the runner heads for.
+    next: usize,
+    /// started is the game clock when the run began.
+    started: f64,
+}
+
+#[derive(Default)]
+struct Race {
+    runs: HashMap<Player, Run>,
+    /// now is the game clock at the last frame, in seconds.
+    now: f64,
+}
+
+impl Mod for Race {
+    fn start(&mut self, _event: &StartEvent) {
+        command("race", Self::race);
+    }
+
+    fn frame(&mut self, frame: &FrameEvent) {
+        let now = frame.time_seconds;
+        self.now = now;
+        // Keep each run that has not reached the finish.
+        self.runs.retain(|player, run| {
+            let Some(pawn) = player.pawn() else {
+                return true;
+            };
+            if pawn.position.distance(COURSE[run.next]) > REACH {
+                return true;
+            }
+            run.next += 1;
+            if run.next < COURSE.len() {
+                player.center_text(format!(
+                    "Checkpoint {} of {}",
+                    run.next - 1,
+                    COURSE.len() - 2
+                ));
+                return true;
+            }
+            player.announce("Finished", format!("{:.2} seconds", now - run.started));
+            false
+        });
+    }
+}
+
+impl OnJoin for Race {
+    fn player_left(&mut self, event: &PlayerLeftEvent) {
+        self.runs.remove(&event.connection.player);
+    }
+}
+
+impl Race {
+    fn race(&mut self, player: Player) {
+        player.teleport(&COURSE[0], &Angles::default(), None);
+        self.runs.insert(player, Run { next: 1, started: self.now });
+        player.center_text("Go!");
+    }
+}
+
+modlock::run!(Race::default());
+```
+
 </Samples>
 
 Move the course's points to where your hero can run, then type `/race` in chat.

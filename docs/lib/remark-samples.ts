@@ -42,7 +42,7 @@ function wrap(samples: MdxJsxFlowElement): void {
     const language = languageOf(child.lang)
     if (language === undefined) {
       throw new Error(
-        `<Samples> holds a ${child.lang ?? 'plain'} code fence; use ts, luau, python or go`,
+        `<Samples> holds a ${child.lang ?? 'plain'} code fence; use ts, luau, python, go or rust`,
       )
     }
     held.push(language)

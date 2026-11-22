@@ -80,6 +80,16 @@ func startRun() { _ = mod.HoldReload(true) }
 func endRun() { _ = mod.HoldReload(false) }
 ```
 
+```rust
+fn start_run() {
+    hold_reload(true);
+}
+
+fn end_run() {
+    hold_reload(false);
+}
+```
+
 </Samples>
 
 ## Hand state to the next build
@@ -139,6 +149,27 @@ func init() {
 func nextRound() {
 	round++
 	_ = mod.Handoff(strconv.Itoa(round))
+}
+```
+
+```rust
+#[derive(Default)]
+struct Rounds {
+    round: u32,
+}
+
+impl Mod for Rounds {
+    // Pick up the round the last build was on.
+    fn start(&mut self, _event: &StartEvent) {
+        self.round = handed_off().and_then(|text| text.parse().ok()).unwrap_or(1);
+    }
+}
+
+impl Rounds {
+    fn next_round(&mut self) {
+        self.round += 1;
+        handoff(self.round.to_string());
+    }
 }
 ```
 

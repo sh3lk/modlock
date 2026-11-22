@@ -39,6 +39,11 @@ health, err := mod.ReadField(pawn.GetEntity(), "CBaseEntity", "m_iHealth", mod.F
 err = mod.WriteField(pawn.GetEntity(), "CBaseEntity", "m_iHealth", mod.FieldTypeInt32, int64(500))
 ```
 
+```rust
+let health = read_field(pawn.entity, "CBaseEntity", "m_iHealth", FieldType::Int32);
+write_field(pawn.entity, "CBaseEntity", "m_iHealth", FieldType::Int32, &FieldValue::Number(500.0));
+```
+
 </Samples>
 
 The Go sample writes `int64(500)` because Go's `WriteField` takes only a `bool`,
@@ -81,6 +86,18 @@ modlock.write_field(prop, "CBaseAnimGraphController", "m_flSeqFixedCycle", "floa
 _, _ = mod.FireInput(prop, "SetAnimation", "hand_pose_aligned", nil)
 _, _ = mod.FireInput(prop, "SetPlaybackRate", float32(0), nil)
 _ = mod.WriteField(prop, "CBaseAnimGraphController", "m_flSeqFixedCycle", mod.FieldTypeFloat32, 1.0/6)
+```
+
+```rust
+fire_input(prop, "SetAnimation", Some(&EntityValue::Text("hand_pose_aligned".to_owned())), None);
+fire_input(prop, "SetPlaybackRate", Some(&EntityValue::Number(0.0)), None);
+write_field(
+    prop,
+    "CBaseAnimGraphController",
+    "m_flSeqFixedCycle",
+    FieldType::Float32,
+    &FieldValue::Number(1.0 / 6.0),
+);
 ```
 
 </Samples>
@@ -166,6 +183,22 @@ _, _ = mod.SpawnNpc(&mod.NpcOptions{
 })
 ```
 
+```rust
+spawn_npc(&NpcOptions {
+    class_name: "npc_trooper_boss".to_owned(),
+    unit: "npc_boss_tier1".to_owned(),
+    team: 2,
+    position,
+    fields: vec![FieldWrite {
+        class_name: "CBaseEntity".to_owned(),
+        field: "m_iInitialTeamNum".to_owned(),
+        r#type: FieldType::Int32,
+        value: Some(FieldValue::Number(2.0)),
+    }],
+    ..Default::default()
+});
+```
+
 </Samples>
 
 The entities module has a type for each server entity class, with a getter and a
@@ -201,6 +234,14 @@ hero.m_iHealth = (hero.m_iHealth or 0) + 50
 hero := entity.CBaseEntity{Handle: pawn.GetEntity()}
 health, _ := hero.IHealth().Get()
 _ = hero.IHealth().Set(health + 50)
+```
+
+```rust
+use modlock::entity::{CCitadelPlayerPawn, Class};
+
+let hero = CCitadelPlayerPawn::of(pawn.entity);
+let health = hero.m_iHealth().get().unwrap_or(0);
+hero.m_iHealth().set(health + 50);
 ```
 
 </Samples>
@@ -284,6 +325,26 @@ if err == nil {
 	_, _ = mod.FireInput(guardian, "Color", uint32(0x00ff00ff), nil)
 	_, _ = mod.FireInput(guardian, "DisableShadow", nil, nil)
 	_, _ = mod.RemoveEntity(guardian)
+}
+```
+
+```rust
+let guardian = create_entity(&EntityOptions {
+    designer_name: "npc_trooper_boss".to_owned(),
+    subclass: "npc_boss_tier1".to_owned(),
+    team: 3,
+    position,
+    key_values: vec![KeyValue {
+        key: "rendercolor".to_owned(),
+        value: Some(EntityValue::Text("255 0 0".to_owned())),
+    }],
+    ..Default::default()
+});
+if let Some(guardian) = guardian {
+    fire_input(guardian, "Alpha", Some(&EntityValue::Integer(128)), None);
+    fire_input(guardian, "Color", Some(&EntityValue::Color(0x00ff00ff)), None);
+    fire_input(guardian, "DisableShadow", None, None);
+    remove_entity(guardian);
 }
 ```
 
@@ -380,6 +441,23 @@ if err == nil {
 }
 ```
 
+```rust
+use modlock::entity;
+
+let options = EntityOptions {
+    team: 3,
+    position,
+    ..Default::default()
+};
+let guardian = entity::npc_trooper_boss().create_with(&options, |keys| {
+    keys.rendercolor = Some(0xff0000ff);
+});
+if let Some(guardian) = guardian {
+    guardian.input_Alpha(128);
+    guardian.input_DisableShadow();
+}
+```
+
 </Samples>
 
 `create` takes only the designer names that spawned and stayed alive on a
@@ -427,6 +505,17 @@ if dialog is not None:
 dialog, err := entity.PointClientuiDialog.Create(&mod.EntityOptions{Position: position, TransmitAlways: new(true)}, nil)
 if err == nil {
 	_ = mod.ShowEntityOnlyTo(dialog.Handle, []int32{p.Slot()})
+}
+```
+
+```rust
+let options = EntityOptions {
+    position,
+    transmit_always: Some(true),
+    ..Default::default()
+};
+if let Some(dialog) = entity::point_clientui_dialog().create(&options) {
+    show_entity_only_to(dialog.handle, &[player.slot()]);
 }
 ```
 

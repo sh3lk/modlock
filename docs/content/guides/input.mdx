@@ -58,6 +58,20 @@ mod.OnInput(func(p mod.Player, pressed, released uint64) {
 })
 ```
 
+```rust
+impl Mod for Hello {
+    fn start(&mut self, _event: &StartEvent) {
+        watch_input(Buttons::RELOAD | Buttons::USE);
+    }
+
+    fn input(&mut self, event: &InputEvent) {
+        if event.pressed & Buttons::RELOAD != 0 {
+            event.player.center_text("Reloading!");
+        }
+    }
+}
+```
+
 </Samples>
 
 A button is held from its press until its release.
@@ -106,6 +120,14 @@ modlock.after(5, lambda: modlock.block_input(modlock.Buttons(0)))
 // Nobody shoots until the round starts.
 _ = mod.BlockInput(mod.ButtonAttack)
 mod.After(5*time.Second, func() { _ = mod.BlockInput(0) })
+```
+
+```rust
+// Nobody shoots until the round starts.
+block_input(Buttons::ATTACK);
+after(5.0, |_: &mut Hello| {
+    block_input(0);
+});
 ```
 
 </Samples>

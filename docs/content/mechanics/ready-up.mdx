@@ -280,6 +280,93 @@ func countDown() {
 func main() {}
 ```
 
+```rust
+use std::collections::HashSet;
+
+use modlock::prelude::*;
+
+#[derive(Default, PartialEq)]
+enum Phase {
+    #[default]
+    Waiting,
+    Countdown,
+    Live,
+}
+
+#[derive(Default)]
+struct ReadyUp {
+    phase: Phase,
+    /// ready holds the players who typed /ready.
+    ready: HashSet<Player>,
+}
+
+impl Mod for ReadyUp {
+    fn start(&mut self, _event: &StartEvent) {
+        command("ready", Self::ready_up);
+    }
+}
+
+impl OnJoin for ReadyUp {
+    // A player who leaves no longer holds the round up.
+    fn player_left(&mut self, event: &PlayerLeftEvent) {
+        self.ready.remove(&event.connection.player);
+    }
+}
+
+impl ReadyUp {
+    fn ready_up(&mut self, player: Player) {
+        if self.phase != Phase::Waiting {
+            return;
+        }
+        self.ready.insert(player);
+        let everyone = humans();
+        let missing = everyone.iter().filter(|p| !self.ready.contains(p)).count();
+        if missing > 0 {
+            for p in everyone {
+                p.center_text(format!("Waiting for {missing} more"));
+            }
+            return;
+        }
+        self.count_down();
+    }
+
+    fn count_down(&mut self) {
+        self.phase = Phase::Countdown;
+        for p in humans() {
+            p.freeze(None);
+        }
+        // Runs at 3, 2, 1 and then starts the round.
+        sequence(|round: &mut ReadyUp, run| {
+            let left = 4 - run;
+            for p in humans() {
+                if left > 0 {
+                    p.center_text(left.to_string());
+                } else {
+                    p.freeze(Some(false));
+                    p.announce("Fight!", "The round is live.");
+                }
+            }
+            if left > 0 {
+                return Some(1.0);
+            }
+            round.phase = Phase::Live;
+            round.ready.clear();
+            None
+        });
+    }
+}
+
+fn humans() -> Vec<Player> {
+    players()
+        .into_iter()
+        .filter(|connection| !connection.bot)
+        .map(|connection| connection.player)
+        .collect()
+}
+
+modlock::run!(ReadyUp::default());
+```
+
 </Samples>
 
 To try it, save while `modlock dev` runs and type `/ready` in chat. When you

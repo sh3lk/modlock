@@ -88,6 +88,35 @@ func init() {
 }
 ```
 
+```rust
+// The default message of the day is data/motd.txt. To show a different one,
+// a host puts its own motd.txt in the mod's files directory.
+#[derive(Default)]
+struct Motd {
+    text: String,
+}
+
+impl Mod for Motd {
+    fn start(&mut self, _event: &StartEvent) {
+        self.text = read_file("motd.txt").unwrap_or_else(|| "Welcome.".to_owned());
+        command("motd", Self::motd);
+    }
+}
+
+impl Motd {
+    fn motd(&mut self, player: Player, args: &str) {
+        if args.is_empty() {
+            player.chat(&self.text);
+            return;
+        }
+        self.text = args.to_owned();
+        if !write_file("motd.txt", &self.text) {
+            player.chat("The message was not saved.");
+        }
+    }
+}
+```
+
 </Samples>
 
 | Call                    | Effect                                                                                                                                                  |

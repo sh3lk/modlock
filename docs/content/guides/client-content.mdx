@@ -92,6 +92,25 @@ keys.DialogLayoutName = new("file://{resources}/layout/{addon}/board.xml")
 _, _ = entity.PointClientuiWorldPanel.Create(&mod.EntityOptions{Position: position}, &keys)
 ```
 
+```rust
+// use modlock::entity;
+entity::point_clientui_world_panel().create_with(
+    &EntityOptions {
+        position,
+        ..EntityOptions::default()
+    },
+    |keys| {
+        keys.enabled = Some(true);
+        keys.width = Some(48.0);
+        keys.height = Some(24.0);
+        keys.panel_dpi = Some(32.0);
+        keys.opaque = Some(false);
+        keys.orientation = Some(1);
+        keys.dialog_layout_name = Some("file://{resources}/layout/{addon}/board.xml".to_owned());
+    },
+);
+```
+
 </Samples>
 
 A panel that the map placed got its layout path before the addon's name
@@ -154,6 +173,22 @@ mod.OnWorld(func(mapName string) {
 })
 ```
 
+```rust
+impl Mod for Hello {
+    fn world(&mut self, _event: &WorldEvent) {
+        for panel in find_entities("point_clientui_world_panel") {
+            write_field(
+                panel,
+                "CBaseClientUIEntity",
+                "m_DialogXMLName",
+                FieldType::String,
+                &FieldValue::Text("file://{resources}/layout/{addon}/board.xml".to_owned()),
+            );
+        }
+    }
+}
+```
+
 </Samples>
 
 [`world-panel`](https://github.com/paralin/modlock/tree/master/examples/world-panel)
@@ -193,6 +228,18 @@ modlock.create_model(modlock.ModelOptions(resource="models/{addon}/pawn.vmdl", p
 ```go
 _ = mod.Precache(&mod.PrecacheOptions{Resources: []string{"models/{addon}/pawn.vmdl"}})
 _, _ = mod.CreateModel(&mod.ModelOptions{Resource: "models/{addon}/pawn.vmdl", Position: position})
+```
+
+```rust
+precache(&PrecacheOptions {
+    resources: vec!["models/{addon}/pawn.vmdl".to_owned()],
+    ..PrecacheOptions::default()
+});
+create_model(&ModelOptions {
+    resource: "models/{addon}/pawn.vmdl".to_owned(),
+    position,
+    ..ModelOptions::default()
+});
 ```
 
 </Samples>

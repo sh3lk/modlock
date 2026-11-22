@@ -54,6 +54,17 @@ mod.OnPlayerJoin(func(joined *mod.PlayerJoinedEvent) {
 })
 ```
 
+```rust
+impl OnJoin for Hello {
+    fn player_joined(&mut self, event: &PlayerJoinedEvent) {
+        event.connection.player.seat(Seating {
+            hero: "haze".into(),
+            team: Some(2),
+        });
+    }
+}
+```
+
 </Samples>
 
 | Option | Takes                                                                                                                   |
@@ -92,6 +103,10 @@ modlock.set_respawn_delay(3)
 
 ```go
 mod.SetRespawnDelay(3 * time.Second)
+```
+
+```rust
+set_respawn_delay(Some(3.0));
 ```
 
 </Samples>
@@ -137,6 +152,20 @@ mod.OnStart(func(args []string) { _ = mod.SetFreeForAll(true) })
 mod.OnPlayerJoin(func(joined *mod.PlayerJoinedEvent) {
 	mod.PlayerOf(joined.GetConnection().GetPlayer()).Seat(mod.Seating{})
 })
+```
+
+```rust
+impl Mod for Hello {
+    fn start(&mut self, _event: &StartEvent) {
+        set_free_for_all(true);
+    }
+}
+
+impl OnJoin for Hello {
+    fn player_joined(&mut self, event: &PlayerJoinedEvent) {
+        event.connection.player.seat(Seating::default());
+    }
+}
 ```
 
 </Samples>
@@ -216,6 +245,37 @@ cast := mod.NewCast(mod.CastOptions[mod.Player]{
 })
 
 mod.OnFrame(func(frame *mod.FrameEvent) { cast.Frame(frame.GetTimeSeconds()) })
+```
+
+```rust
+struct Hello {
+    cast: Cast<Player>,
+}
+
+impl Default for Hello {
+    fn default() -> Self {
+        Hello { cast: Cast::new(Bots::Skip) }
+    }
+}
+
+impl Mod for Hello {
+    fn frame(&mut self, event: &FrameEvent) {
+        self.cast.frame(
+            event.time_seconds,
+            |connection| {
+                let player = connection.player;
+                player.announce("My Mod", format!("Welcome, {}.", connection.name));
+                player
+            },
+            |_, _| {},
+            |_| Want {
+                hero: Some(HeroPick::Any),
+                respawn: Some(3.0),
+                ..Want::default()
+            },
+        );
+    }
+}
 ```
 
 </Samples>
