@@ -648,6 +648,32 @@ pub fn roster(
     panel().style(own).child(rows).into()
 }
 
+/// roster_key returns what the roster of rows shows, to redraw only when it
+/// changes.
+pub fn roster_key(rows: &[Row]) -> String {
+    // Each row the roster shows is a line: its marks, name, hero, activity
+    // and account.
+    let line = |row: &Row| {
+        let mut line = String::new();
+        for (set, mark) in [
+            (row.own, '*'),
+            (row.selected, '+'),
+            (row.on_press.is_some(), '>'),
+        ] {
+            if set {
+                line.push(mark);
+            }
+        }
+        line.push_str(&format!("{}\t{}\t{}\t", row.name, row.hero, row.activity));
+        if row.steam_id != 0 {
+            line.push_str(&row.steam_id.to_string());
+        }
+        line
+    };
+    let lines: Vec<String> = rows.iter().take(ROSTER_ROWS).map(line).collect();
+    lines.join("\n")
+}
+
 /// clip shortens text to at most width characters, at a word boundary when
 /// the cut leaves one, and marks the cut with an ellipsis.
 fn clip(text: &str, width: usize) -> String {
