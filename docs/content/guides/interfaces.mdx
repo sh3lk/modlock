@@ -128,7 +128,7 @@ capitalizes it. In Go, `toast` with seconds is `ToastFor`, and `uiSound` is
 | `uiSound(player, sound, { seconds?, delay? })` | Play a game sound event to one player once, hero or not; `seconds` stops it early and `delay` plays it later, so one draw can time a run of ticks.                                                            |
 | `hideHud(player, parts)`                       | Hide parts of the game's HUD, such as `'topBar'`, `'minimap'`, `'minimapPlayers'`, `'inventory'`, `'crosshair'`, `'castFailed'`, `'eventIndicators'`, `'statusIndicators'` or `'all'`; `[]` shows them again. |
 | `hideHudForAll(parts)`                         | Hide parts of the game's HUD from every player, those who join later too. TypeScript only.                                                                                                                    |
-| `showChatLines(options?)`                      | Show chat lines as subtitles above the ability bar, with the speaker's portrait and name. TypeScript only.                                                                                                    |
+| `showChatLines(options?)`                      | Show chat lines as subtitles above the ability bar, with the speaker's portrait and name. TypeScript and Rust only.                                                                                           |
 | `showSpeakers(options?)`                       | Show who each player hears on voice chat, as portraits and names at the left edge. TypeScript only.                                                                                                           |
 | `freeCursor(player, free)`                     | Show the mouse cursor without Tab, so the player can click; `false` gives the mouse back to aiming.                                                                                                           |
 | `abilityBarPresses(player, onPress?)`          | Take clicks on the game's ability bar by slot; see [Abilities](/guides/abilities).                                                                                                                            |
@@ -237,7 +237,11 @@ for its own score keeps the voices with `showSpeakers` and the chat lines with
 the screen a little above the ability bar, each the speaker's small portrait,
 their name in their team's color and the line itself on a slim, translucent
 band. The lines give way while the player has the game's chat box open, since
-the box then shows the history itself. Call both when the mod loads:
+the box then shows the history itself. Call both when the mod loads. Rust has
+no `hideHudForAll`, so its sample hides the top bar from each player as they
+join:
+
+<Samples>
 
 ```ts
 import { hideHudForAll, showChatLines, showSpeakers } from 'modlock'
@@ -246,6 +250,23 @@ hideHudForAll(['topBar'])
 showChatLines()
 showSpeakers()
 ```
+
+```rust
+// use modlock::ui::*;
+impl Mod for Hello {
+    fn start(&mut self, _event: &StartEvent) {
+        show_chat_lines(ChatLines::default());
+    }
+}
+
+impl OnJoin for Hello {
+    fn player_joined(&mut self, event: &PlayerJoinedEvent) {
+        hide_hud(event.connection.player, &[HudPart::TopBar]);
+    }
+}
+```
+
+</Samples>
 
 At most four lines show, newest at the bottom and older ones dimmer, and a
 speaker's next line replaces their last. A long line wraps. A team line reads
@@ -266,6 +287,14 @@ each other. The player's game shows and hides the rows by the voice marks it
 keeps on the hidden top bar, so voices starting and stopping cost the mod
 nothing. `{ scale }` sizes the rows, and `{ speaker }` takes the same function
 as `showChatLines`, so a player looks the same in both.
+
+In Rust the options are the fields of `ChatLines`, and its `speaker` method
+takes a method of the mod, or a closure that takes the mod, so the mod's own
+state decides how each speaker shows:
+`show_chat_lines(ChatLines::default().speaker(Self::seen))`, with
+`fn seen(&mut self, speaker: Player, viewer: Player) -> ChatSpeaker`. It runs
+when the lines change: when a line is heard, when one expires, when a speaker
+leaves and for a player who joins.
 
 The library draws the lines and the stack as layers of their own over whatever interface the
 mod shows each player, as it draws toasts: a line arriving or leaving redraws
@@ -436,7 +465,7 @@ show(player, ui! {
 | `<Tag>`                 | A status label.                                                              |
 | `<Banner>`              | An announcement of a moment.                                                 |
 | `<TopStrip>`, `<Score>` | The top of the screen, with a score in it.                                   |
-| `<Roster>`              | The players down the top right corner, with hero portraits.                  |
+| `<Roster>`              | The players down the top right corner, with hero portraits. In Rust it draws nothing without rows, and `hud::roster_key(rows)` returns what it shows, to redraw only when that changes. |
 | `<Action kind>`         | A button in the game's menu look, with its hover, sounds and disabled state. |
 | `<Meter value>`         | A bar that eases to each new value.                                          |
 

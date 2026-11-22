@@ -59,7 +59,7 @@ at a time.
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | A method of `Mod`, such as `start` and `frame`            | The events every mod receives.                                                                      |
 | A trait of its own, such as `OnDamage`, `OnKill`, `OnChat` | The events the game sends only to a mod that asks. Implementing the trait asks.                     |
-| `command`, `after`, `every`, a button's `on_press`        | A method of the mod, such as `Self::hello`, or a closure that takes the mod: `\|hello: &mut Hello\| …` |
+| `command`, `after`, `every`, a button's `on_press`, the chat lines' `speaker` | A method of the mod, such as `Self::hello`, or a closure that takes the mod: `\|hello: &mut Hello\| …` |
 
 A player the game may leave out, such as the victim of a kill that was a unit,
 is an `Option<Player>`. A `Player` is equal to another only while both name the
@@ -98,13 +98,49 @@ fn draw(player: Player) {
 `show` sends the player only the nodes that changed. The
 [`modlock::hud`](https://github.com/paralin/modlock/tree/master/rust/modlock/src/hud.rs)
 module has the HUD's parts as tags, such as `<hud::top_strip>` and
-`<hud::roster>`, and `modlock::theme` their colors and sizes.
+`<hud::roster>`, and `modlock::theme` their colors and sizes. A
+`<hud::roster>` holds `<hud::row>` tags and draws nothing without one, and
+`hud::roster_key(rows)` returns what a roster of those rows shows, to draw it
+again only when that changes.
+
+A component may return an `Option<Element>`, and draws nothing for `None`. It
+is then a child of an element or what `show` takes, but not the one tag of a
+`ui!`. `show` takes an element or a list of them, such as an `Option`, and
+with none it clears the mod's elements alone, where `hide` also removes the
+routes and the notices:
+
+```rust
+#[component]
+fn streak(kills: u32) -> Option<Element> {
+    (kills > 1).then(|| ui! { <label text={format!("{kills} in a row")} /> })
+}
+
+fn draw_streak(player: Player, kills: u32) {
+    // A child of an element, or what show takes.
+    show(player, ui! { <panel><streak kills={kills} /></panel> });
+    show(player, streak().kills(kills));
+
+    // No element clears the mod's elements alone.
+    show(player, None::<Element>);
+}
+```
+
+`gradient(shape, colors)` makes a style's gradient from colors spaced evenly
+along the shape:
+
+```rust
+show(player, ui! {
+    <panel style={{ gradient: gradient(GradientShape::Right, &[rgb(0x101820), rgb(0x304050)]) }} />
+});
+```
 
 ## Typed entities and the console
 
 `modlock::entity` has a type for every entity class with a method for every
 field and input, and `modlock::console` a function for every console variable
-and command. Their names are the game's own:
+and command. Their names are the game's own. Each input has a second method,
+named with `_by`, that takes after the input's value its activator: the handle
+of the entity that caused the input, such as a player's hero:
 
 ```rust
 use modlock::console;
@@ -113,6 +149,10 @@ use modlock::entity::{CCitadelPlayerPawn, Class};
 // Set a hero's health.
 let hero = CCitadelPlayerPawn::of(pawn.entity);
 hero.m_iHealth().set(500);
+
+// Send an input, and the same input with the hero as its activator.
+hero.input_SetHealth(500);
+hero.input_SetHealth_by(500, pawn.entity);
 
 // Raise the trooper bounty and change the map.
 console::citadel_trooper_gold_reward().set(40);

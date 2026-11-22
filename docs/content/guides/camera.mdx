@@ -138,7 +138,10 @@ An ease is a variant of `Ease`, such as `Ease::Out` and `Ease::Bias(0.3)`, and
 | `linear`, `ease.bias(b)`, `ease.gain(g)` (Valve's, linear at 0.5)       | One lerp the game draws itself.                                                                                                                                        |
 | `in`, `out`, `inOut`, `sine`, `back`, `elastic`, `bounce`, `shaped(fn)` | The host samples the ease into `rate` lerps a second. The client plays at most one queued lerp a frame, so on a slower client the span plays slower than its duration. |
 
-`curve.shaped(fn)` makes any function from 0 to 1 an ease.
+`curve.shaped(fn)` makes any function from 0 to 1 an ease. In Rust,
+`curve::shaped(at, lerp)` takes the function as a closure and, after it, a
+`LerpShape` of the bias and gain the game draws it with as one lerp, or `None`
+for the host to sample it.
 
 ## The view follows the aim
 

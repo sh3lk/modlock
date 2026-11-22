@@ -7,7 +7,7 @@ Everything a player sees in a Deadlock match is an entity: heroes, troopers,
 Guardians, pickups, zip lines, lights, sounds, the shop. A mod creates any
 entity the server can create, reads and writes any field the game's schema
 declares, and sends any input a map's output could send. The typed libraries for
-TypeScript, Go and Luau are generated from the game itself. This page explains
+TypeScript, Go, Luau and Rust are generated from the game itself. This page explains
 how those types are generated, and [Entity calls](/internals/entity-calls)
 explains what the host does and checks when a mod uses them.
 
@@ -102,13 +102,15 @@ typed libraries:
 | TypeScript | [`js/src/entities.ts`](https://github.com/paralin/modlock/blob/master/js/src/entities.ts), imported as `modlock/entities`                  | `modlock/console`                                                           |
 | Go         | [`mod/entity`](https://github.com/paralin/modlock/tree/master/mod/entity)                                                                  | [`mod/console`](https://github.com/paralin/modlock/tree/master/mod/console) |
 | Luau       | [`luau/modlock/entities.luau`](https://github.com/paralin/modlock/blob/master/luau/modlock/entities.luau), required as `@modlock/entities` | `@modlock/console`                                                          |
+| Rust       | [`rust/modlock/src/entity`](https://github.com/paralin/modlock/tree/master/rust/modlock/src/entity), used as `modlock::entity`             | `modlock::console`                                                          |
 
 Each library has three parts.
 
 **A class per server schema class.** Each field is a property in TypeScript
-and Luau, and a method returning a getter and setter in Go. Each input the
-class's designer names accept is a method. A class extends its base, so a
-player pawn has `CBaseEntity`'s health.
+and Luau, and a method returning a getter and setter in Go and Rust. Each input
+the class's designer names accept is a method, and in Rust a second one, named
+with `_by`, that also takes the input's activator. A class extends its base, so
+a player pawn has `CBaseEntity`'s health.
 
 **A constructor per designer name that lived.** It takes only that entity's
 spawn keys, each as the type the entity reads, and returns the entity as its

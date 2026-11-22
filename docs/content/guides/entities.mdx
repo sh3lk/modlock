@@ -471,6 +471,11 @@ if let Some(guardian) = guardian {
 
 </Samples>
 
+In Rust each input method has a pair named with `_by`, such as
+`guardian.input_Alpha_by(128, pawn.entity)`, that takes after the input's value
+its activator: the handle of the entity that caused the input, which
+`fire_input` takes last.
+
 `create` takes only the designer names that spawned and stayed alive on a
 dedicated server, 578 of the 1,191 surveyed. Each name that needs a subclass gets
 the subclass it spawned with, so `create('npc_trooper_boss', ...)` makes a Guardian without asking
