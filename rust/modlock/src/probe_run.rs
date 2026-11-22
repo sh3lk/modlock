@@ -91,11 +91,11 @@ impl ProbeRun {
     /// tick runs check for the frame at now until the run ends. step names
     /// what the probe waits on.
     pub fn tick<C: Into<Check>>(&mut self, now: f64, step: &str, check: impl FnOnce() -> C) {
-        self.tick_described(now, step, check, String::new);
+        self.run(now, step, check, None::<fn() -> String>);
     }
 
     /// tick_described runs check as tick does, and adds what describe
-    /// returns, the probe's state, to a timeout.
+    /// returns, the probe's state, to a timeout after a colon.
     pub fn tick_described<C: Into<Check>>(
         &mut self,
         now: f64,
@@ -103,14 +103,25 @@ impl ProbeRun {
         check: impl FnOnce() -> C,
         describe: impl FnOnce() -> String,
     ) {
+        self.run(now, step, check, Some(describe));
+    }
+
+    /// run runs check for the frame at now until the run ends, and adds what
+    /// describe returns to a timeout when the probe gave one.
+    fn run<C: Into<Check>>(
+        &mut self,
+        now: f64,
+        step: &str,
+        check: impl FnOnce() -> C,
+        describe: Option<impl FnOnce() -> String>,
+    ) {
         // Check the current step until it resolves or times out.
         if self.finished {
             return;
         }
         let result = if self.elapsed(now) > self.timeout {
-            let state = describe();
-            let colon = if state.is_empty() { "" } else { ": " };
-            Check::Fail(format!("timed out waiting for {step}{colon}{state}"))
+            let state = describe.map_or_else(String::new, |describe| format!(": {}", describe()));
+            Check::Fail(format!("timed out waiting for {step}{state}"))
         } else {
             check().into()
         };
