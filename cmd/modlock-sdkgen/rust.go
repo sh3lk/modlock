@@ -1037,6 +1037,13 @@ var rustEvents = map[string]rustEvent{
 	"Parried":      {"OnParry", "parries"},
 }
 
+// rustRuntime are the boolean members of StartResult no event of rustEvents
+// asks through, which the handwritten runtime sets itself as it answers
+// Start: it always takes the frames, since its timers run on them. A member
+// it sets beside a trait, as it does joins and chat, belongs to rustEvents
+// alone.
+var rustRuntime = map[string]bool{"frames": true}
+
 // rustHandled are the events the handwritten library handles whole, through
 // the handlers a mod registers: modifier_event, serve and call_service_later
 // by name, and a button's and an input's on the element.
@@ -1157,6 +1164,28 @@ func (w *rustWriter) writeMod() error {
 	}
 	if len(asked) != len(rustEvents) || handled != len(rustHandled) {
 		return fmt.Errorf("rustEvents or rustHandled names a method the Mod service lacks")
+	}
+
+	// Every request the game takes must have an event behind it: one without
+	// would go into Mod as an event the game always sends, and no mod would
+	// ever receive it.
+	flags := map[string]bool{}
+	for _, event := range rustEvents {
+		flags[event.flag] = true
+	}
+	runtime := 0
+	for _, f := range wants.fields {
+		if f.kind != descriptorpb.FieldDescriptorProto_TYPE_BOOL || f.repeated {
+			continue
+		}
+		if rustRuntime[f.name] {
+			runtime++
+		} else if !flags[f.name] {
+			return fmt.Errorf("StartResult.%s asks for an event rustEvents has no trait for: in cmd/modlock-sdkgen/rust.go, add the event to rustEvents with %q as its flag, or add %q to rustRuntime when the handwritten runtime sets it itself", f.name, f.name, f.name)
+		}
+	}
+	if runtime != len(rustRuntime) {
+		return fmt.Errorf("rustRuntime names a field StartResult lacks")
 	}
 
 	// held are the events a mod has a trait for: the ones the game sends on
