@@ -97,7 +97,7 @@ pub fn restore_hero<M: 'static>(
         level: snapshot.level,
         upgrade_bonuses: snapshot.upgrade_bonuses.unwrap_or_default(),
         abilities: snapshot.abilities.unwrap_or_default(),
-        replace_items: snapshot.items.is_some().then_some(true),
+        replace_items: Some(snapshot.items.is_some()),
         items: snapshot.items.unwrap_or_default(),
         timers: snapshot.timers.unwrap_or_default(),
         ..HeroTarget::default()
