@@ -5,805 +5,1737 @@ use super::*;
 impl CBaseEntity {
     /// input_AddAttribute sends AddAttribute.
     pub fn input_AddAttribute(self, value: &str) -> bool {
-        send(self.handle, "AddAttribute", Some(value.into()))
+        send(self.handle, "AddAttribute", Some(value.into()), None)
+    }
+
+    /// input_AddAttribute_by sends AddAttribute as input_AddAttribute does,
+    /// caused by the entity of handle activator.
+    pub fn input_AddAttribute_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "AddAttribute", Some(value.into()), Some(activator))
     }
 
     /// input_AddContext sends AddContext.
     pub fn input_AddContext(self, value: &str) -> bool {
-        send(self.handle, "AddContext", Some(value.into()))
+        send(self.handle, "AddContext", Some(value.into()), None)
+    }
+
+    /// input_AddContext_by sends AddContext as input_AddContext does, caused by
+    /// the entity of handle activator.
+    pub fn input_AddContext_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "AddContext", Some(value.into()), Some(activator))
     }
 
     /// input_AddModifier sends AddModifier.
     pub fn input_AddModifier(self, value: &str) -> bool {
-        send(self.handle, "AddModifier", Some(value.into()))
+        send(self.handle, "AddModifier", Some(value.into()), None)
+    }
+
+    /// input_AddModifier_by sends AddModifier as input_AddModifier does, caused
+    /// by the entity of handle activator.
+    pub fn input_AddModifier_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "AddModifier", Some(value.into()), Some(activator))
     }
 
     /// input_AddOutput sends AddOutput.
     pub fn input_AddOutput(self, value: &str) -> bool {
-        send(self.handle, "AddOutput", Some(value.into()))
+        send(self.handle, "AddOutput", Some(value.into()), None)
+    }
+
+    /// input_AddOutput_by sends AddOutput as input_AddOutput does, caused by
+    /// the entity of handle activator.
+    pub fn input_AddOutput_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "AddOutput", Some(value.into()), Some(activator))
     }
 
     /// input_ChangeSubclass sends ChangeSubclass.
     pub fn input_ChangeSubclass(self, value: &str) -> bool {
-        send(self.handle, "ChangeSubclass", Some(value.into()))
+        send(self.handle, "ChangeSubclass", Some(value.into()), None)
+    }
+
+    /// input_ChangeSubclass_by sends ChangeSubclass as input_ChangeSubclass
+    /// does, caused by the entity of handle activator.
+    pub fn input_ChangeSubclass_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "ChangeSubclass", Some(value.into()), Some(activator))
     }
 
     /// input_ChangeTeam sends ChangeTeam. Set the entity team number.
     pub fn input_ChangeTeam(self, value: i32) -> bool {
-        send(self.handle, "ChangeTeam", Some(value.into()))
+        send(self.handle, "ChangeTeam", Some(value.into()), None)
+    }
+
+    /// input_ChangeTeam_by sends ChangeTeam as input_ChangeTeam does, caused by
+    /// the entity of handle activator.
+    pub fn input_ChangeTeam_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "ChangeTeam", Some(value.into()), Some(activator))
     }
 
     /// input_ClearContext sends ClearContext.
     pub fn input_ClearContext(self) -> bool {
-        send(self.handle, "ClearContext", None)
+        send(self.handle, "ClearContext", None, None)
+    }
+
+    /// input_ClearContext_by sends ClearContext as input_ClearContext does,
+    /// caused by the entity of handle activator.
+    pub fn input_ClearContext_by(self, activator: u32) -> bool {
+        send(self.handle, "ClearContext", None, Some(activator))
     }
 
     /// input_ClearParent sends ClearParent.
     pub fn input_ClearParent(self) -> bool {
-        send(self.handle, "ClearParent", None)
+        send(self.handle, "ClearParent", None, None)
+    }
+
+    /// input_ClearParent_by sends ClearParent as input_ClearParent does, caused
+    /// by the entity of handle activator.
+    pub fn input_ClearParent_by(self, activator: u32) -> bool {
+        send(self.handle, "ClearParent", None, Some(activator))
     }
 
     /// input_DisableAutoSleeping sends DisableAutoSleeping.
     pub fn input_DisableAutoSleeping(self) -> bool {
-        send(self.handle, "DisableAutoSleeping", None)
+        send(self.handle, "DisableAutoSleeping", None, None)
+    }
+
+    /// input_DisableAutoSleeping_by sends DisableAutoSleeping as
+    /// input_DisableAutoSleeping does, caused by the entity of handle
+    /// activator.
+    pub fn input_DisableAutoSleeping_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableAutoSleeping", None, Some(activator))
     }
 
     /// input_DisableDamageForces sends DisableDamageForces.
     pub fn input_DisableDamageForces(self) -> bool {
-        send(self.handle, "DisableDamageForces", None)
+        send(self.handle, "DisableDamageForces", None, None)
+    }
+
+    /// input_DisableDamageForces_by sends DisableDamageForces as
+    /// input_DisableDamageForces does, caused by the entity of handle
+    /// activator.
+    pub fn input_DisableDamageForces_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableDamageForces", None, Some(activator))
     }
 
     /// input_DisablePlatform sends DisablePlatform.
     pub fn input_DisablePlatform(self) -> bool {
-        send(self.handle, "DisablePlatform", None)
+        send(self.handle, "DisablePlatform", None, None)
+    }
+
+    /// input_DisablePlatform_by sends DisablePlatform as input_DisablePlatform
+    /// does, caused by the entity of handle activator.
+    pub fn input_DisablePlatform_by(self, activator: u32) -> bool {
+        send(self.handle, "DisablePlatform", None, Some(activator))
     }
 
     /// input_DisableShadow sends DisableShadow.
     pub fn input_DisableShadow(self) -> bool {
-        send(self.handle, "DisableShadow", None)
+        send(self.handle, "DisableShadow", None, None)
+    }
+
+    /// input_DisableShadow_by sends DisableShadow as input_DisableShadow does,
+    /// caused by the entity of handle activator.
+    pub fn input_DisableShadow_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableShadow", None, Some(activator))
     }
 
     /// input_DispatchResponse sends DispatchResponse.
     pub fn input_DispatchResponse(self, value: &str) -> bool {
-        send(self.handle, "DispatchResponse", Some(value.into()))
+        send(self.handle, "DispatchResponse", Some(value.into()), None)
+    }
+
+    /// input_DispatchResponse_by sends DispatchResponse as
+    /// input_DispatchResponse does, caused by the entity of handle activator.
+    pub fn input_DispatchResponse_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "DispatchResponse", Some(value.into()), Some(activator))
     }
 
     /// input_EnableAutoSleeping sends EnableAutoSleeping.
     pub fn input_EnableAutoSleeping(self) -> bool {
-        send(self.handle, "EnableAutoSleeping", None)
+        send(self.handle, "EnableAutoSleeping", None, None)
+    }
+
+    /// input_EnableAutoSleeping_by sends EnableAutoSleeping as
+    /// input_EnableAutoSleeping does, caused by the entity of handle activator.
+    pub fn input_EnableAutoSleeping_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableAutoSleeping", None, Some(activator))
     }
 
     /// input_EnableDamageForces sends EnableDamageForces.
     pub fn input_EnableDamageForces(self) -> bool {
-        send(self.handle, "EnableDamageForces", None)
+        send(self.handle, "EnableDamageForces", None, None)
+    }
+
+    /// input_EnableDamageForces_by sends EnableDamageForces as
+    /// input_EnableDamageForces does, caused by the entity of handle activator.
+    pub fn input_EnableDamageForces_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableDamageForces", None, Some(activator))
     }
 
     /// input_EnablePlatform sends EnablePlatform.
     pub fn input_EnablePlatform(self) -> bool {
-        send(self.handle, "EnablePlatform", None)
+        send(self.handle, "EnablePlatform", None, None)
+    }
+
+    /// input_EnablePlatform_by sends EnablePlatform as input_EnablePlatform
+    /// does, caused by the entity of handle activator.
+    pub fn input_EnablePlatform_by(self, activator: u32) -> bool {
+        send(self.handle, "EnablePlatform", None, Some(activator))
     }
 
     /// input_EnableShadow sends EnableShadow.
     pub fn input_EnableShadow(self) -> bool {
-        send(self.handle, "EnableShadow", None)
+        send(self.handle, "EnableShadow", None, None)
+    }
+
+    /// input_EnableShadow_by sends EnableShadow as input_EnableShadow does,
+    /// caused by the entity of handle activator.
+    pub fn input_EnableShadow_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableShadow", None, Some(activator))
     }
 
     /// input_FireUser1 sends FireUser1.
     pub fn input_FireUser1(self) -> bool {
-        send(self.handle, "FireUser1", None)
+        send(self.handle, "FireUser1", None, None)
+    }
+
+    /// input_FireUser1_by sends FireUser1 as input_FireUser1 does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireUser1_by(self, activator: u32) -> bool {
+        send(self.handle, "FireUser1", None, Some(activator))
     }
 
     /// input_FireUser2 sends FireUser2.
     pub fn input_FireUser2(self) -> bool {
-        send(self.handle, "FireUser2", None)
+        send(self.handle, "FireUser2", None, None)
+    }
+
+    /// input_FireUser2_by sends FireUser2 as input_FireUser2 does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireUser2_by(self, activator: u32) -> bool {
+        send(self.handle, "FireUser2", None, Some(activator))
     }
 
     /// input_FireUser3 sends FireUser3.
     pub fn input_FireUser3(self) -> bool {
-        send(self.handle, "FireUser3", None)
+        send(self.handle, "FireUser3", None, None)
+    }
+
+    /// input_FireUser3_by sends FireUser3 as input_FireUser3 does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireUser3_by(self, activator: u32) -> bool {
+        send(self.handle, "FireUser3", None, Some(activator))
     }
 
     /// input_FireUser4 sends FireUser4.
     pub fn input_FireUser4(self) -> bool {
-        send(self.handle, "FireUser4", None)
+        send(self.handle, "FireUser4", None, None)
+    }
+
+    /// input_FireUser4_by sends FireUser4 as input_FireUser4 does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireUser4_by(self, activator: u32) -> bool {
+        send(self.handle, "FireUser4", None, Some(activator))
     }
 
     /// input_FollowEntity sends FollowEntity.
     pub fn input_FollowEntity(self, value: &str) -> bool {
-        send(self.handle, "FollowEntity", Some(value.into()))
+        send(self.handle, "FollowEntity", Some(value.into()), None)
+    }
+
+    /// input_FollowEntity_by sends FollowEntity as input_FollowEntity does,
+    /// caused by the entity of handle activator.
+    pub fn input_FollowEntity_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "FollowEntity", Some(value.into()), Some(activator))
     }
 
     /// input_Kill sends Kill.
     pub fn input_Kill(self) -> bool {
-        send(self.handle, "Kill", None)
+        send(self.handle, "Kill", None, None)
+    }
+
+    /// input_Kill_by sends Kill as input_Kill does, caused by the entity of
+    /// handle activator.
+    pub fn input_Kill_by(self, activator: u32) -> bool {
+        send(self.handle, "Kill", None, Some(activator))
     }
 
     /// input_KillConstrained sends KillConstrained.
     pub fn input_KillConstrained(self) -> bool {
-        send(self.handle, "KillConstrained", None)
+        send(self.handle, "KillConstrained", None, None)
+    }
+
+    /// input_KillConstrained_by sends KillConstrained as input_KillConstrained
+    /// does, caused by the entity of handle activator.
+    pub fn input_KillConstrained_by(self, activator: u32) -> bool {
+        send(self.handle, "KillConstrained", None, Some(activator))
     }
 
     /// input_KillHierarchy sends KillHierarchy.
     pub fn input_KillHierarchy(self) -> bool {
-        send(self.handle, "KillHierarchy", None)
+        send(self.handle, "KillHierarchy", None, None)
+    }
+
+    /// input_KillHierarchy_by sends KillHierarchy as input_KillHierarchy does,
+    /// caused by the entity of handle activator.
+    pub fn input_KillHierarchy_by(self, activator: u32) -> bool {
+        send(self.handle, "KillHierarchy", None, Some(activator))
     }
 
     /// input_PlatformFollowYaw sends PlatformFollowYaw.
     pub fn input_PlatformFollowYaw(self) -> bool {
-        send(self.handle, "PlatformFollowYaw", None)
+        send(self.handle, "PlatformFollowYaw", None, None)
+    }
+
+    /// input_PlatformFollowYaw_by sends PlatformFollowYaw as
+    /// input_PlatformFollowYaw does, caused by the entity of handle activator.
+    pub fn input_PlatformFollowYaw_by(self, activator: u32) -> bool {
+        send(self.handle, "PlatformFollowYaw", None, Some(activator))
     }
 
     /// input_PlatformIgnoreYaw sends PlatformIgnoreYaw.
     pub fn input_PlatformIgnoreYaw(self) -> bool {
-        send(self.handle, "PlatformIgnoreYaw", None)
+        send(self.handle, "PlatformIgnoreYaw", None, None)
+    }
+
+    /// input_PlatformIgnoreYaw_by sends PlatformIgnoreYaw as
+    /// input_PlatformIgnoreYaw does, caused by the entity of handle activator.
+    pub fn input_PlatformIgnoreYaw_by(self, activator: u32) -> bool {
+        send(self.handle, "PlatformIgnoreYaw", None, Some(activator))
     }
 
     /// input_RemoveAttribute sends RemoveAttribute.
     pub fn input_RemoveAttribute(self, value: &str) -> bool {
-        send(self.handle, "RemoveAttribute", Some(value.into()))
+        send(self.handle, "RemoveAttribute", Some(value.into()), None)
+    }
+
+    /// input_RemoveAttribute_by sends RemoveAttribute as input_RemoveAttribute
+    /// does, caused by the entity of handle activator.
+    pub fn input_RemoveAttribute_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "RemoveAttribute", Some(value.into()), Some(activator))
     }
 
     /// input_RemoveContext sends RemoveContext.
     pub fn input_RemoveContext(self, value: &str) -> bool {
-        send(self.handle, "RemoveContext", Some(value.into()))
+        send(self.handle, "RemoveContext", Some(value.into()), None)
+    }
+
+    /// input_RemoveContext_by sends RemoveContext as input_RemoveContext does,
+    /// caused by the entity of handle activator.
+    pub fn input_RemoveContext_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "RemoveContext", Some(value.into()), Some(activator))
     }
 
     /// input_RemoveModifier sends RemoveModifier.
     pub fn input_RemoveModifier(self, value: &str) -> bool {
-        send(self.handle, "RemoveModifier", Some(value.into()))
+        send(self.handle, "RemoveModifier", Some(value.into()), None)
+    }
+
+    /// input_RemoveModifier_by sends RemoveModifier as input_RemoveModifier
+    /// does, caused by the entity of handle activator.
+    pub fn input_RemoveModifier_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "RemoveModifier", Some(value.into()), Some(activator))
     }
 
     /// input_SetAbsOrigin sends SetAbsOrigin. Set the world origin of this
     /// entity.
     pub fn input_SetAbsOrigin(self, value: Vector) -> bool {
-        send(self.handle, "SetAbsOrigin", Some(value.into()))
+        send(self.handle, "SetAbsOrigin", Some(value.into()), None)
+    }
+
+    /// input_SetAbsOrigin_by sends SetAbsOrigin as input_SetAbsOrigin does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetAbsOrigin_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "SetAbsOrigin", Some(value.into()), Some(activator))
     }
 
     /// input_SetAbsScale sends SetAbsScale. Set the world scale of this entity.
     pub fn input_SetAbsScale(self, value: f32) -> bool {
-        send(self.handle, "SetAbsScale", Some(value.into()))
+        send(self.handle, "SetAbsScale", Some(value.into()), None)
+    }
+
+    /// input_SetAbsScale_by sends SetAbsScale as input_SetAbsScale does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetAbsScale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAbsScale", Some(value.into()), Some(activator))
     }
 
     /// input_SetDamageFilter sends SetDamageFilter.
     pub fn input_SetDamageFilter(self, value: &str) -> bool {
-        send(self.handle, "SetDamageFilter", Some(value.into()))
+        send(self.handle, "SetDamageFilter", Some(value.into()), None)
+    }
+
+    /// input_SetDamageFilter_by sends SetDamageFilter as input_SetDamageFilter
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetDamageFilter_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetDamageFilter", Some(value.into()), Some(activator))
     }
 
     /// input_SetKinematic sends SetKinematic.
     pub fn input_SetKinematic(self, value: bool) -> bool {
-        send(self.handle, "SetKinematic", Some(value.into()))
+        send(self.handle, "SetKinematic", Some(value.into()), None)
+    }
+
+    /// input_SetKinematic_by sends SetKinematic as input_SetKinematic does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetKinematic_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetKinematic", Some(value.into()), Some(activator))
     }
 
     /// input_SetLocalOrigin sends SetLocalOrigin. Set the local origin of this
     /// entity. Use when you have a parent.
     pub fn input_SetLocalOrigin(self, value: Vector) -> bool {
-        send(self.handle, "SetLocalOrigin", Some(value.into()))
+        send(self.handle, "SetLocalOrigin", Some(value.into()), None)
+    }
+
+    /// input_SetLocalOrigin_by sends SetLocalOrigin as input_SetLocalOrigin
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetLocalOrigin_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "SetLocalOrigin", Some(value.into()), Some(activator))
     }
 
     /// input_SetLocalScale sends SetLocalScale. Set the local scale of this
     /// entity. Use when you have a parent.
     pub fn input_SetLocalScale(self, value: f32) -> bool {
-        send(self.handle, "SetLocalScale", Some(value.into()))
+        send(self.handle, "SetLocalScale", Some(value.into()), None)
+    }
+
+    /// input_SetLocalScale_by sends SetLocalScale as input_SetLocalScale does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetLocalScale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLocalScale", Some(value.into()), Some(activator))
     }
 
     /// input_SetParentAttachment sends SetParentAttachment.
     pub fn input_SetParentAttachment(self, value: &str) -> bool {
-        send(self.handle, "SetParentAttachment", Some(value.into()))
+        send(self.handle, "SetParentAttachment", Some(value.into()), None)
+    }
+
+    /// input_SetParentAttachment_by sends SetParentAttachment as
+    /// input_SetParentAttachment does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetParentAttachment_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetParentAttachment", Some(value.into()), Some(activator))
     }
 
     /// input_SetParentAttachmentMaintainOffset sends
     /// SetParentAttachmentMaintainOffset.
     pub fn input_SetParentAttachmentMaintainOffset(self, value: &str) -> bool {
-        send(self.handle, "SetParentAttachmentMaintainOffset", Some(value.into()))
+        send(self.handle, "SetParentAttachmentMaintainOffset", Some(value.into()), None)
+    }
+
+    /// input_SetParentAttachmentMaintainOffset_by sends
+    /// SetParentAttachmentMaintainOffset as
+    /// input_SetParentAttachmentMaintainOffset does, caused by the entity of
+    /// handle activator.
+    pub fn input_SetParentAttachmentMaintainOffset_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetParentAttachmentMaintainOffset", Some(value.into()), Some(activator))
     }
 
     /// input_SetScale sends SetScale.
     pub fn input_SetScale(self, value: f32) -> bool {
-        send(self.handle, "SetScale", Some(value.into()))
+        send(self.handle, "SetScale", Some(value.into()), None)
+    }
+
+    /// input_SetScale_by sends SetScale as input_SetScale does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetScale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetScale", Some(value.into()), Some(activator))
     }
 
     /// input_SetTeam sends SetTeam.
     pub fn input_SetTeam(self, value: i32) -> bool {
-        send(self.handle, "SetTeam", Some(value.into()))
+        send(self.handle, "SetTeam", Some(value.into()), None)
+    }
+
+    /// input_SetTeam_by sends SetTeam as input_SetTeam does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetTeam_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetTeam", Some(value.into()), Some(activator))
     }
 
     /// input_TeamNum sends TeamNum.
     pub fn input_TeamNum(self, value: i32) -> bool {
-        send(self.handle, "TeamNum", Some(value.into()))
+        send(self.handle, "TeamNum", Some(value.into()), None)
+    }
+
+    /// input_TeamNum_by sends TeamNum as input_TeamNum does, caused by the
+    /// entity of handle activator.
+    pub fn input_TeamNum_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "TeamNum", Some(value.into()), Some(activator))
     }
 
     /// input_TeleportToPoint sends TeleportToPoint. Teleport the given entity
     /// to the specified position and orientation.
     pub fn input_TeleportToPoint(self, value: Vector) -> bool {
-        send(self.handle, "TeleportToPoint", Some(value.into()))
+        send(self.handle, "TeleportToPoint", Some(value.into()), None)
+    }
+
+    /// input_TeleportToPoint_by sends TeleportToPoint as input_TeleportToPoint
+    /// does, caused by the entity of handle activator.
+    pub fn input_TeleportToPoint_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "TeleportToPoint", Some(value.into()), Some(activator))
     }
 
     /// input_TestComponentFunc sends TestComponentFunc.
     pub fn input_TestComponentFunc(self, value: &str) -> bool {
-        send(self.handle, "TestComponentFunc", Some(value.into()))
+        send(self.handle, "TestComponentFunc", Some(value.into()), None)
+    }
+
+    /// input_TestComponentFunc_by sends TestComponentFunc as
+    /// input_TestComponentFunc does, caused by the entity of handle activator.
+    pub fn input_TestComponentFunc_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "TestComponentFunc", Some(value.into()), Some(activator))
     }
 
     /// input_Use sends Use.
     pub fn input_Use(self, value: i32) -> bool {
-        send(self.handle, "Use", Some(value.into()))
+        send(self.handle, "Use", Some(value.into()), None)
+    }
+
+    /// input_Use_by sends Use as input_Use does, caused by the entity of handle
+    /// activator.
+    pub fn input_Use_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "Use", Some(value.into()), Some(activator))
     }
 }
 
 impl CAI_ChangeHintGroup {
     /// input_Activate sends Activate.
     pub fn input_Activate(self) -> bool {
-        send(self.handle, "Activate", None)
+        send(self.handle, "Activate", None, None)
+    }
+
+    /// input_Activate_by sends Activate as input_Activate does, caused by the
+    /// entity of handle activator.
+    pub fn input_Activate_by(self, activator: u32) -> bool {
+        send(self.handle, "Activate", None, Some(activator))
     }
 }
 
 impl CAI_GoalEntity {
     /// input_Activate sends Activate.
     pub fn input_Activate(self) -> bool {
-        send(self.handle, "Activate", None)
+        send(self.handle, "Activate", None, None)
+    }
+
+    /// input_Activate_by sends Activate as input_Activate does, caused by the
+    /// entity of handle activator.
+    pub fn input_Activate_by(self, activator: u32) -> bool {
+        send(self.handle, "Activate", None, Some(activator))
     }
 
     /// input_Deactivate sends Deactivate.
     pub fn input_Deactivate(self) -> bool {
-        send(self.handle, "Deactivate", None)
+        send(self.handle, "Deactivate", None, None)
+    }
+
+    /// input_Deactivate_by sends Deactivate as input_Deactivate does, caused by
+    /// the entity of handle activator.
+    pub fn input_Deactivate_by(self, activator: u32) -> bool {
+        send(self.handle, "Deactivate", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_UpdateActors sends UpdateActors.
     pub fn input_UpdateActors(self) -> bool {
-        send(self.handle, "UpdateActors", None)
+        send(self.handle, "UpdateActors", None, None)
+    }
+
+    /// input_UpdateActors_by sends UpdateActors as input_UpdateActors does,
+    /// caused by the entity of handle activator.
+    pub fn input_UpdateActors_by(self, activator: u32) -> bool {
+        send(self.handle, "UpdateActors", None, Some(activator))
     }
 }
 
 impl CAI_Relationship {
     /// input_ApplyRelationship sends ApplyRelationship.
     pub fn input_ApplyRelationship(self) -> bool {
-        send(self.handle, "ApplyRelationship", None)
+        send(self.handle, "ApplyRelationship", None, None)
+    }
+
+    /// input_ApplyRelationship_by sends ApplyRelationship as
+    /// input_ApplyRelationship does, caused by the entity of handle activator.
+    pub fn input_ApplyRelationship_by(self, activator: u32) -> bool {
+        send(self.handle, "ApplyRelationship", None, Some(activator))
     }
 
     /// input_RevertRelationship sends RevertRelationship.
     pub fn input_RevertRelationship(self) -> bool {
-        send(self.handle, "RevertRelationship", None)
+        send(self.handle, "RevertRelationship", None, None)
+    }
+
+    /// input_RevertRelationship_by sends RevertRelationship as
+    /// input_RevertRelationship does, caused by the entity of handle activator.
+    pub fn input_RevertRelationship_by(self, activator: u32) -> bool {
+        send(self.handle, "RevertRelationship", None, Some(activator))
     }
 
     /// input_RevertToDefaultRelationship sends RevertToDefaultRelationship.
     pub fn input_RevertToDefaultRelationship(self) -> bool {
-        send(self.handle, "RevertToDefaultRelationship", None)
+        send(self.handle, "RevertToDefaultRelationship", None, None)
+    }
+
+    /// input_RevertToDefaultRelationship_by sends RevertToDefaultRelationship
+    /// as input_RevertToDefaultRelationship does, caused by the entity of
+    /// handle activator.
+    pub fn input_RevertToDefaultRelationship_by(self, activator: u32) -> bool {
+        send(self.handle, "RevertToDefaultRelationship", None, Some(activator))
     }
 }
 
 impl CAI_ScriptConditions {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CAI_SpeechFilter {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetIdleModifier sends SetIdleModifier.
     pub fn input_SetIdleModifier(self, value: f32) -> bool {
-        send(self.handle, "SetIdleModifier", Some(value.into()))
+        send(self.handle, "SetIdleModifier", Some(value.into()), None)
+    }
+
+    /// input_SetIdleModifier_by sends SetIdleModifier as input_SetIdleModifier
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetIdleModifier_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetIdleModifier", Some(value.into()), Some(activator))
     }
 }
 
 impl CBaseModelEntity {
     /// input_Alpha sends Alpha.
     pub fn input_Alpha(self, value: i32) -> bool {
-        send(self.handle, "Alpha", Some(value.into()))
+        send(self.handle, "Alpha", Some(value.into()), None)
+    }
+
+    /// input_Alpha_by sends Alpha as input_Alpha does, caused by the entity of
+    /// handle activator.
+    pub fn input_Alpha_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "Alpha", Some(value.into()), Some(activator))
     }
 
     /// input_BreakJointByName sends BreakJointByName. Destroy this joint by
     /// Name.
     pub fn input_BreakJointByName(self, value: &str) -> bool {
-        send(self.handle, "BreakJointByName", Some(value.into()))
+        send(self.handle, "BreakJointByName", Some(value.into()), None)
+    }
+
+    /// input_BreakJointByName_by sends BreakJointByName as
+    /// input_BreakJointByName does, caused by the entity of handle activator.
+    pub fn input_BreakJointByName_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "BreakJointByName", Some(value.into()), Some(activator))
     }
 
     /// input_ClearRenderAttribute sends ClearRenderAttribute. Clear the
     /// specified render attribute.
     pub fn input_ClearRenderAttribute(self, value: &str) -> bool {
-        send(self.handle, "ClearRenderAttribute", Some(value.into()))
+        send(self.handle, "ClearRenderAttribute", Some(value.into()), None)
+    }
+
+    /// input_ClearRenderAttribute_by sends ClearRenderAttribute as
+    /// input_ClearRenderAttribute does, caused by the entity of handle
+    /// activator.
+    pub fn input_ClearRenderAttribute_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "ClearRenderAttribute", Some(value.into()), Some(activator))
     }
 
     /// input_Color sends Color.
     pub fn input_Color(self, value: u32) -> bool {
-        send(self.handle, "Color", Some(value.into()))
+        send(self.handle, "Color", Some(value.into()), None)
+    }
+
+    /// input_Color_by sends Color as input_Color does, caused by the entity of
+    /// handle activator.
+    pub fn input_Color_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "Color", Some(value.into()), Some(activator))
     }
 
     /// input_Extinguish sends Extinguish.
     pub fn input_Extinguish(self) -> bool {
-        send(self.handle, "Extinguish", None)
+        send(self.handle, "Extinguish", None, None)
+    }
+
+    /// input_Extinguish_by sends Extinguish as input_Extinguish does, caused by
+    /// the entity of handle activator.
+    pub fn input_Extinguish_by(self, activator: u32) -> bool {
+        send(self.handle, "Extinguish", None, Some(activator))
     }
 
     /// input_Ignite sends Ignite.
     pub fn input_Ignite(self) -> bool {
-        send(self.handle, "Ignite", None)
+        send(self.handle, "Ignite", None, None)
+    }
+
+    /// input_Ignite_by sends Ignite as input_Ignite does, caused by the entity
+    /// of handle activator.
+    pub fn input_Ignite_by(self, activator: u32) -> bool {
+        send(self.handle, "Ignite", None, Some(activator))
     }
 
     /// input_IgniteHitboxFireScale sends IgniteHitboxFireScale.
     pub fn input_IgniteHitboxFireScale(self, value: f32) -> bool {
-        send(self.handle, "IgniteHitboxFireScale", Some(value.into()))
+        send(self.handle, "IgniteHitboxFireScale", Some(value.into()), None)
+    }
+
+    /// input_IgniteHitboxFireScale_by sends IgniteHitboxFireScale as
+    /// input_IgniteHitboxFireScale does, caused by the entity of handle
+    /// activator.
+    pub fn input_IgniteHitboxFireScale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "IgniteHitboxFireScale", Some(value.into()), Some(activator))
     }
 
     /// input_IgniteLifetime sends IgniteLifetime.
     pub fn input_IgniteLifetime(self, value: f32) -> bool {
-        send(self.handle, "IgniteLifetime", Some(value.into()))
+        send(self.handle, "IgniteLifetime", Some(value.into()), None)
+    }
+
+    /// input_IgniteLifetime_by sends IgniteLifetime as input_IgniteLifetime
+    /// does, caused by the entity of handle activator.
+    pub fn input_IgniteLifetime_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "IgniteLifetime", Some(value.into()), Some(activator))
     }
 
     /// input_IgniteNumHitboxFires sends IgniteNumHitboxFires.
     pub fn input_IgniteNumHitboxFires(self, value: i32) -> bool {
-        send(self.handle, "IgniteNumHitboxFires", Some(value.into()))
+        send(self.handle, "IgniteNumHitboxFires", Some(value.into()), None)
+    }
+
+    /// input_IgniteNumHitboxFires_by sends IgniteNumHitboxFires as
+    /// input_IgniteNumHitboxFires does, caused by the entity of handle
+    /// activator.
+    pub fn input_IgniteNumHitboxFires_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "IgniteNumHitboxFires", Some(value.into()), Some(activator))
     }
 
     /// input_SetMaterialGroup sends SetMaterialGroup. Change the active
     /// materialgroup.
     pub fn input_SetMaterialGroup(self, value: &str) -> bool {
-        send(self.handle, "SetMaterialGroup", Some(value.into()))
+        send(self.handle, "SetMaterialGroup", Some(value.into()), None)
+    }
+
+    /// input_SetMaterialGroup_by sends SetMaterialGroup as
+    /// input_SetMaterialGroup does, caused by the entity of handle activator.
+    pub fn input_SetMaterialGroup_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetMaterialGroup", Some(value.into()), Some(activator))
     }
 
     /// input_SetRenderAlpha sends SetRenderAlpha. Alpha 0-255.
     pub fn input_SetRenderAlpha(self, value: i32) -> bool {
-        send(self.handle, "SetRenderAlpha", Some(value.into()))
+        send(self.handle, "SetRenderAlpha", Some(value.into()), None)
+    }
+
+    /// input_SetRenderAlpha_by sends SetRenderAlpha as input_SetRenderAlpha
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetRenderAlpha_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetRenderAlpha", Some(value.into()), Some(activator))
     }
 
     /// input_SetRenderAttribute sends SetRenderAttribute.
     pub fn input_SetRenderAttribute(self, value: &str) -> bool {
-        send(self.handle, "SetRenderAttribute", Some(value.into()))
+        send(self.handle, "SetRenderAttribute", Some(value.into()), None)
+    }
+
+    /// input_SetRenderAttribute_by sends SetRenderAttribute as
+    /// input_SetRenderAttribute does, caused by the entity of handle activator.
+    pub fn input_SetRenderAttribute_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetRenderAttribute", Some(value.into()), Some(activator))
     }
 
     /// input_SetRenderColor sends SetRenderColor. Set object render color
     /// (Alpha is ignored).
     pub fn input_SetRenderColor(self, value: u32) -> bool {
-        send(self.handle, "SetRenderColor", Some(value.into()))
+        send(self.handle, "SetRenderColor", Some(value.into()), None)
+    }
+
+    /// input_SetRenderColor_by sends SetRenderColor as input_SetRenderColor
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetRenderColor_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "SetRenderColor", Some(value.into()), Some(activator))
     }
 
     /// input_Skin sends Skin.
     pub fn input_Skin(self, value: i32) -> bool {
-        send(self.handle, "Skin", Some(value.into()))
+        send(self.handle, "Skin", Some(value.into()), None)
+    }
+
+    /// input_Skin_by sends Skin as input_Skin does, caused by the entity of
+    /// handle activator.
+    pub fn input_Skin_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "Skin", Some(value.into()), Some(activator))
     }
 
     /// input_fademaxdist sends fademaxdist.
     pub fn input_fademaxdist(self, value: f32) -> bool {
-        send(self.handle, "fademaxdist", Some(value.into()))
+        send(self.handle, "fademaxdist", Some(value.into()), None)
+    }
+
+    /// input_fademaxdist_by sends fademaxdist as input_fademaxdist does, caused
+    /// by the entity of handle activator.
+    pub fn input_fademaxdist_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "fademaxdist", Some(value.into()), Some(activator))
     }
 
     /// input_fademindist sends fademindist.
     pub fn input_fademindist(self, value: f32) -> bool {
-        send(self.handle, "fademindist", Some(value.into()))
+        send(self.handle, "fademindist", Some(value.into()), None)
+    }
+
+    /// input_fademindist_by sends fademindist as input_fademindist does, caused
+    /// by the entity of handle activator.
+    pub fn input_fademindist_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "fademindist", Some(value.into()), Some(activator))
     }
 }
 
 impl CBarnLight {
     /// input_CastDynamicShadows sends CastDynamicShadows.
     pub fn input_CastDynamicShadows(self, value: bool) -> bool {
-        send(self.handle, "CastDynamicShadows", Some(value.into()))
+        send(self.handle, "CastDynamicShadows", Some(value.into()), None)
+    }
+
+    /// input_CastDynamicShadows_by sends CastDynamicShadows as
+    /// input_CastDynamicShadows does, caused by the entity of handle activator.
+    pub fn input_CastDynamicShadows_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "CastDynamicShadows", Some(value.into()), Some(activator))
     }
 
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetBounceScale sends SetBounceScale.
     pub fn input_SetBounceScale(self, value: f32) -> bool {
-        send(self.handle, "SetBounceScale", Some(value.into()))
+        send(self.handle, "SetBounceScale", Some(value.into()), None)
+    }
+
+    /// input_SetBounceScale_by sends SetBounceScale as input_SetBounceScale
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetBounceScale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetBounceScale", Some(value.into()), Some(activator))
     }
 
     /// input_SetBrightness sends SetBrightness.
     pub fn input_SetBrightness(self, value: f32) -> bool {
-        send(self.handle, "SetBrightness", Some(value.into()))
+        send(self.handle, "SetBrightness", Some(value.into()), None)
+    }
+
+    /// input_SetBrightness_by sends SetBrightness as input_SetBrightness does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetBrightness_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetBrightness", Some(value.into()), Some(activator))
     }
 
     /// input_SetBrightnessScale sends SetBrightnessScale.
     pub fn input_SetBrightnessScale(self, value: f32) -> bool {
-        send(self.handle, "SetBrightnessScale", Some(value.into()))
+        send(self.handle, "SetBrightnessScale", Some(value.into()), None)
+    }
+
+    /// input_SetBrightnessScale_by sends SetBrightnessScale as
+    /// input_SetBrightnessScale does, caused by the entity of handle activator.
+    pub fn input_SetBrightnessScale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetBrightnessScale", Some(value.into()), Some(activator))
     }
 
     /// input_SetColor sends SetColor.
     pub fn input_SetColor(self, value: u32) -> bool {
-        send(self.handle, "SetColor", Some(value.into()))
+        send(self.handle, "SetColor", Some(value.into()), None)
+    }
+
+    /// input_SetColor_by sends SetColor as input_SetColor does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetColor_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "SetColor", Some(value.into()), Some(activator))
     }
 
     /// input_SetColorTemperature sends SetColorTemperature.
     pub fn input_SetColorTemperature(self, value: f32) -> bool {
-        send(self.handle, "SetColorTemperature", Some(value.into()))
+        send(self.handle, "SetColorTemperature", Some(value.into()), None)
+    }
+
+    /// input_SetColorTemperature_by sends SetColorTemperature as
+    /// input_SetColorTemperature does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetColorTemperature_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetColorTemperature", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogScale sends SetFogScale.
     pub fn input_SetFogScale(self, value: f32) -> bool {
-        send(self.handle, "SetFogScale", Some(value.into()))
+        send(self.handle, "SetFogScale", Some(value.into()), None)
+    }
+
+    /// input_SetFogScale_by sends SetFogScale as input_SetFogScale does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetFogScale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFogScale", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogStrength sends SetFogStrength.
     pub fn input_SetFogStrength(self, value: f32) -> bool {
-        send(self.handle, "SetFogStrength", Some(value.into()))
+        send(self.handle, "SetFogStrength", Some(value.into()), None)
+    }
+
+    /// input_SetFogStrength_by sends SetFogStrength as input_SetFogStrength
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetFogStrength_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFogStrength", Some(value.into()), Some(activator))
     }
 
     /// input_SetStyle sends SetStyle.
     pub fn input_SetStyle(self, value: &str) -> bool {
-        send(self.handle, "SetStyle", Some(value.into()))
+        send(self.handle, "SetStyle", Some(value.into()), None)
+    }
+
+    /// input_SetStyle_by sends SetStyle as input_SetStyle does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetStyle_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetStyle", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CBaseAnimGraph {
     /// input_ClearTargetIdentifierOverride sends ClearTargetIdentifierOverride.
     pub fn input_ClearTargetIdentifierOverride(self) -> bool {
-        send(self.handle, "ClearTargetIdentifierOverride", None)
+        send(self.handle, "ClearTargetIdentifierOverride", None, None)
+    }
+
+    /// input_ClearTargetIdentifierOverride_by sends
+    /// ClearTargetIdentifierOverride as input_ClearTargetIdentifierOverride
+    /// does, caused by the entity of handle activator.
+    pub fn input_ClearTargetIdentifierOverride_by(self, activator: u32) -> bool {
+        send(self.handle, "ClearTargetIdentifierOverride", None, Some(activator))
     }
 
     /// input_PlaySequence sends PlaySequence. Play the specified animation
     /// sequence on a NON-ANIMGRAPH entity.
     pub fn input_PlaySequence(self, value: &str) -> bool {
-        send(self.handle, "PlaySequence", Some(value.into()))
+        send(self.handle, "PlaySequence", Some(value.into()), None)
+    }
+
+    /// input_PlaySequence_by sends PlaySequence as input_PlaySequence does,
+    /// caused by the entity of handle activator.
+    pub fn input_PlaySequence_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "PlaySequence", Some(value.into()), Some(activator))
     }
 
     /// input_SetBodygroup sends SetBodygroup.
     pub fn input_SetBodygroup(self, value: &str) -> bool {
-        send(self.handle, "SetBodygroup", Some(value.into()))
+        send(self.handle, "SetBodygroup", Some(value.into()), None)
+    }
+
+    /// input_SetBodygroup_by sends SetBodygroup as input_SetBodygroup does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetBodygroup_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetBodygroup", Some(value.into()), Some(activator))
     }
 
     /// input_SetPlaybackRate sends SetPlaybackRate.
     pub fn input_SetPlaybackRate(self, value: f32) -> bool {
-        send(self.handle, "SetPlaybackRate", Some(value.into()))
+        send(self.handle, "SetPlaybackRate", Some(value.into()), None)
+    }
+
+    /// input_SetPlaybackRate_by sends SetPlaybackRate as input_SetPlaybackRate
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetPlaybackRate_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetPlaybackRate", Some(value.into()), Some(activator))
     }
 
     /// input_SetTargetIdentifierOverride sends SetTargetIdentifierOverride.
     pub fn input_SetTargetIdentifierOverride(self, value: &str) -> bool {
-        send(self.handle, "SetTargetIdentifierOverride", Some(value.into()))
+        send(self.handle, "SetTargetIdentifierOverride", Some(value.into()), None)
+    }
+
+    /// input_SetTargetIdentifierOverride_by sends SetTargetIdentifierOverride
+    /// as input_SetTargetIdentifierOverride does, caused by the entity of
+    /// handle activator.
+    pub fn input_SetTargetIdentifierOverride_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetTargetIdentifierOverride", Some(value.into()), Some(activator))
     }
 }
 
 impl CBaseCombatCharacter {
     /// input_SetRelationship sends SetRelationship.
     pub fn input_SetRelationship(self, value: &str) -> bool {
-        send(self.handle, "SetRelationship", Some(value.into()))
+        send(self.handle, "SetRelationship", Some(value.into()), None)
+    }
+
+    /// input_SetRelationship_by sends SetRelationship as input_SetRelationship
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetRelationship_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetRelationship", Some(value.into()), Some(activator))
     }
 
     /// input_physdamagescale sends physdamagescale.
     pub fn input_physdamagescale(self, value: f32) -> bool {
-        send(self.handle, "physdamagescale", Some(value.into()))
+        send(self.handle, "physdamagescale", Some(value.into()), None)
+    }
+
+    /// input_physdamagescale_by sends physdamagescale as input_physdamagescale
+    /// does, caused by the entity of handle activator.
+    pub fn input_physdamagescale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "physdamagescale", Some(value.into()), Some(activator))
     }
 }
 
 impl CAI_BaseNPC {
     /// input_Break sends Break.
     pub fn input_Break(self) -> bool {
-        send(self.handle, "Break", None)
+        send(self.handle, "Break", None, None)
+    }
+
+    /// input_Break_by sends Break as input_Break does, caused by the entity of
+    /// handle activator.
+    pub fn input_Break_by(self, activator: u32) -> bool {
+        send(self.handle, "Break", None, Some(activator))
     }
 
     /// input_OverrideHealth sends OverrideHealth.
     pub fn input_OverrideHealth(self, value: i32) -> bool {
-        send(self.handle, "OverrideHealth", Some(value.into()))
+        send(self.handle, "OverrideHealth", Some(value.into()), None)
+    }
+
+    /// input_OverrideHealth_by sends OverrideHealth as input_OverrideHealth
+    /// does, caused by the entity of handle activator.
+    pub fn input_OverrideHealth_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "OverrideHealth", Some(value.into()), Some(activator))
     }
 
     /// input_SetHealth sends SetHealth.
     pub fn input_SetHealth(self, value: i32) -> bool {
-        send(self.handle, "SetHealth", Some(value.into()))
+        send(self.handle, "SetHealth", Some(value.into()), None)
+    }
+
+    /// input_SetHealth_by sends SetHealth as input_SetHealth does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetHealth_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetHealth", Some(value.into()), Some(activator))
     }
 
     /// input_SetNavRestrictionVolume sends SetNavRestrictionVolume.
     pub fn input_SetNavRestrictionVolume(self, value: &str) -> bool {
-        send(self.handle, "SetNavRestrictionVolume", Some(value.into()))
+        send(self.handle, "SetNavRestrictionVolume", Some(value.into()), None)
+    }
+
+    /// input_SetNavRestrictionVolume_by sends SetNavRestrictionVolume as
+    /// input_SetNavRestrictionVolume does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetNavRestrictionVolume_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetNavRestrictionVolume", Some(value.into()), Some(activator))
     }
 }
 
 impl CBasePlayerPawn {
     /// input_SetFogController sends SetFogController.
     pub fn input_SetFogController(self, value: &str) -> bool {
-        send(self.handle, "SetFogController", Some(value.into()))
+        send(self.handle, "SetFogController", Some(value.into()), None)
+    }
+
+    /// input_SetFogController_by sends SetFogController as
+    /// input_SetFogController does, caused by the entity of handle activator.
+    pub fn input_SetFogController_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetFogController", Some(value.into()), Some(activator))
     }
 
     /// input_SetHUDVisibility sends SetHUDVisibility.
     pub fn input_SetHUDVisibility(self, value: bool) -> bool {
-        send(self.handle, "SetHUDVisibility", Some(value.into()))
+        send(self.handle, "SetHUDVisibility", Some(value.into()), None)
+    }
+
+    /// input_SetHUDVisibility_by sends SetHUDVisibility as
+    /// input_SetHUDVisibility does, caused by the entity of handle activator.
+    pub fn input_SetHUDVisibility_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetHUDVisibility", Some(value.into()), Some(activator))
     }
 
     /// input_SetHealth sends SetHealth.
     pub fn input_SetHealth(self, value: i32) -> bool {
-        send(self.handle, "SetHealth", Some(value.into()))
+        send(self.handle, "SetHealth", Some(value.into()), None)
+    }
+
+    /// input_SetHealth_by sends SetHealth as input_SetHealth does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetHealth_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetHealth", Some(value.into()), Some(activator))
     }
 }
 
 impl CCitadel_PointTalker_Base {
     /// input_Speak sends Speak.
     pub fn input_Speak(self, value: &str) -> bool {
-        send(self.handle, "Speak", Some(value.into()))
+        send(self.handle, "Speak", Some(value.into()), None)
+    }
+
+    /// input_Speak_by sends Speak as input_Speak does, caused by the entity of
+    /// handle activator.
+    pub fn input_Speak_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "Speak", Some(value.into()), Some(activator))
     }
 }
 
 impl CBasePlayerWeapon {
     /// input_SetClipPrimary sends SetClipPrimary.
     pub fn input_SetClipPrimary(self, value: i32) -> bool {
-        send(self.handle, "SetClipPrimary", Some(value.into()))
+        send(self.handle, "SetClipPrimary", Some(value.into()), None)
+    }
+
+    /// input_SetClipPrimary_by sends SetClipPrimary as input_SetClipPrimary
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetClipPrimary_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetClipPrimary", Some(value.into()), Some(activator))
     }
 
     /// input_SetClipSecondary sends SetClipSecondary.
     pub fn input_SetClipSecondary(self, value: i32) -> bool {
-        send(self.handle, "SetClipSecondary", Some(value.into()))
+        send(self.handle, "SetClipSecondary", Some(value.into()), None)
+    }
+
+    /// input_SetClipSecondary_by sends SetClipSecondary as
+    /// input_SetClipSecondary does, caused by the entity of handle activator.
+    pub fn input_SetClipSecondary_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetClipSecondary", Some(value.into()), Some(activator))
     }
 }
 
 impl CBreakableProp {
     /// input_AddHealth sends AddHealth.
     pub fn input_AddHealth(self, value: i32) -> bool {
-        send(self.handle, "AddHealth", Some(value.into()))
+        send(self.handle, "AddHealth", Some(value.into()), None)
+    }
+
+    /// input_AddHealth_by sends AddHealth as input_AddHealth does, caused by
+    /// the entity of handle activator.
+    pub fn input_AddHealth_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "AddHealth", Some(value.into()), Some(activator))
     }
 
     /// input_Break sends Break.
     pub fn input_Break(self) -> bool {
-        send(self.handle, "Break", None)
+        send(self.handle, "Break", None, None)
+    }
+
+    /// input_Break_by sends Break as input_Break does, caused by the entity of
+    /// handle activator.
+    pub fn input_Break_by(self, activator: u32) -> bool {
+        send(self.handle, "Break", None, Some(activator))
     }
 
     /// input_DisablePuntSound sends DisablePuntSound.
     pub fn input_DisablePuntSound(self) -> bool {
-        send(self.handle, "DisablePuntSound", None)
+        send(self.handle, "DisablePuntSound", None, None)
+    }
+
+    /// input_DisablePuntSound_by sends DisablePuntSound as
+    /// input_DisablePuntSound does, caused by the entity of handle activator.
+    pub fn input_DisablePuntSound_by(self, activator: u32) -> bool {
+        send(self.handle, "DisablePuntSound", None, Some(activator))
     }
 
     /// input_EnablePuntSound sends EnablePuntSound.
     pub fn input_EnablePuntSound(self) -> bool {
-        send(self.handle, "EnablePuntSound", None)
+        send(self.handle, "EnablePuntSound", None, None)
+    }
+
+    /// input_EnablePuntSound_by sends EnablePuntSound as input_EnablePuntSound
+    /// does, caused by the entity of handle activator.
+    pub fn input_EnablePuntSound_by(self, activator: u32) -> bool {
+        send(self.handle, "EnablePuntSound", None, Some(activator))
     }
 
     /// input_ForceDrop sends ForceDrop.
     pub fn input_ForceDrop(self) -> bool {
-        send(self.handle, "ForceDrop", None)
+        send(self.handle, "ForceDrop", None, None)
+    }
+
+    /// input_ForceDrop_by sends ForceDrop as input_ForceDrop does, caused by
+    /// the entity of handle activator.
+    pub fn input_ForceDrop_by(self, activator: u32) -> bool {
+        send(self.handle, "ForceDrop", None, Some(activator))
     }
 
     /// input_RemoveHealth sends RemoveHealth.
     pub fn input_RemoveHealth(self, value: i32) -> bool {
-        send(self.handle, "RemoveHealth", Some(value.into()))
+        send(self.handle, "RemoveHealth", Some(value.into()), None)
+    }
+
+    /// input_RemoveHealth_by sends RemoveHealth as input_RemoveHealth does,
+    /// caused by the entity of handle activator.
+    pub fn input_RemoveHealth_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "RemoveHealth", Some(value.into()), Some(activator))
     }
 
     /// input_SetEnableBreaking sends SetEnableBreaking.
     pub fn input_SetEnableBreaking(self, value: bool) -> bool {
-        send(self.handle, "SetEnableBreaking", Some(value.into()))
+        send(self.handle, "SetEnableBreaking", Some(value.into()), None)
+    }
+
+    /// input_SetEnableBreaking_by sends SetEnableBreaking as
+    /// input_SetEnableBreaking does, caused by the entity of handle activator.
+    pub fn input_SetEnableBreaking_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetEnableBreaking", Some(value.into()), Some(activator))
     }
 
     /// input_SetEnableCollisions sends SetEnableCollisions.
     pub fn input_SetEnableCollisions(self, value: bool) -> bool {
-        send(self.handle, "SetEnableCollisions", Some(value.into()))
+        send(self.handle, "SetEnableCollisions", Some(value.into()), None)
+    }
+
+    /// input_SetEnableCollisions_by sends SetEnableCollisions as
+    /// input_SetEnableCollisions does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetEnableCollisions_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetEnableCollisions", Some(value.into()), Some(activator))
     }
 
     /// input_SetHealth sends SetHealth.
     pub fn input_SetHealth(self, value: i32) -> bool {
-        send(self.handle, "SetHealth", Some(value.into()))
+        send(self.handle, "SetHealth", Some(value.into()), None)
+    }
+
+    /// input_SetHealth_by sends SetHealth as input_SetHealth does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetHealth_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetHealth", Some(value.into()), Some(activator))
     }
 
     /// input_SetNavIgnore sends SetNavIgnore.
     pub fn input_SetNavIgnore(self, value: bool) -> bool {
-        send(self.handle, "SetNavIgnore", Some(value.into()))
+        send(self.handle, "SetNavIgnore", Some(value.into()), None)
+    }
+
+    /// input_SetNavIgnore_by sends SetNavIgnore as input_SetNavIgnore does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetNavIgnore_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetNavIgnore", Some(value.into()), Some(activator))
     }
 
     /// input_physdamagescale sends physdamagescale.
     pub fn input_physdamagescale(self, value: f32) -> bool {
-        send(self.handle, "physdamagescale", Some(value.into()))
+        send(self.handle, "physdamagescale", Some(value.into()), None)
+    }
+
+    /// input_physdamagescale_by sends physdamagescale as input_physdamagescale
+    /// does, caused by the entity of handle activator.
+    pub fn input_physdamagescale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "physdamagescale", Some(value.into()), Some(activator))
     }
 }
 
 impl CDynamicProp {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_DisableCollision sends DisableCollision.
     pub fn input_DisableCollision(self) -> bool {
-        send(self.handle, "DisableCollision", None)
+        send(self.handle, "DisableCollision", None, None)
+    }
+
+    /// input_DisableCollision_by sends DisableCollision as
+    /// input_DisableCollision does, caused by the entity of handle activator.
+    pub fn input_DisableCollision_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableCollision", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_EnableCollision sends EnableCollision.
     pub fn input_EnableCollision(self) -> bool {
-        send(self.handle, "EnableCollision", None)
+        send(self.handle, "EnableCollision", None, None)
+    }
+
+    /// input_EnableCollision_by sends EnableCollision as input_EnableCollision
+    /// does, caused by the entity of handle activator.
+    pub fn input_EnableCollision_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableCollision", None, Some(activator))
     }
 
     /// input_SetAnimation sends SetAnimation.
     pub fn input_SetAnimation(self, value: &str) -> bool {
-        send(self.handle, "SetAnimation", Some(value.into()))
+        send(self.handle, "SetAnimation", Some(value.into()), None)
+    }
+
+    /// input_SetAnimation_by sends SetAnimation as input_SetAnimation does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetAnimation_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetAnimation", Some(value.into()), Some(activator))
     }
 
     /// input_SetAnimationLooping sends SetAnimationLooping.
     pub fn input_SetAnimationLooping(self, value: &str) -> bool {
-        send(self.handle, "SetAnimationLooping", Some(value.into()))
+        send(self.handle, "SetAnimationLooping", Some(value.into()), None)
+    }
+
+    /// input_SetAnimationLooping_by sends SetAnimationLooping as
+    /// input_SetAnimationLooping does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAnimationLooping_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetAnimationLooping", Some(value.into()), Some(activator))
     }
 
     /// input_SetAnimationNoReset sends SetAnimationNoReset.
     pub fn input_SetAnimationNoReset(self, value: &str) -> bool {
-        send(self.handle, "SetAnimationNoReset", Some(value.into()))
+        send(self.handle, "SetAnimationNoReset", Some(value.into()), None)
+    }
+
+    /// input_SetAnimationNoReset_by sends SetAnimationNoReset as
+    /// input_SetAnimationNoReset does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAnimationNoReset_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetAnimationNoReset", Some(value.into()), Some(activator))
     }
 
     /// input_SetAnimationNoResetLooping sends SetAnimationNoResetLooping.
     pub fn input_SetAnimationNoResetLooping(self, value: &str) -> bool {
-        send(self.handle, "SetAnimationNoResetLooping", Some(value.into()))
+        send(self.handle, "SetAnimationNoResetLooping", Some(value.into()), None)
+    }
+
+    /// input_SetAnimationNoResetLooping_by sends SetAnimationNoResetLooping as
+    /// input_SetAnimationNoResetLooping does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAnimationNoResetLooping_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetAnimationNoResetLooping", Some(value.into()), Some(activator))
     }
 
     /// input_SetAnimationNoResetNotLooping sends SetAnimationNoResetNotLooping.
     pub fn input_SetAnimationNoResetNotLooping(self, value: &str) -> bool {
-        send(self.handle, "SetAnimationNoResetNotLooping", Some(value.into()))
+        send(self.handle, "SetAnimationNoResetNotLooping", Some(value.into()), None)
+    }
+
+    /// input_SetAnimationNoResetNotLooping_by sends
+    /// SetAnimationNoResetNotLooping as input_SetAnimationNoResetNotLooping
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetAnimationNoResetNotLooping_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetAnimationNoResetNotLooping", Some(value.into()), Some(activator))
     }
 
     /// input_SetAnimationNotLooping sends SetAnimationNotLooping.
     pub fn input_SetAnimationNotLooping(self, value: &str) -> bool {
-        send(self.handle, "SetAnimationNotLooping", Some(value.into()))
+        send(self.handle, "SetAnimationNotLooping", Some(value.into()), None)
+    }
+
+    /// input_SetAnimationNotLooping_by sends SetAnimationNotLooping as
+    /// input_SetAnimationNotLooping does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAnimationNotLooping_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetAnimationNotLooping", Some(value.into()), Some(activator))
     }
 
     /// input_SetDefaultAnimation sends SetDefaultAnimation.
     pub fn input_SetDefaultAnimation(self, value: &str) -> bool {
-        send(self.handle, "SetDefaultAnimation", Some(value.into()))
+        send(self.handle, "SetDefaultAnimation", Some(value.into()), None)
+    }
+
+    /// input_SetDefaultAnimation_by sends SetDefaultAnimation as
+    /// input_SetDefaultAnimation does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetDefaultAnimation_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetDefaultAnimation", Some(value.into()), Some(activator))
     }
 
     /// input_SetDefaultAnimationLooping sends SetDefaultAnimationLooping.
     pub fn input_SetDefaultAnimationLooping(self, value: &str) -> bool {
-        send(self.handle, "SetDefaultAnimationLooping", Some(value.into()))
+        send(self.handle, "SetDefaultAnimationLooping", Some(value.into()), None)
+    }
+
+    /// input_SetDefaultAnimationLooping_by sends SetDefaultAnimationLooping as
+    /// input_SetDefaultAnimationLooping does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetDefaultAnimationLooping_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetDefaultAnimationLooping", Some(value.into()), Some(activator))
     }
 
     /// input_SetDefaultAnimationNotLooping sends SetDefaultAnimationNotLooping.
     pub fn input_SetDefaultAnimationNotLooping(self, value: &str) -> bool {
-        send(self.handle, "SetDefaultAnimationNotLooping", Some(value.into()))
+        send(self.handle, "SetDefaultAnimationNotLooping", Some(value.into()), None)
+    }
+
+    /// input_SetDefaultAnimationNotLooping_by sends
+    /// SetDefaultAnimationNotLooping as input_SetDefaultAnimationNotLooping
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetDefaultAnimationNotLooping_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetDefaultAnimationNotLooping", Some(value.into()), Some(activator))
     }
 
     /// input_SetGlowOverride sends SetGlowOverride.
     pub fn input_SetGlowOverride(self, value: Vector) -> bool {
-        send(self.handle, "SetGlowOverride", Some(value.into()))
+        send(self.handle, "SetGlowOverride", Some(value.into()), None)
+    }
+
+    /// input_SetGlowOverride_by sends SetGlowOverride as input_SetGlowOverride
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetGlowOverride_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "SetGlowOverride", Some(value.into()), Some(activator))
     }
 
     /// input_SetGlowRange sends SetGlowRange.
     pub fn input_SetGlowRange(self, value: i32) -> bool {
-        send(self.handle, "SetGlowRange", Some(value.into()))
+        send(self.handle, "SetGlowRange", Some(value.into()), None)
+    }
+
+    /// input_SetGlowRange_by sends SetGlowRange as input_SetGlowRange does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetGlowRange_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetGlowRange", Some(value.into()), Some(activator))
     }
 
     /// input_SetIdleAnimationLooping sends SetIdleAnimationLooping.
     pub fn input_SetIdleAnimationLooping(self, value: &str) -> bool {
-        send(self.handle, "SetIdleAnimationLooping", Some(value.into()))
+        send(self.handle, "SetIdleAnimationLooping", Some(value.into()), None)
+    }
+
+    /// input_SetIdleAnimationLooping_by sends SetIdleAnimationLooping as
+    /// input_SetIdleAnimationLooping does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetIdleAnimationLooping_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetIdleAnimationLooping", Some(value.into()), Some(activator))
     }
 
     /// input_SetIdleAnimationNotLooping sends SetIdleAnimationNotLooping.
     pub fn input_SetIdleAnimationNotLooping(self, value: &str) -> bool {
-        send(self.handle, "SetIdleAnimationNotLooping", Some(value.into()))
+        send(self.handle, "SetIdleAnimationNotLooping", Some(value.into()), None)
+    }
+
+    /// input_SetIdleAnimationNotLooping_by sends SetIdleAnimationNotLooping as
+    /// input_SetIdleAnimationNotLooping does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetIdleAnimationNotLooping_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetIdleAnimationNotLooping", Some(value.into()), Some(activator))
     }
 
     /// input_SetPlaybackRate sends SetPlaybackRate.
     pub fn input_SetPlaybackRate(self, value: f32) -> bool {
-        send(self.handle, "SetPlaybackRate", Some(value.into()))
+        send(self.handle, "SetPlaybackRate", Some(value.into()), None)
+    }
+
+    /// input_SetPlaybackRate_by sends SetPlaybackRate as input_SetPlaybackRate
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetPlaybackRate_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetPlaybackRate", Some(value.into()), Some(activator))
     }
 
     /// input_StartGlowing sends StartGlowing.
     pub fn input_StartGlowing(self) -> bool {
-        send(self.handle, "StartGlowing", None)
+        send(self.handle, "StartGlowing", None, None)
+    }
+
+    /// input_StartGlowing_by sends StartGlowing as input_StartGlowing does,
+    /// caused by the entity of handle activator.
+    pub fn input_StartGlowing_by(self, activator: u32) -> bool {
+        send(self.handle, "StartGlowing", None, Some(activator))
     }
 
     /// input_StopGlowing sends StopGlowing.
     pub fn input_StopGlowing(self) -> bool {
-        send(self.handle, "StopGlowing", None)
+        send(self.handle, "StopGlowing", None, None)
+    }
+
+    /// input_StopGlowing_by sends StopGlowing as input_StopGlowing does, caused
+    /// by the entity of handle activator.
+    pub fn input_StopGlowing_by(self, activator: u32) -> bool {
+        send(self.handle, "StopGlowing", None, Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
 impl CBasePropDoor {
     /// input_Close sends Close.
     pub fn input_Close(self) -> bool {
-        send(self.handle, "Close", None)
+        send(self.handle, "Close", None, None)
+    }
+
+    /// input_Close_by sends Close as input_Close does, caused by the entity of
+    /// handle activator.
+    pub fn input_Close_by(self, activator: u32) -> bool {
+        send(self.handle, "Close", None, Some(activator))
     }
 
     /// input_Lock sends Lock.
     pub fn input_Lock(self) -> bool {
-        send(self.handle, "Lock", None)
+        send(self.handle, "Lock", None, None)
+    }
+
+    /// input_Lock_by sends Lock as input_Lock does, caused by the entity of
+    /// handle activator.
+    pub fn input_Lock_by(self, activator: u32) -> bool {
+        send(self.handle, "Lock", None, Some(activator))
     }
 
     /// input_Open sends Open.
     pub fn input_Open(self) -> bool {
-        send(self.handle, "Open", None)
+        send(self.handle, "Open", None, None)
+    }
+
+    /// input_Open_by sends Open as input_Open does, caused by the entity of
+    /// handle activator.
+    pub fn input_Open_by(self, activator: u32) -> bool {
+        send(self.handle, "Open", None, Some(activator))
     }
 
     /// input_OpenAwayFrom sends OpenAwayFrom.
     pub fn input_OpenAwayFrom(self, value: &str) -> bool {
-        send(self.handle, "OpenAwayFrom", Some(value.into()))
+        send(self.handle, "OpenAwayFrom", Some(value.into()), None)
+    }
+
+    /// input_OpenAwayFrom_by sends OpenAwayFrom as input_OpenAwayFrom does,
+    /// caused by the entity of handle activator.
+    pub fn input_OpenAwayFrom_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "OpenAwayFrom", Some(value.into()), Some(activator))
     }
 
     /// input_OpenAwayFromActivator sends OpenAwayFromActivator.
     pub fn input_OpenAwayFromActivator(self, value: f32) -> bool {
-        send(self.handle, "OpenAwayFromActivator", Some(value.into()))
+        send(self.handle, "OpenAwayFromActivator", Some(value.into()), None)
+    }
+
+    /// input_OpenAwayFromActivator_by sends OpenAwayFromActivator as
+    /// input_OpenAwayFromActivator does, caused by the entity of handle
+    /// activator.
+    pub fn input_OpenAwayFromActivator_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "OpenAwayFromActivator", Some(value.into()), Some(activator))
     }
 
     /// input_PlayerClose sends PlayerClose.
     pub fn input_PlayerClose(self) -> bool {
-        send(self.handle, "PlayerClose", None)
+        send(self.handle, "PlayerClose", None, None)
+    }
+
+    /// input_PlayerClose_by sends PlayerClose as input_PlayerClose does, caused
+    /// by the entity of handle activator.
+    pub fn input_PlayerClose_by(self, activator: u32) -> bool {
+        send(self.handle, "PlayerClose", None, Some(activator))
     }
 
     /// input_PlayerOpen sends PlayerOpen.
     pub fn input_PlayerOpen(self) -> bool {
-        send(self.handle, "PlayerOpen", None)
+        send(self.handle, "PlayerOpen", None, None)
+    }
+
+    /// input_PlayerOpen_by sends PlayerOpen as input_PlayerOpen does, caused by
+    /// the entity of handle activator.
+    pub fn input_PlayerOpen_by(self, activator: u32) -> bool {
+        send(self.handle, "PlayerOpen", None, Some(activator))
     }
 
     /// input_SetNoNPCs sends SetNoNPCs.
     pub fn input_SetNoNPCs(self, value: bool) -> bool {
-        send(self.handle, "SetNoNPCs", Some(value.into()))
+        send(self.handle, "SetNoNPCs", Some(value.into()), None)
+    }
+
+    /// input_SetNoNPCs_by sends SetNoNPCs as input_SetNoNPCs does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetNoNPCs_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetNoNPCs", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_Unlock sends Unlock.
     pub fn input_Unlock(self) -> bool {
-        send(self.handle, "Unlock", None)
+        send(self.handle, "Unlock", None, None)
+    }
+
+    /// input_Unlock_by sends Unlock as input_Unlock does, caused by the entity
+    /// of handle activator.
+    pub fn input_Unlock_by(self, activator: u32) -> bool {
+        send(self.handle, "Unlock", None, Some(activator))
     }
 }
 
 impl CPropDoorRotating {
     /// input_SetRotationDistance sends SetRotationDistance.
     pub fn input_SetRotationDistance(self, value: f32) -> bool {
-        send(self.handle, "SetRotationDistance", Some(value.into()))
+        send(self.handle, "SetRotationDistance", Some(value.into()), None)
+    }
+
+    /// input_SetRotationDistance_by sends SetRotationDistance as
+    /// input_SetRotationDistance does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetRotationDistance_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetRotationDistance", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeed sends SetSpeed.
     pub fn input_SetSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetSpeed", Some(value.into()))
+        send(self.handle, "SetSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetSpeed_by sends SetSpeed as input_SetSpeed does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeed", Some(value.into()), Some(activator))
     }
 }
 
 impl CPropDoorRotatingBreakable {
     /// input_SetBreakable sends SetBreakable.
     pub fn input_SetBreakable(self) -> bool {
-        send(self.handle, "SetBreakable", None)
+        send(self.handle, "SetBreakable", None, None)
+    }
+
+    /// input_SetBreakable_by sends SetBreakable as input_SetBreakable does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetBreakable_by(self, activator: u32) -> bool {
+        send(self.handle, "SetBreakable", None, Some(activator))
     }
 
     /// input_SetUnbreakable sends SetUnbreakable.
     pub fn input_SetUnbreakable(self) -> bool {
-        send(self.handle, "SetUnbreakable", None)
+        send(self.handle, "SetUnbreakable", None, None)
+    }
+
+    /// input_SetUnbreakable_by sends SetUnbreakable as input_SetUnbreakable
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetUnbreakable_by(self, activator: u32) -> bool {
+        send(self.handle, "SetUnbreakable", None, Some(activator))
     }
 }
 
 impl CCitadel_DynamicProp {
     /// input_SetEnemySkin sends SetEnemySkin.
     pub fn input_SetEnemySkin(self, value: &str) -> bool {
-        send(self.handle, "SetEnemySkin", Some(value.into()))
+        send(self.handle, "SetEnemySkin", Some(value.into()), None)
+    }
+
+    /// input_SetEnemySkin_by sends SetEnemySkin as input_SetEnemySkin does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetEnemySkin_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetEnemySkin", Some(value.into()), Some(activator))
     }
 
     /// input_SetFriendlySkin sends SetFriendlySkin.
     pub fn input_SetFriendlySkin(self, value: &str) -> bool {
-        send(self.handle, "SetFriendlySkin", Some(value.into()))
+        send(self.handle, "SetFriendlySkin", Some(value.into()), None)
+    }
+
+    /// input_SetFriendlySkin_by sends SetFriendlySkin as input_SetFriendlySkin
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetFriendlySkin_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetFriendlySkin", Some(value.into()), Some(activator))
     }
 }
 
@@ -811,113 +1743,240 @@ impl CCitadel_ShopProp {
     /// input_SetShopOpen sends SetShopOpen. Open or close this shop. Keep in
     /// sync with its trigger_item_shop.
     pub fn input_SetShopOpen(self, value: bool) -> bool {
-        send(self.handle, "SetShopOpen", Some(value.into()))
+        send(self.handle, "SetShopOpen", Some(value.into()), None)
+    }
+
+    /// input_SetShopOpen_by sends SetShopOpen as input_SetShopOpen does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetShopOpen_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetShopOpen", Some(value.into()), Some(activator))
     }
 }
 
 impl COrnamentProp {
     /// input_Detach sends Detach.
     pub fn input_Detach(self) -> bool {
-        send(self.handle, "Detach", None)
+        send(self.handle, "Detach", None, None)
+    }
+
+    /// input_Detach_by sends Detach as input_Detach does, caused by the entity
+    /// of handle activator.
+    pub fn input_Detach_by(self, activator: u32) -> bool {
+        send(self.handle, "Detach", None, Some(activator))
     }
 
     /// input_SetAttached sends SetAttached.
     pub fn input_SetAttached(self, value: &str) -> bool {
-        send(self.handle, "SetAttached", Some(value.into()))
+        send(self.handle, "SetAttached", Some(value.into()), None)
+    }
+
+    /// input_SetAttached_by sends SetAttached as input_SetAttached does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetAttached_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetAttached", Some(value.into()), Some(activator))
     }
 }
 
 impl CPhysicsProp {
     /// input_DisableCollisions sends DisableCollisions.
     pub fn input_DisableCollisions(self) -> bool {
-        send(self.handle, "DisableCollisions", None)
+        send(self.handle, "DisableCollisions", None, None)
+    }
+
+    /// input_DisableCollisions_by sends DisableCollisions as
+    /// input_DisableCollisions does, caused by the entity of handle activator.
+    pub fn input_DisableCollisions_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableCollisions", None, Some(activator))
     }
 
     /// input_DisableDrag sends DisableDrag.
     pub fn input_DisableDrag(self) -> bool {
-        send(self.handle, "DisableDrag", None)
+        send(self.handle, "DisableDrag", None, None)
+    }
+
+    /// input_DisableDrag_by sends DisableDrag as input_DisableDrag does, caused
+    /// by the entity of handle activator.
+    pub fn input_DisableDrag_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableDrag", None, Some(activator))
     }
 
     /// input_DisableGravity sends DisableGravity.
     pub fn input_DisableGravity(self) -> bool {
-        send(self.handle, "DisableGravity", None)
+        send(self.handle, "DisableGravity", None, None)
+    }
+
+    /// input_DisableGravity_by sends DisableGravity as input_DisableGravity
+    /// does, caused by the entity of handle activator.
+    pub fn input_DisableGravity_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableGravity", None, Some(activator))
     }
 
     /// input_DisableMotion sends DisableMotion.
     pub fn input_DisableMotion(self) -> bool {
-        send(self.handle, "DisableMotion", None)
+        send(self.handle, "DisableMotion", None, None)
+    }
+
+    /// input_DisableMotion_by sends DisableMotion as input_DisableMotion does,
+    /// caused by the entity of handle activator.
+    pub fn input_DisableMotion_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableMotion", None, Some(activator))
     }
 
     /// input_EnableCollisions sends EnableCollisions.
     pub fn input_EnableCollisions(self) -> bool {
-        send(self.handle, "EnableCollisions", None)
+        send(self.handle, "EnableCollisions", None, None)
+    }
+
+    /// input_EnableCollisions_by sends EnableCollisions as
+    /// input_EnableCollisions does, caused by the entity of handle activator.
+    pub fn input_EnableCollisions_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableCollisions", None, Some(activator))
     }
 
     /// input_EnableMotion sends EnableMotion.
     pub fn input_EnableMotion(self) -> bool {
-        send(self.handle, "EnableMotion", None)
+        send(self.handle, "EnableMotion", None, None)
+    }
+
+    /// input_EnableMotion_by sends EnableMotion as input_EnableMotion does,
+    /// caused by the entity of handle activator.
+    pub fn input_EnableMotion_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableMotion", None, Some(activator))
     }
 
     /// input_SetAutoConvertBackFromDebris sends SetAutoConvertBackFromDebris.
     pub fn input_SetAutoConvertBackFromDebris(self, value: bool) -> bool {
-        send(self.handle, "SetAutoConvertBackFromDebris", Some(value.into()))
+        send(self.handle, "SetAutoConvertBackFromDebris", Some(value.into()), None)
+    }
+
+    /// input_SetAutoConvertBackFromDebris_by sends SetAutoConvertBackFromDebris
+    /// as input_SetAutoConvertBackFromDebris does, caused by the entity of
+    /// handle activator.
+    pub fn input_SetAutoConvertBackFromDebris_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetAutoConvertBackFromDebris", Some(value.into()), Some(activator))
     }
 
     /// input_SetDragEnabled sends SetDragEnabled.
     pub fn input_SetDragEnabled(self) -> bool {
-        send(self.handle, "SetDragEnabled", None)
+        send(self.handle, "SetDragEnabled", None, None)
+    }
+
+    /// input_SetDragEnabled_by sends SetDragEnabled as input_SetDragEnabled
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetDragEnabled_by(self, activator: u32) -> bool {
+        send(self.handle, "SetDragEnabled", None, Some(activator))
     }
 
     /// input_SetGlowOverride sends SetGlowOverride.
     pub fn input_SetGlowOverride(self, value: Vector) -> bool {
-        send(self.handle, "SetGlowOverride", Some(value.into()))
+        send(self.handle, "SetGlowOverride", Some(value.into()), None)
+    }
+
+    /// input_SetGlowOverride_by sends SetGlowOverride as input_SetGlowOverride
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetGlowOverride_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "SetGlowOverride", Some(value.into()), Some(activator))
     }
 
     /// input_SetGlowRange sends SetGlowRange.
     pub fn input_SetGlowRange(self, value: i32) -> bool {
-        send(self.handle, "SetGlowRange", Some(value.into()))
+        send(self.handle, "SetGlowRange", Some(value.into()), None)
+    }
+
+    /// input_SetGlowRange_by sends SetGlowRange as input_SetGlowRange does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetGlowRange_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetGlowRange", Some(value.into()), Some(activator))
     }
 
     /// input_SetGravityEnabled sends SetGravityEnabled.
     pub fn input_SetGravityEnabled(self) -> bool {
-        send(self.handle, "SetGravityEnabled", None)
+        send(self.handle, "SetGravityEnabled", None, None)
+    }
+
+    /// input_SetGravityEnabled_by sends SetGravityEnabled as
+    /// input_SetGravityEnabled does, caused by the entity of handle activator.
+    pub fn input_SetGravityEnabled_by(self, activator: u32) -> bool {
+        send(self.handle, "SetGravityEnabled", None, Some(activator))
     }
 
     /// input_SetMass sends SetMass.
     pub fn input_SetMass(self, value: f32) -> bool {
-        send(self.handle, "SetMass", Some(value.into()))
+        send(self.handle, "SetMass", Some(value.into()), None)
+    }
+
+    /// input_SetMass_by sends SetMass as input_SetMass does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetMass_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMass", Some(value.into()), Some(activator))
     }
 
     /// input_Sleep sends Sleep.
     pub fn input_Sleep(self) -> bool {
-        send(self.handle, "Sleep", None)
+        send(self.handle, "Sleep", None, None)
+    }
+
+    /// input_Sleep_by sends Sleep as input_Sleep does, caused by the entity of
+    /// handle activator.
+    pub fn input_Sleep_by(self, activator: u32) -> bool {
+        send(self.handle, "Sleep", None, Some(activator))
     }
 
     /// input_StartGlowing sends StartGlowing.
     pub fn input_StartGlowing(self) -> bool {
-        send(self.handle, "StartGlowing", None)
+        send(self.handle, "StartGlowing", None, None)
+    }
+
+    /// input_StartGlowing_by sends StartGlowing as input_StartGlowing does,
+    /// caused by the entity of handle activator.
+    pub fn input_StartGlowing_by(self, activator: u32) -> bool {
+        send(self.handle, "StartGlowing", None, Some(activator))
     }
 
     /// input_StopGlowing sends StopGlowing.
     pub fn input_StopGlowing(self) -> bool {
-        send(self.handle, "StopGlowing", None)
+        send(self.handle, "StopGlowing", None, None)
+    }
+
+    /// input_StopGlowing_by sends StopGlowing as input_StopGlowing does, caused
+    /// by the entity of handle activator.
+    pub fn input_StopGlowing_by(self, activator: u32) -> bool {
+        send(self.handle, "StopGlowing", None, Some(activator))
     }
 
     /// input_Wake sends Wake.
     pub fn input_Wake(self) -> bool {
-        send(self.handle, "Wake", None)
+        send(self.handle, "Wake", None, None)
+    }
+
+    /// input_Wake_by sends Wake as input_Wake does, caused by the entity of
+    /// handle activator.
+    pub fn input_Wake_by(self, activator: u32) -> bool {
+        send(self.handle, "Wake", None, Some(activator))
     }
 }
 
 impl CCitadel_DoorwayPortal {
     /// input_Close sends Close. Close the door.
     pub fn input_Close(self) -> bool {
-        send(self.handle, "Close", None)
+        send(self.handle, "Close", None, None)
+    }
+
+    /// input_Close_by sends Close as input_Close does, caused by the entity of
+    /// handle activator.
+    pub fn input_Close_by(self, activator: u32) -> bool {
+        send(self.handle, "Close", None, Some(activator))
     }
 
     /// input_Open sends Open. Open the door.
     pub fn input_Open(self) -> bool {
-        send(self.handle, "Open", None)
+        send(self.handle, "Open", None, None)
+    }
+
+    /// input_Open_by sends Open as input_Open does, caused by the entity of
+    /// handle activator.
+    pub fn input_Open_by(self, activator: u32) -> bool {
+        send(self.handle, "Open", None, Some(activator))
     }
 }
 
@@ -925,7 +1984,13 @@ impl CCitadel_PickupItemSpawner {
     /// input_DropPowerup sends DropPowerup. Drop one of the spawner's
     /// configured powerups.
     pub fn input_DropPowerup(self) -> bool {
-        send(self.handle, "DropPowerup", None)
+        send(self.handle, "DropPowerup", None, None)
+    }
+
+    /// input_DropPowerup_by sends DropPowerup as input_DropPowerup does, caused
+    /// by the entity of handle activator.
+    pub fn input_DropPowerup_by(self, activator: u32) -> bool {
+        send(self.handle, "DropPowerup", None, Some(activator))
     }
 }
 
@@ -933,351 +1998,735 @@ impl CCitadel_PickupSpawner {
     /// input_SpawnPickup sends SpawnPickup. Spawn the configured pickup now,
     /// restarting the respawn cycle.
     pub fn input_SpawnPickup(self) -> bool {
-        send(self.handle, "SpawnPickup", None)
+        send(self.handle, "SpawnPickup", None, None)
+    }
+
+    /// input_SpawnPickup_by sends SpawnPickup as input_SpawnPickup does, caused
+    /// by the entity of handle activator.
+    pub fn input_SpawnPickup_by(self, activator: u32) -> bool {
+        send(self.handle, "SpawnPickup", None, Some(activator))
     }
 }
 
 impl CItemGeneric {
     /// input_StartAmbientSound sends StartAmbientSound.
     pub fn input_StartAmbientSound(self) -> bool {
-        send(self.handle, "StartAmbientSound", None)
+        send(self.handle, "StartAmbientSound", None, None)
+    }
+
+    /// input_StartAmbientSound_by sends StartAmbientSound as
+    /// input_StartAmbientSound does, caused by the entity of handle activator.
+    pub fn input_StartAmbientSound_by(self, activator: u32) -> bool {
+        send(self.handle, "StartAmbientSound", None, Some(activator))
     }
 
     /// input_StopAmbientSound sends StopAmbientSound.
     pub fn input_StopAmbientSound(self) -> bool {
-        send(self.handle, "StopAmbientSound", None)
+        send(self.handle, "StopAmbientSound", None, None)
+    }
+
+    /// input_StopAmbientSound_by sends StopAmbientSound as
+    /// input_StopAmbientSound does, caused by the entity of handle activator.
+    pub fn input_StopAmbientSound_by(self, activator: u32) -> bool {
+        send(self.handle, "StopAmbientSound", None, Some(activator))
     }
 
     /// input_ToggleAmbientSound sends ToggleAmbientSound.
     pub fn input_ToggleAmbientSound(self) -> bool {
-        send(self.handle, "ToggleAmbientSound", None)
+        send(self.handle, "ToggleAmbientSound", None, None)
+    }
+
+    /// input_ToggleAmbientSound_by sends ToggleAmbientSound as
+    /// input_ToggleAmbientSound does, caused by the entity of handle activator.
+    pub fn input_ToggleAmbientSound_by(self, activator: u32) -> bool {
+        send(self.handle, "ToggleAmbientSound", None, Some(activator))
     }
 }
 
 impl CNPC_BaseDefenseSentry {
     /// input_DisableAttacking sends DisableAttacking.
     pub fn input_DisableAttacking(self) -> bool {
-        send(self.handle, "DisableAttacking", None)
+        send(self.handle, "DisableAttacking", None, None)
+    }
+
+    /// input_DisableAttacking_by sends DisableAttacking as
+    /// input_DisableAttacking does, caused by the entity of handle activator.
+    pub fn input_DisableAttacking_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableAttacking", None, Some(activator))
     }
 
     /// input_EnableAttacking sends EnableAttacking.
     pub fn input_EnableAttacking(self) -> bool {
-        send(self.handle, "EnableAttacking", None)
+        send(self.handle, "EnableAttacking", None, None)
+    }
+
+    /// input_EnableAttacking_by sends EnableAttacking as input_EnableAttacking
+    /// does, caused by the entity of handle activator.
+    pub fn input_EnableAttacking_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableAttacking", None, Some(activator))
     }
 }
 
 impl CPhysMagnet {
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
 impl CPointCommentaryNode {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_StartCommentary sends StartCommentary.
     pub fn input_StartCommentary(self) -> bool {
-        send(self.handle, "StartCommentary", None)
+        send(self.handle, "StartCommentary", None, None)
+    }
+
+    /// input_StartCommentary_by sends StartCommentary as input_StartCommentary
+    /// does, caused by the entity of handle activator.
+    pub fn input_StartCommentary_by(self, activator: u32) -> bool {
+        send(self.handle, "StartCommentary", None, Some(activator))
     }
 
     /// input_StartUnstoppableCommentary sends StartUnstoppableCommentary.
     pub fn input_StartUnstoppableCommentary(self) -> bool {
-        send(self.handle, "StartUnstoppableCommentary", None)
+        send(self.handle, "StartUnstoppableCommentary", None, None)
+    }
+
+    /// input_StartUnstoppableCommentary_by sends StartUnstoppableCommentary as
+    /// input_StartUnstoppableCommentary does, caused by the entity of handle
+    /// activator.
+    pub fn input_StartUnstoppableCommentary_by(self, activator: u32) -> bool {
+        send(self.handle, "StartUnstoppableCommentary", None, Some(activator))
     }
 }
 
 impl CPropAnimatingBreakable {
     /// input_NextBreakStage sends NextBreakStage.
     pub fn input_NextBreakStage(self) -> bool {
-        send(self.handle, "NextBreakStage", None)
+        send(self.handle, "NextBreakStage", None, None)
+    }
+
+    /// input_NextBreakStage_by sends NextBreakStage as input_NextBreakStage
+    /// does, caused by the entity of handle activator.
+    pub fn input_NextBreakStage_by(self, activator: u32) -> bool {
+        send(self.handle, "NextBreakStage", None, Some(activator))
     }
 }
 
 impl CRagdollProp {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_DisableMotion sends DisableMotion.
     pub fn input_DisableMotion(self) -> bool {
-        send(self.handle, "DisableMotion", None)
+        send(self.handle, "DisableMotion", None, None)
+    }
+
+    /// input_DisableMotion_by sends DisableMotion as input_DisableMotion does,
+    /// caused by the entity of handle activator.
+    pub fn input_DisableMotion_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableMotion", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_EnableMotion sends EnableMotion.
     pub fn input_EnableMotion(self) -> bool {
-        send(self.handle, "EnableMotion", None)
+        send(self.handle, "EnableMotion", None, None)
+    }
+
+    /// input_EnableMotion_by sends EnableMotion as input_EnableMotion does,
+    /// caused by the entity of handle activator.
+    pub fn input_EnableMotion_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableMotion", None, Some(activator))
     }
 
     /// input_FadeAndRemove sends FadeAndRemove.
     pub fn input_FadeAndRemove(self, value: f32) -> bool {
-        send(self.handle, "FadeAndRemove", Some(value.into()))
+        send(self.handle, "FadeAndRemove", Some(value.into()), None)
+    }
+
+    /// input_FadeAndRemove_by sends FadeAndRemove as input_FadeAndRemove does,
+    /// caused by the entity of handle activator.
+    pub fn input_FadeAndRemove_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "FadeAndRemove", Some(value.into()), Some(activator))
     }
 }
 
 impl CBaseClientUIEntity {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CPointClientUIWorldPanel {
     /// input_AcceptUserInput sends AcceptUserInput.
     pub fn input_AcceptUserInput(self) -> bool {
-        send(self.handle, "AcceptUserInput", None)
+        send(self.handle, "AcceptUserInput", None, None)
+    }
+
+    /// input_AcceptUserInput_by sends AcceptUserInput as input_AcceptUserInput
+    /// does, caused by the entity of handle activator.
+    pub fn input_AcceptUserInput_by(self, activator: u32) -> bool {
+        send(self.handle, "AcceptUserInput", None, Some(activator))
     }
 
     /// input_AddCSSClass sends AddCSSClass.
     pub fn input_AddCSSClass(self, value: &str) -> bool {
-        send(self.handle, "AddCSSClass", Some(value.into()))
+        send(self.handle, "AddCSSClass", Some(value.into()), None)
+    }
+
+    /// input_AddCSSClass_by sends AddCSSClass as input_AddCSSClass does, caused
+    /// by the entity of handle activator.
+    pub fn input_AddCSSClass_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "AddCSSClass", Some(value.into()), Some(activator))
     }
 
     /// input_IgnoreUserInput sends IgnoreUserInput.
     pub fn input_IgnoreUserInput(self) -> bool {
-        send(self.handle, "IgnoreUserInput", None)
+        send(self.handle, "IgnoreUserInput", None, None)
+    }
+
+    /// input_IgnoreUserInput_by sends IgnoreUserInput as input_IgnoreUserInput
+    /// does, caused by the entity of handle activator.
+    pub fn input_IgnoreUserInput_by(self, activator: u32) -> bool {
+        send(self.handle, "IgnoreUserInput", None, Some(activator))
     }
 
     /// input_LocalPlayerAddCSSClass sends LocalPlayerAddCSSClass.
     pub fn input_LocalPlayerAddCSSClass(self, value: &str) -> bool {
-        send(self.handle, "LocalPlayerAddCSSClass", Some(value.into()))
+        send(self.handle, "LocalPlayerAddCSSClass", Some(value.into()), None)
+    }
+
+    /// input_LocalPlayerAddCSSClass_by sends LocalPlayerAddCSSClass as
+    /// input_LocalPlayerAddCSSClass does, caused by the entity of handle
+    /// activator.
+    pub fn input_LocalPlayerAddCSSClass_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "LocalPlayerAddCSSClass", Some(value.into()), Some(activator))
     }
 
     /// input_LocalPlayerRemoveCSSClass sends LocalPlayerRemoveCSSClass.
     pub fn input_LocalPlayerRemoveCSSClass(self, value: &str) -> bool {
-        send(self.handle, "LocalPlayerRemoveCSSClass", Some(value.into()))
+        send(self.handle, "LocalPlayerRemoveCSSClass", Some(value.into()), None)
+    }
+
+    /// input_LocalPlayerRemoveCSSClass_by sends LocalPlayerRemoveCSSClass as
+    /// input_LocalPlayerRemoveCSSClass does, caused by the entity of handle
+    /// activator.
+    pub fn input_LocalPlayerRemoveCSSClass_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "LocalPlayerRemoveCSSClass", Some(value.into()), Some(activator))
     }
 
     /// input_RemoveCSSClass sends RemoveCSSClass.
     pub fn input_RemoveCSSClass(self, value: &str) -> bool {
-        send(self.handle, "RemoveCSSClass", Some(value.into()))
+        send(self.handle, "RemoveCSSClass", Some(value.into()), None)
+    }
+
+    /// input_RemoveCSSClass_by sends RemoveCSSClass as input_RemoveCSSClass
+    /// does, caused by the entity of handle activator.
+    pub fn input_RemoveCSSClass_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "RemoveCSSClass", Some(value.into()), Some(activator))
     }
 }
 
 impl CPointClientUIWorldTextPanel {
     /// input_SetIntMessage sends SetIntMessage.
     pub fn input_SetIntMessage(self, value: i32) -> bool {
-        send(self.handle, "SetIntMessage", Some(value.into()))
+        send(self.handle, "SetIntMessage", Some(value.into()), None)
+    }
+
+    /// input_SetIntMessage_by sends SetIntMessage as input_SetIntMessage does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetIntMessage_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetIntMessage", Some(value.into()), Some(activator))
     }
 
     /// input_SetMessage sends SetMessage.
     pub fn input_SetMessage(self, value: &str) -> bool {
-        send(self.handle, "SetMessage", Some(value.into()))
+        send(self.handle, "SetMessage", Some(value.into()), None)
+    }
+
+    /// input_SetMessage_by sends SetMessage as input_SetMessage does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetMessage_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetMessage", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CBaseButton {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_Lock sends Lock.
     pub fn input_Lock(self) -> bool {
-        send(self.handle, "Lock", None)
+        send(self.handle, "Lock", None, None)
+    }
+
+    /// input_Lock_by sends Lock as input_Lock does, caused by the entity of
+    /// handle activator.
+    pub fn input_Lock_by(self, activator: u32) -> bool {
+        send(self.handle, "Lock", None, Some(activator))
     }
 
     /// input_Press sends Press.
     pub fn input_Press(self) -> bool {
-        send(self.handle, "Press", None)
+        send(self.handle, "Press", None, None)
+    }
+
+    /// input_Press_by sends Press as input_Press does, caused by the entity of
+    /// handle activator.
+    pub fn input_Press_by(self, activator: u32) -> bool {
+        send(self.handle, "Press", None, Some(activator))
     }
 
     /// input_PressIn sends PressIn.
     pub fn input_PressIn(self) -> bool {
-        send(self.handle, "PressIn", None)
+        send(self.handle, "PressIn", None, None)
+    }
+
+    /// input_PressIn_by sends PressIn as input_PressIn does, caused by the
+    /// entity of handle activator.
+    pub fn input_PressIn_by(self, activator: u32) -> bool {
+        send(self.handle, "PressIn", None, Some(activator))
     }
 
     /// input_PressOut sends PressOut.
     pub fn input_PressOut(self) -> bool {
-        send(self.handle, "PressOut", None)
+        send(self.handle, "PressOut", None, None)
+    }
+
+    /// input_PressOut_by sends PressOut as input_PressOut does, caused by the
+    /// entity of handle activator.
+    pub fn input_PressOut_by(self, activator: u32) -> bool {
+        send(self.handle, "PressOut", None, Some(activator))
     }
 
     /// input_Unlock sends Unlock.
     pub fn input_Unlock(self) -> bool {
-        send(self.handle, "Unlock", None)
+        send(self.handle, "Unlock", None, None)
+    }
+
+    /// input_Unlock_by sends Unlock as input_Unlock does, caused by the entity
+    /// of handle activator.
+    pub fn input_Unlock_by(self, activator: u32) -> bool {
+        send(self.handle, "Unlock", None, Some(activator))
     }
 }
 
 impl CMomentaryRotButton {
     /// input_SetPosition sends SetPosition.
     pub fn input_SetPosition(self, value: f32) -> bool {
-        send(self.handle, "SetPosition", Some(value.into()))
+        send(self.handle, "SetPosition", Some(value.into()), None)
+    }
+
+    /// input_SetPosition_by sends SetPosition as input_SetPosition does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetPosition_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetPosition", Some(value.into()), Some(activator))
     }
 
     /// input_SetPositionImmediately sends SetPositionImmediately.
     pub fn input_SetPositionImmediately(self, value: f32) -> bool {
-        send(self.handle, "SetPositionImmediately", Some(value.into()))
+        send(self.handle, "SetPositionImmediately", Some(value.into()), None)
+    }
+
+    /// input_SetPositionImmediately_by sends SetPositionImmediately as
+    /// input_SetPositionImmediately does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetPositionImmediately_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetPositionImmediately", Some(value.into()), Some(activator))
     }
 
     /// input__DisableUpdateTarget sends _DisableUpdateTarget.
     pub fn input__DisableUpdateTarget(self) -> bool {
-        send(self.handle, "_DisableUpdateTarget", None)
+        send(self.handle, "_DisableUpdateTarget", None, None)
+    }
+
+    /// input__DisableUpdateTarget_by sends _DisableUpdateTarget as
+    /// input__DisableUpdateTarget does, caused by the entity of handle
+    /// activator.
+    pub fn input__DisableUpdateTarget_by(self, activator: u32) -> bool {
+        send(self.handle, "_DisableUpdateTarget", None, Some(activator))
     }
 
     /// input__EnableUpdateTarget sends _EnableUpdateTarget.
     pub fn input__EnableUpdateTarget(self) -> bool {
-        send(self.handle, "_EnableUpdateTarget", None)
+        send(self.handle, "_EnableUpdateTarget", None, None)
+    }
+
+    /// input__EnableUpdateTarget_by sends _EnableUpdateTarget as
+    /// input__EnableUpdateTarget does, caused by the entity of handle
+    /// activator.
+    pub fn input__EnableUpdateTarget_by(self, activator: u32) -> bool {
+        send(self.handle, "_EnableUpdateTarget", None, Some(activator))
     }
 }
 
 impl CBaseDoor {
     /// input_Close sends Close.
     pub fn input_Close(self) -> bool {
-        send(self.handle, "Close", None)
+        send(self.handle, "Close", None, None)
+    }
+
+    /// input_Close_by sends Close as input_Close does, caused by the entity of
+    /// handle activator.
+    pub fn input_Close_by(self, activator: u32) -> bool {
+        send(self.handle, "Close", None, Some(activator))
     }
 
     /// input_Lock sends Lock.
     pub fn input_Lock(self) -> bool {
-        send(self.handle, "Lock", None)
+        send(self.handle, "Lock", None, None)
+    }
+
+    /// input_Lock_by sends Lock as input_Lock does, caused by the entity of
+    /// handle activator.
+    pub fn input_Lock_by(self, activator: u32) -> bool {
+        send(self.handle, "Lock", None, Some(activator))
     }
 
     /// input_Open sends Open.
     pub fn input_Open(self) -> bool {
-        send(self.handle, "Open", None)
+        send(self.handle, "Open", None, None)
+    }
+
+    /// input_Open_by sends Open as input_Open does, caused by the entity of
+    /// handle activator.
+    pub fn input_Open_by(self, activator: u32) -> bool {
+        send(self.handle, "Open", None, Some(activator))
     }
 
     /// input_SetNoNPCs sends SetNoNPCs.
     pub fn input_SetNoNPCs(self, value: bool) -> bool {
-        send(self.handle, "SetNoNPCs", Some(value.into()))
+        send(self.handle, "SetNoNPCs", Some(value.into()), None)
+    }
+
+    /// input_SetNoNPCs_by sends SetNoNPCs as input_SetNoNPCs does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetNoNPCs_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetNoNPCs", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeed sends SetSpeed.
     pub fn input_SetSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetSpeed", Some(value.into()))
+        send(self.handle, "SetSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetSpeed_by sends SetSpeed as input_SetSpeed does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetToggleState sends SetToggleState.
     pub fn input_SetToggleState(self, value: f32) -> bool {
-        send(self.handle, "SetToggleState", Some(value.into()))
+        send(self.handle, "SetToggleState", Some(value.into()), None)
+    }
+
+    /// input_SetToggleState_by sends SetToggleState as input_SetToggleState
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetToggleState_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetToggleState", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_Unlock sends Unlock.
     pub fn input_Unlock(self) -> bool {
-        send(self.handle, "Unlock", None)
+        send(self.handle, "Unlock", None, None)
+    }
+
+    /// input_Unlock_by sends Unlock as input_Unlock does, caused by the entity
+    /// of handle activator.
+    pub fn input_Unlock_by(self, activator: u32) -> bool {
+        send(self.handle, "Unlock", None, Some(activator))
     }
 }
 
 impl CFuncPlat {
     /// input_GoDown sends GoDown.
     pub fn input_GoDown(self) -> bool {
-        send(self.handle, "GoDown", None)
+        send(self.handle, "GoDown", None, None)
+    }
+
+    /// input_GoDown_by sends GoDown as input_GoDown does, caused by the entity
+    /// of handle activator.
+    pub fn input_GoDown_by(self, activator: u32) -> bool {
+        send(self.handle, "GoDown", None, Some(activator))
     }
 
     /// input_GoUp sends GoUp.
     pub fn input_GoUp(self) -> bool {
-        send(self.handle, "GoUp", None)
+        send(self.handle, "GoUp", None, None)
+    }
+
+    /// input_GoUp_by sends GoUp as input_GoUp does, caused by the entity of
+    /// handle activator.
+    pub fn input_GoUp_by(self, activator: u32) -> bool {
+        send(self.handle, "GoUp", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CFuncTrackAuto {
     /// input_Trigger sends Trigger.
     pub fn input_Trigger(self) -> bool {
-        send(self.handle, "Trigger", None)
+        send(self.handle, "Trigger", None, None)
+    }
+
+    /// input_Trigger_by sends Trigger as input_Trigger does, caused by the
+    /// entity of handle activator.
+    pub fn input_Trigger_by(self, activator: u32) -> bool {
+        send(self.handle, "Trigger", None, Some(activator))
     }
 }
 
 impl CFuncTrain {
     /// input_Start sends Start.
     pub fn input_Start(self) -> bool {
-        send(self.handle, "Start", None)
+        send(self.handle, "Start", None, None)
+    }
+
+    /// input_Start_by sends Start as input_Start does, caused by the entity of
+    /// handle activator.
+    pub fn input_Start_by(self, activator: u32) -> bool {
+        send(self.handle, "Start", None, Some(activator))
     }
 
     /// input_Stop sends Stop.
     pub fn input_Stop(self) -> bool {
-        send(self.handle, "Stop", None)
+        send(self.handle, "Stop", None, None)
+    }
+
+    /// input_Stop_by sends Stop as input_Stop does, caused by the entity of
+    /// handle activator.
+    pub fn input_Stop_by(self, activator: u32) -> bool {
+        send(self.handle, "Stop", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CBaseTrigger {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_EndTouch sends EndTouch.
     pub fn input_EndTouch(self) -> bool {
-        send(self.handle, "EndTouch", None)
+        send(self.handle, "EndTouch", None, None)
+    }
+
+    /// input_EndTouch_by sends EndTouch as input_EndTouch does, caused by the
+    /// entity of handle activator.
+    pub fn input_EndTouch_by(self, activator: u32) -> bool {
+        send(self.handle, "EndTouch", None, Some(activator))
     }
 
     /// input_StartTouch sends StartTouch.
     pub fn input_StartTouch(self) -> bool {
-        send(self.handle, "StartTouch", None)
+        send(self.handle, "StartTouch", None, None)
+    }
+
+    /// input_StartTouch_by sends StartTouch as input_StartTouch does, caused by
+    /// the entity of handle activator.
+    pub fn input_StartTouch_by(self, activator: u32) -> bool {
+        send(self.handle, "StartTouch", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_TouchTest sends TouchTest.
     pub fn input_TouchTest(self) -> bool {
-        send(self.handle, "TouchTest", None)
+        send(self.handle, "TouchTest", None, None)
+    }
+
+    /// input_TouchTest_by sends TouchTest as input_TouchTest does, caused by
+    /// the entity of handle activator.
+    pub fn input_TouchTest_by(self, activator: u32) -> bool {
+        send(self.handle, "TouchTest", None, Some(activator))
     }
 }
 
 impl CChangeLevel {
     /// input_ChangeLevel sends ChangeLevel.
     pub fn input_ChangeLevel(self) -> bool {
-        send(self.handle, "ChangeLevel", None)
+        send(self.handle, "ChangeLevel", None, None)
+    }
+
+    /// input_ChangeLevel_by sends ChangeLevel as input_ChangeLevel does, caused
+    /// by the entity of handle activator.
+    pub fn input_ChangeLevel_by(self, activator: u32) -> bool {
+        send(self.handle, "ChangeLevel", None, Some(activator))
     }
 }
 
@@ -1285,1693 +2734,3603 @@ impl CCitadelCatapultTrigger {
     /// input_SpawnPickupTrail sends SpawnPickupTrail. Start laying the
     /// configured pickups along the launch arc now.
     pub fn input_SpawnPickupTrail(self) -> bool {
-        send(self.handle, "SpawnPickupTrail", None)
+        send(self.handle, "SpawnPickupTrail", None, None)
+    }
+
+    /// input_SpawnPickupTrail_by sends SpawnPickupTrail as
+    /// input_SpawnPickupTrail does, caused by the entity of handle activator.
+    pub fn input_SpawnPickupTrail_by(self, activator: u32) -> bool {
+        send(self.handle, "SpawnPickupTrail", None, Some(activator))
     }
 }
 
 impl CTriggerGameEvent {
     /// input_SetEndTouchEvent sends SetEndTouchEvent.
     pub fn input_SetEndTouchEvent(self, value: &str) -> bool {
-        send(self.handle, "SetEndTouchEvent", Some(value.into()))
+        send(self.handle, "SetEndTouchEvent", Some(value.into()), None)
+    }
+
+    /// input_SetEndTouchEvent_by sends SetEndTouchEvent as
+    /// input_SetEndTouchEvent does, caused by the entity of handle activator.
+    pub fn input_SetEndTouchEvent_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetEndTouchEvent", Some(value.into()), Some(activator))
     }
 
     /// input_SetStartTouchEvent sends SetStartTouchEvent.
     pub fn input_SetStartTouchEvent(self, value: &str) -> bool {
-        send(self.handle, "SetStartTouchEvent", Some(value.into()))
+        send(self.handle, "SetStartTouchEvent", Some(value.into()), None)
+    }
+
+    /// input_SetStartTouchEvent_by sends SetStartTouchEvent as
+    /// input_SetStartTouchEvent does, caused by the entity of handle activator.
+    pub fn input_SetStartTouchEvent_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetStartTouchEvent", Some(value.into()), Some(activator))
     }
 }
 
 impl CTriggerHurt {
     /// input_SetDamage sends SetDamage.
     pub fn input_SetDamage(self, value: f32) -> bool {
-        send(self.handle, "SetDamage", Some(value.into()))
+        send(self.handle, "SetDamage", Some(value.into()), None)
+    }
+
+    /// input_SetDamage_by sends SetDamage as input_SetDamage does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetDamage_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDamage", Some(value.into()), Some(activator))
     }
 }
 
 impl CTriggerImpact {
     /// input_Impact sends Impact.
     pub fn input_Impact(self) -> bool {
-        send(self.handle, "Impact", None)
+        send(self.handle, "Impact", None, None)
+    }
+
+    /// input_Impact_by sends Impact as input_Impact does, caused by the entity
+    /// of handle activator.
+    pub fn input_Impact_by(self, activator: u32) -> bool {
+        send(self.handle, "Impact", None, Some(activator))
     }
 
     /// input_SetMagnitude sends SetMagnitude.
     pub fn input_SetMagnitude(self, value: f32) -> bool {
-        send(self.handle, "SetMagnitude", Some(value.into()))
+        send(self.handle, "SetMagnitude", Some(value.into()), None)
+    }
+
+    /// input_SetMagnitude_by sends SetMagnitude as input_SetMagnitude does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetMagnitude_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMagnitude", Some(value.into()), Some(activator))
     }
 }
 
 impl CTriggerLook {
     /// input_FieldOfView sends FieldOfView.
     pub fn input_FieldOfView(self, value: f32) -> bool {
-        send(self.handle, "FieldOfView", Some(value.into()))
+        send(self.handle, "FieldOfView", Some(value.into()), None)
+    }
+
+    /// input_FieldOfView_by sends FieldOfView as input_FieldOfView does, caused
+    /// by the entity of handle activator.
+    pub fn input_FieldOfView_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "FieldOfView", Some(value.into()), Some(activator))
     }
 
     /// input_LookTime sends LookTime.
     pub fn input_LookTime(self, value: f32) -> bool {
-        send(self.handle, "LookTime", Some(value.into()))
+        send(self.handle, "LookTime", Some(value.into()), None)
+    }
+
+    /// input_LookTime_by sends LookTime as input_LookTime does, caused by the
+    /// entity of handle activator.
+    pub fn input_LookTime_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "LookTime", Some(value.into()), Some(activator))
     }
 }
 
 impl CTriggerPhysics {
     /// input_CollapseToForcePoint sends CollapseToForcePoint.
     pub fn input_CollapseToForcePoint(self, value: bool) -> bool {
-        send(self.handle, "CollapseToForcePoint", Some(value.into()))
+        send(self.handle, "CollapseToForcePoint", Some(value.into()), None)
+    }
+
+    /// input_CollapseToForcePoint_by sends CollapseToForcePoint as
+    /// input_CollapseToForcePoint does, caused by the entity of handle
+    /// activator.
+    pub fn input_CollapseToForcePoint_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "CollapseToForcePoint", Some(value.into()), Some(activator))
     }
 
     /// input_LinearForcePointAt sends LinearForcePointAt.
     pub fn input_LinearForcePointAt(self, value: Vector) -> bool {
-        send(self.handle, "LinearForcePointAt", Some(value.into()))
+        send(self.handle, "LinearForcePointAt", Some(value.into()), None)
+    }
+
+    /// input_LinearForcePointAt_by sends LinearForcePointAt as
+    /// input_LinearForcePointAt does, caused by the entity of handle activator.
+    pub fn input_LinearForcePointAt_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "LinearForcePointAt", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngVelocityDamping sends SetAngVelocityDamping.
     pub fn input_SetAngVelocityDamping(self, value: f32) -> bool {
-        send(self.handle, "SetAngVelocityDamping", Some(value.into()))
+        send(self.handle, "SetAngVelocityDamping", Some(value.into()), None)
+    }
+
+    /// input_SetAngVelocityDamping_by sends SetAngVelocityDamping as
+    /// input_SetAngVelocityDamping does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngVelocityDamping_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngVelocityDamping", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngVelocityLimit sends SetAngVelocityLimit.
     pub fn input_SetAngVelocityLimit(self, value: f32) -> bool {
-        send(self.handle, "SetAngVelocityLimit", Some(value.into()))
+        send(self.handle, "SetAngVelocityLimit", Some(value.into()), None)
+    }
+
+    /// input_SetAngVelocityLimit_by sends SetAngVelocityLimit as
+    /// input_SetAngVelocityLimit does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngVelocityLimit_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngVelocityLimit", Some(value.into()), Some(activator))
     }
 
     /// input_SetDampingRatio sends SetDampingRatio.
     pub fn input_SetDampingRatio(self, value: f32) -> bool {
-        send(self.handle, "SetDampingRatio", Some(value.into()))
+        send(self.handle, "SetDampingRatio", Some(value.into()), None)
+    }
+
+    /// input_SetDampingRatio_by sends SetDampingRatio as input_SetDampingRatio
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetDampingRatio_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDampingRatio", Some(value.into()), Some(activator))
     }
 
     /// input_SetFrequency sends SetFrequency.
     pub fn input_SetFrequency(self, value: f32) -> bool {
-        send(self.handle, "SetFrequency", Some(value.into()))
+        send(self.handle, "SetFrequency", Some(value.into()), None)
+    }
+
+    /// input_SetFrequency_by sends SetFrequency as input_SetFrequency does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetFrequency_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFrequency", Some(value.into()), Some(activator))
     }
 
     /// input_SetGravityScale sends SetGravityScale.
     pub fn input_SetGravityScale(self, value: f32) -> bool {
-        send(self.handle, "SetGravityScale", Some(value.into()))
+        send(self.handle, "SetGravityScale", Some(value.into()), None)
+    }
+
+    /// input_SetGravityScale_by sends SetGravityScale as input_SetGravityScale
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetGravityScale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetGravityScale", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearForce sends SetLinearForce.
     pub fn input_SetLinearForce(self, value: f32) -> bool {
-        send(self.handle, "SetLinearForce", Some(value.into()))
+        send(self.handle, "SetLinearForce", Some(value.into()), None)
+    }
+
+    /// input_SetLinearForce_by sends SetLinearForce as input_SetLinearForce
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetLinearForce_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLinearForce", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearForcePointAt sends SetLinearForcePointAt.
     pub fn input_SetLinearForcePointAt(self, value: &str) -> bool {
-        send(self.handle, "SetLinearForcePointAt", Some(value.into()))
+        send(self.handle, "SetLinearForcePointAt", Some(value.into()), None)
+    }
+
+    /// input_SetLinearForcePointAt_by sends SetLinearForcePointAt as
+    /// input_SetLinearForcePointAt does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetLinearForcePointAt_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetLinearForcePointAt", Some(value.into()), Some(activator))
     }
 
     /// input_SetVelocityDamping sends SetVelocityDamping.
     pub fn input_SetVelocityDamping(self, value: f32) -> bool {
-        send(self.handle, "SetVelocityDamping", Some(value.into()))
+        send(self.handle, "SetVelocityDamping", Some(value.into()), None)
+    }
+
+    /// input_SetVelocityDamping_by sends SetVelocityDamping as
+    /// input_SetVelocityDamping does, caused by the entity of handle activator.
+    pub fn input_SetVelocityDamping_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetVelocityDamping", Some(value.into()), Some(activator))
     }
 
     /// input_SetVelocityLimit sends SetVelocityLimit.
     pub fn input_SetVelocityLimit(self, value: f32) -> bool {
-        send(self.handle, "SetVelocityLimit", Some(value.into()))
+        send(self.handle, "SetVelocityLimit", Some(value.into()), None)
+    }
+
+    /// input_SetVelocityLimit_by sends SetVelocityLimit as
+    /// input_SetVelocityLimit does, caused by the entity of handle activator.
+    pub fn input_SetVelocityLimit_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetVelocityLimit", Some(value.into()), Some(activator))
     }
 }
 
 impl CTriggerPush {
     /// input_SetPushDirection sends SetPushDirection.
     pub fn input_SetPushDirection(self, value: Vector) -> bool {
-        send(self.handle, "SetPushDirection", Some(value.into()))
+        send(self.handle, "SetPushDirection", Some(value.into()), None)
+    }
+
+    /// input_SetPushDirection_by sends SetPushDirection as
+    /// input_SetPushDirection does, caused by the entity of handle activator.
+    pub fn input_SetPushDirection_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "SetPushDirection", Some(value.into()), Some(activator))
     }
 
     /// input_SetPushSpeed sends SetPushSpeed.
     pub fn input_SetPushSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetPushSpeed", Some(value.into()))
+        send(self.handle, "SetPushSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetPushSpeed_by sends SetPushSpeed as input_SetPushSpeed does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetPushSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetPushSpeed", Some(value.into()), Some(activator))
     }
 }
 
 impl CFuncMoveLinear {
     /// input_Close sends Close.
     pub fn input_Close(self) -> bool {
-        send(self.handle, "Close", None)
+        send(self.handle, "Close", None, None)
+    }
+
+    /// input_Close_by sends Close as input_Close does, caused by the entity of
+    /// handle activator.
+    pub fn input_Close_by(self, activator: u32) -> bool {
+        send(self.handle, "Close", None, Some(activator))
     }
 
     /// input_Open sends Open.
     pub fn input_Open(self) -> bool {
-        send(self.handle, "Open", None)
+        send(self.handle, "Open", None, None)
+    }
+
+    /// input_Open_by sends Open as input_Open does, caused by the entity of
+    /// handle activator.
+    pub fn input_Open_by(self, activator: u32) -> bool {
+        send(self.handle, "Open", None, Some(activator))
     }
 
     /// input_ResetPosition sends ResetPosition.
     pub fn input_ResetPosition(self, value: f32) -> bool {
-        send(self.handle, "ResetPosition", Some(value.into()))
+        send(self.handle, "ResetPosition", Some(value.into()), None)
+    }
+
+    /// input_ResetPosition_by sends ResetPosition as input_ResetPosition does,
+    /// caused by the entity of handle activator.
+    pub fn input_ResetPosition_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "ResetPosition", Some(value.into()), Some(activator))
     }
 
     /// input_SetMoveDistanceFromEnd sends SetMoveDistanceFromEnd.
     pub fn input_SetMoveDistanceFromEnd(self, value: f32) -> bool {
-        send(self.handle, "SetMoveDistanceFromEnd", Some(value.into()))
+        send(self.handle, "SetMoveDistanceFromEnd", Some(value.into()), None)
+    }
+
+    /// input_SetMoveDistanceFromEnd_by sends SetMoveDistanceFromEnd as
+    /// input_SetMoveDistanceFromEnd does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMoveDistanceFromEnd_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMoveDistanceFromEnd", Some(value.into()), Some(activator))
     }
 
     /// input_SetMoveDistanceFromStart sends SetMoveDistanceFromStart.
     pub fn input_SetMoveDistanceFromStart(self, value: f32) -> bool {
-        send(self.handle, "SetMoveDistanceFromStart", Some(value.into()))
+        send(self.handle, "SetMoveDistanceFromStart", Some(value.into()), None)
+    }
+
+    /// input_SetMoveDistanceFromStart_by sends SetMoveDistanceFromStart as
+    /// input_SetMoveDistanceFromStart does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMoveDistanceFromStart_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMoveDistanceFromStart", Some(value.into()), Some(activator))
     }
 
     /// input_SetPosition sends SetPosition.
     pub fn input_SetPosition(self, value: f32) -> bool {
-        send(self.handle, "SetPosition", Some(value.into()))
+        send(self.handle, "SetPosition", Some(value.into()), None)
+    }
+
+    /// input_SetPosition_by sends SetPosition as input_SetPosition does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetPosition_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetPosition", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeed sends SetSpeed.
     pub fn input_SetSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetSpeed", Some(value.into()))
+        send(self.handle, "SetSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetSpeed_by sends SetSpeed as input_SetSpeed does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_TeleportToTarget sends TeleportToTarget.
     pub fn input_TeleportToTarget(self, value: &str) -> bool {
-        send(self.handle, "TeleportToTarget", Some(value.into()))
+        send(self.handle, "TeleportToTarget", Some(value.into()), None)
+    }
+
+    /// input_TeleportToTarget_by sends TeleportToTarget as
+    /// input_TeleportToTarget does, caused by the entity of handle activator.
+    pub fn input_TeleportToTarget_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "TeleportToTarget", Some(value.into()), Some(activator))
     }
 }
 
 impl CGunTarget {
     /// input_Start sends Start.
     pub fn input_Start(self) -> bool {
-        send(self.handle, "Start", None)
+        send(self.handle, "Start", None, None)
+    }
+
+    /// input_Start_by sends Start as input_Start does, caused by the entity of
+    /// handle activator.
+    pub fn input_Start_by(self, activator: u32) -> bool {
+        send(self.handle, "Start", None, Some(activator))
     }
 
     /// input_Stop sends Stop.
     pub fn input_Stop(self) -> bool {
-        send(self.handle, "Stop", None)
+        send(self.handle, "Stop", None, None)
+    }
+
+    /// input_Stop_by sends Stop as input_Stop does, caused by the entity of
+    /// handle activator.
+    pub fn input_Stop_by(self, activator: u32) -> bool {
+        send(self.handle, "Stop", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CBeam {
     /// input_ColorBlueValue sends ColorBlueValue.
     pub fn input_ColorBlueValue(self, value: f32) -> bool {
-        send(self.handle, "ColorBlueValue", Some(value.into()))
+        send(self.handle, "ColorBlueValue", Some(value.into()), None)
+    }
+
+    /// input_ColorBlueValue_by sends ColorBlueValue as input_ColorBlueValue
+    /// does, caused by the entity of handle activator.
+    pub fn input_ColorBlueValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "ColorBlueValue", Some(value.into()), Some(activator))
     }
 
     /// input_ColorGreenValue sends ColorGreenValue.
     pub fn input_ColorGreenValue(self, value: f32) -> bool {
-        send(self.handle, "ColorGreenValue", Some(value.into()))
+        send(self.handle, "ColorGreenValue", Some(value.into()), None)
+    }
+
+    /// input_ColorGreenValue_by sends ColorGreenValue as input_ColorGreenValue
+    /// does, caused by the entity of handle activator.
+    pub fn input_ColorGreenValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "ColorGreenValue", Some(value.into()), Some(activator))
     }
 
     /// input_ColorRedValue sends ColorRedValue.
     pub fn input_ColorRedValue(self, value: f32) -> bool {
-        send(self.handle, "ColorRedValue", Some(value.into()))
+        send(self.handle, "ColorRedValue", Some(value.into()), None)
+    }
+
+    /// input_ColorRedValue_by sends ColorRedValue as input_ColorRedValue does,
+    /// caused by the entity of handle activator.
+    pub fn input_ColorRedValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "ColorRedValue", Some(value.into()), Some(activator))
     }
 
     /// input_Noise sends Noise.
     pub fn input_Noise(self, value: f32) -> bool {
-        send(self.handle, "Noise", Some(value.into()))
+        send(self.handle, "Noise", Some(value.into()), None)
+    }
+
+    /// input_Noise_by sends Noise as input_Noise does, caused by the entity of
+    /// handle activator.
+    pub fn input_Noise_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Noise", Some(value.into()), Some(activator))
     }
 
     /// input_ScrollSpeed sends ScrollSpeed.
     pub fn input_ScrollSpeed(self, value: f32) -> bool {
-        send(self.handle, "ScrollSpeed", Some(value.into()))
+        send(self.handle, "ScrollSpeed", Some(value.into()), None)
+    }
+
+    /// input_ScrollSpeed_by sends ScrollSpeed as input_ScrollSpeed does, caused
+    /// by the entity of handle activator.
+    pub fn input_ScrollSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "ScrollSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_Width sends Width.
     pub fn input_Width(self, value: f32) -> bool {
-        send(self.handle, "Width", Some(value.into()))
+        send(self.handle, "Width", Some(value.into()), None)
+    }
+
+    /// input_Width_by sends Width as input_Width does, caused by the entity of
+    /// handle activator.
+    pub fn input_Width_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Width", Some(value.into()), Some(activator))
     }
 }
 
 impl CEnvBeam {
     /// input_StrikeOnce sends StrikeOnce.
     pub fn input_StrikeOnce(self) -> bool {
-        send(self.handle, "StrikeOnce", None)
+        send(self.handle, "StrikeOnce", None, None)
+    }
+
+    /// input_StrikeOnce_by sends StrikeOnce as input_StrikeOnce does, caused by
+    /// the entity of handle activator.
+    pub fn input_StrikeOnce_by(self, activator: u32) -> bool {
+        send(self.handle, "StrikeOnce", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
 impl CEnvLaser {
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
 impl CBreakable {
     /// input_AddHealth sends AddHealth.
     pub fn input_AddHealth(self, value: i32) -> bool {
-        send(self.handle, "AddHealth", Some(value.into()))
+        send(self.handle, "AddHealth", Some(value.into()), None)
+    }
+
+    /// input_AddHealth_by sends AddHealth as input_AddHealth does, caused by
+    /// the entity of handle activator.
+    pub fn input_AddHealth_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "AddHealth", Some(value.into()), Some(activator))
     }
 
     /// input_Break sends Break.
     pub fn input_Break(self) -> bool {
-        send(self.handle, "Break", None)
+        send(self.handle, "Break", None, None)
+    }
+
+    /// input_Break_by sends Break as input_Break does, caused by the entity of
+    /// handle activator.
+    pub fn input_Break_by(self, activator: u32) -> bool {
+        send(self.handle, "Break", None, Some(activator))
     }
 
     /// input_RemoveHealth sends RemoveHealth.
     pub fn input_RemoveHealth(self, value: i32) -> bool {
-        send(self.handle, "RemoveHealth", Some(value.into()))
+        send(self.handle, "RemoveHealth", Some(value.into()), None)
+    }
+
+    /// input_RemoveHealth_by sends RemoveHealth as input_RemoveHealth does,
+    /// caused by the entity of handle activator.
+    pub fn input_RemoveHealth_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "RemoveHealth", Some(value.into()), Some(activator))
     }
 
     /// input_SetEnableBreaking sends SetEnableBreaking.
     pub fn input_SetEnableBreaking(self, value: bool) -> bool {
-        send(self.handle, "SetEnableBreaking", Some(value.into()))
+        send(self.handle, "SetEnableBreaking", Some(value.into()), None)
+    }
+
+    /// input_SetEnableBreaking_by sends SetEnableBreaking as
+    /// input_SetEnableBreaking does, caused by the entity of handle activator.
+    pub fn input_SetEnableBreaking_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetEnableBreaking", Some(value.into()), Some(activator))
     }
 
     /// input_SetEnableCollisions sends SetEnableCollisions.
     pub fn input_SetEnableCollisions(self, value: bool) -> bool {
-        send(self.handle, "SetEnableCollisions", Some(value.into()))
+        send(self.handle, "SetEnableCollisions", Some(value.into()), None)
+    }
+
+    /// input_SetEnableCollisions_by sends SetEnableCollisions as
+    /// input_SetEnableCollisions does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetEnableCollisions_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetEnableCollisions", Some(value.into()), Some(activator))
     }
 
     /// input_SetHealth sends SetHealth.
     pub fn input_SetHealth(self, value: i32) -> bool {
-        send(self.handle, "SetHealth", Some(value.into()))
+        send(self.handle, "SetHealth", Some(value.into()), None)
+    }
+
+    /// input_SetHealth_by sends SetHealth as input_SetHealth does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetHealth_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetHealth", Some(value.into()), Some(activator))
     }
 
     /// input_SetMass sends SetMass.
     pub fn input_SetMass(self, value: f32) -> bool {
-        send(self.handle, "SetMass", Some(value.into()))
+        send(self.handle, "SetMass", Some(value.into()), None)
+    }
+
+    /// input_SetMass_by sends SetMass as input_SetMass does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetMass_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMass", Some(value.into()), Some(activator))
     }
 
     /// input_physdamagescale sends physdamagescale.
     pub fn input_physdamagescale(self, value: f32) -> bool {
-        send(self.handle, "physdamagescale", Some(value.into()))
+        send(self.handle, "physdamagescale", Some(value.into()), None)
+    }
+
+    /// input_physdamagescale_by sends physdamagescale as input_physdamagescale
+    /// does, caused by the entity of handle activator.
+    pub fn input_physdamagescale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "physdamagescale", Some(value.into()), Some(activator))
     }
 }
 
 impl CPhysBox {
     /// input_DisableMotion sends DisableMotion.
     pub fn input_DisableMotion(self) -> bool {
-        send(self.handle, "DisableMotion", None)
+        send(self.handle, "DisableMotion", None, None)
+    }
+
+    /// input_DisableMotion_by sends DisableMotion as input_DisableMotion does,
+    /// caused by the entity of handle activator.
+    pub fn input_DisableMotion_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableMotion", None, Some(activator))
     }
 
     /// input_EnableMotion sends EnableMotion.
     pub fn input_EnableMotion(self) -> bool {
-        send(self.handle, "EnableMotion", None)
+        send(self.handle, "EnableMotion", None, None)
+    }
+
+    /// input_EnableMotion_by sends EnableMotion as input_EnableMotion does,
+    /// caused by the entity of handle activator.
+    pub fn input_EnableMotion_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableMotion", None, Some(activator))
     }
 
     /// input_ForceDrop sends ForceDrop.
     pub fn input_ForceDrop(self) -> bool {
-        send(self.handle, "ForceDrop", None)
+        send(self.handle, "ForceDrop", None, None)
+    }
+
+    /// input_ForceDrop_by sends ForceDrop as input_ForceDrop does, caused by
+    /// the entity of handle activator.
+    pub fn input_ForceDrop_by(self, activator: u32) -> bool {
+        send(self.handle, "ForceDrop", None, Some(activator))
     }
 
     /// input_Sleep sends Sleep.
     pub fn input_Sleep(self) -> bool {
-        send(self.handle, "Sleep", None)
+        send(self.handle, "Sleep", None, None)
+    }
+
+    /// input_Sleep_by sends Sleep as input_Sleep does, caused by the entity of
+    /// handle activator.
+    pub fn input_Sleep_by(self, activator: u32) -> bool {
+        send(self.handle, "Sleep", None, Some(activator))
     }
 
     /// input_Wake sends Wake.
     pub fn input_Wake(self) -> bool {
-        send(self.handle, "Wake", None)
+        send(self.handle, "Wake", None, None)
+    }
+
+    /// input_Wake_by sends Wake as input_Wake does, caused by the entity of
+    /// handle activator.
+    pub fn input_Wake_by(self, activator: u32) -> bool {
+        send(self.handle, "Wake", None, Some(activator))
     }
 }
 
 impl CDynamicLight {
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 
     /// input__cone sends _cone.
     pub fn input__cone(self, value: f32) -> bool {
-        send(self.handle, "_cone", Some(value.into()))
+        send(self.handle, "_cone", Some(value.into()), None)
+    }
+
+    /// input__cone_by sends _cone as input__cone does, caused by the entity of
+    /// handle activator.
+    pub fn input__cone_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "_cone", Some(value.into()), Some(activator))
     }
 
     /// input__inner_cone sends _inner_cone.
     pub fn input__inner_cone(self, value: f32) -> bool {
-        send(self.handle, "_inner_cone", Some(value.into()))
+        send(self.handle, "_inner_cone", Some(value.into()), None)
+    }
+
+    /// input__inner_cone_by sends _inner_cone as input__inner_cone does, caused
+    /// by the entity of handle activator.
+    pub fn input__inner_cone_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "_inner_cone", Some(value.into()), Some(activator))
     }
 
     /// input_brightness sends brightness.
     pub fn input_brightness(self, value: i32) -> bool {
-        send(self.handle, "brightness", Some(value.into()))
+        send(self.handle, "brightness", Some(value.into()), None)
+    }
+
+    /// input_brightness_by sends brightness as input_brightness does, caused by
+    /// the entity of handle activator.
+    pub fn input_brightness_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "brightness", Some(value.into()), Some(activator))
     }
 
     /// input_distance sends distance.
     pub fn input_distance(self, value: f32) -> bool {
-        send(self.handle, "distance", Some(value.into()))
+        send(self.handle, "distance", Some(value.into()), None)
+    }
+
+    /// input_distance_by sends distance as input_distance does, caused by the
+    /// entity of handle activator.
+    pub fn input_distance_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "distance", Some(value.into()), Some(activator))
     }
 
     /// input_spotlight_radius sends spotlight_radius.
     pub fn input_spotlight_radius(self, value: f32) -> bool {
-        send(self.handle, "spotlight_radius", Some(value.into()))
+        send(self.handle, "spotlight_radius", Some(value.into()), None)
+    }
+
+    /// input_spotlight_radius_by sends spotlight_radius as
+    /// input_spotlight_radius does, caused by the entity of handle activator.
+    pub fn input_spotlight_radius_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "spotlight_radius", Some(value.into()), Some(activator))
     }
 
     /// input_style sends style.
     pub fn input_style(self, value: i32) -> bool {
-        send(self.handle, "style", Some(value.into()))
+        send(self.handle, "style", Some(value.into()), None)
+    }
+
+    /// input_style_by sends style as input_style does, caused by the entity of
+    /// handle activator.
+    pub fn input_style_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "style", Some(value.into()), Some(activator))
     }
 }
 
 impl CEntityDissolve {
     /// input_Dissolve sends Dissolve.
     pub fn input_Dissolve(self, value: &str) -> bool {
-        send(self.handle, "Dissolve", Some(value.into()))
+        send(self.handle, "Dissolve", Some(value.into()), None)
+    }
+
+    /// input_Dissolve_by sends Dissolve as input_Dissolve does, caused by the
+    /// entity of handle activator.
+    pub fn input_Dissolve_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "Dissolve", Some(value.into()), Some(activator))
     }
 }
 
 impl CEnvSky {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CFuncBrush {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetExcluded sends SetExcluded.
     pub fn input_SetExcluded(self, value: &str) -> bool {
-        send(self.handle, "SetExcluded", Some(value.into()))
+        send(self.handle, "SetExcluded", Some(value.into()), None)
+    }
+
+    /// input_SetExcluded_by sends SetExcluded as input_SetExcluded does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetExcluded_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetExcluded", Some(value.into()), Some(activator))
     }
 
     /// input_SetInvert sends SetInvert.
     pub fn input_SetInvert(self, value: bool) -> bool {
-        send(self.handle, "SetInvert", Some(value.into()))
+        send(self.handle, "SetInvert", Some(value.into()), None)
+    }
+
+    /// input_SetInvert_by sends SetInvert as input_SetInvert does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetInvert_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetInvert", Some(value.into()), Some(activator))
     }
 
     /// input_SetNonsolid sends SetNonsolid.
     pub fn input_SetNonsolid(self) -> bool {
-        send(self.handle, "SetNonsolid", None)
+        send(self.handle, "SetNonsolid", None, None)
+    }
+
+    /// input_SetNonsolid_by sends SetNonsolid as input_SetNonsolid does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetNonsolid_by(self, activator: u32) -> bool {
+        send(self.handle, "SetNonsolid", None, Some(activator))
     }
 
     /// input_SetSolid sends SetSolid.
     pub fn input_SetSolid(self) -> bool {
-        send(self.handle, "SetSolid", None)
+        send(self.handle, "SetSolid", None, None)
+    }
+
+    /// input_SetSolid_by sends SetSolid as input_SetSolid does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSolid_by(self, activator: u32) -> bool {
+        send(self.handle, "SetSolid", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CFuncElectrifiedVolume {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CFuncMonitor {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetCamera sends SetCamera.
     pub fn input_SetCamera(self, value: &str) -> bool {
-        send(self.handle, "SetCamera", Some(value.into()))
+        send(self.handle, "SetCamera", Some(value.into()), None)
+    }
+
+    /// input_SetCamera_by sends SetCamera as input_SetCamera does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetCamera_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetCamera", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CFuncInteractionLayerClip {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CFuncLadder {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CFuncMover {
     /// input_ClearFollowMoverEntity sends ClearFollowMoverEntity.
     pub fn input_ClearFollowMoverEntity(self) -> bool {
-        send(self.handle, "ClearFollowMoverEntity", None)
+        send(self.handle, "ClearFollowMoverEntity", None, None)
+    }
+
+    /// input_ClearFollowMoverEntity_by sends ClearFollowMoverEntity as
+    /// input_ClearFollowMoverEntity does, caused by the entity of handle
+    /// activator.
+    pub fn input_ClearFollowMoverEntity_by(self, activator: u32) -> bool {
+        send(self.handle, "ClearFollowMoverEntity", None, Some(activator))
     }
 
     /// input_ClearPathEnd sends ClearPathEnd.
     pub fn input_ClearPathEnd(self) -> bool {
-        send(self.handle, "ClearPathEnd", None)
+        send(self.handle, "ClearPathEnd", None, None)
+    }
+
+    /// input_ClearPathEnd_by sends ClearPathEnd as input_ClearPathEnd does,
+    /// caused by the entity of handle activator.
+    pub fn input_ClearPathEnd_by(self, activator: u32) -> bool {
+        send(self.handle, "ClearPathEnd", None, Some(activator))
     }
 
     /// input_ClearStartFollowingClosestMover sends
     /// ClearStartFollowingClosestMover.
     pub fn input_ClearStartFollowingClosestMover(self) -> bool {
-        send(self.handle, "ClearStartFollowingClosestMover", None)
+        send(self.handle, "ClearStartFollowingClosestMover", None, None)
+    }
+
+    /// input_ClearStartFollowingClosestMover_by sends
+    /// ClearStartFollowingClosestMover as input_ClearStartFollowingClosestMover
+    /// does, caused by the entity of handle activator.
+    pub fn input_ClearStartFollowingClosestMover_by(self, activator: u32) -> bool {
+        send(self.handle, "ClearStartFollowingClosestMover", None, Some(activator))
     }
 
     /// input_DeleteFollowMoverSpringConstraint sends
     /// DeleteFollowMoverSpringConstraint.
     pub fn input_DeleteFollowMoverSpringConstraint(self) -> bool {
-        send(self.handle, "DeleteFollowMoverSpringConstraint", None)
+        send(self.handle, "DeleteFollowMoverSpringConstraint", None, None)
+    }
+
+    /// input_DeleteFollowMoverSpringConstraint_by sends
+    /// DeleteFollowMoverSpringConstraint as
+    /// input_DeleteFollowMoverSpringConstraint does, caused by the entity of
+    /// handle activator.
+    pub fn input_DeleteFollowMoverSpringConstraint_by(self, activator: u32) -> bool {
+        send(self.handle, "DeleteFollowMoverSpringConstraint", None, Some(activator))
     }
 
     /// input_DisconnectFromPath sends DisconnectFromPath.
     pub fn input_DisconnectFromPath(self) -> bool {
-        send(self.handle, "DisconnectFromPath", None)
+        send(self.handle, "DisconnectFromPath", None, None)
+    }
+
+    /// input_DisconnectFromPath_by sends DisconnectFromPath as
+    /// input_DisconnectFromPath does, caused by the entity of handle activator.
+    pub fn input_DisconnectFromPath_by(self, activator: u32) -> bool {
+        send(self.handle, "DisconnectFromPath", None, Some(activator))
     }
 
     /// input_Pause sends Pause.
     pub fn input_Pause(self) -> bool {
-        send(self.handle, "Pause", None)
+        send(self.handle, "Pause", None, None)
+    }
+
+    /// input_Pause_by sends Pause as input_Pause does, caused by the entity of
+    /// handle activator.
+    pub fn input_Pause_by(self, activator: u32) -> bool {
+        send(self.handle, "Pause", None, Some(activator))
     }
 
     /// input_SetDistanceToReachMaxSpeed sends SetDistanceToReachMaxSpeed.
     pub fn input_SetDistanceToReachMaxSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetDistanceToReachMaxSpeed", Some(value.into()))
+        send(self.handle, "SetDistanceToReachMaxSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetDistanceToReachMaxSpeed_by sends SetDistanceToReachMaxSpeed as
+    /// input_SetDistanceToReachMaxSpeed does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetDistanceToReachMaxSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDistanceToReachMaxSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetDistanceToReachZeroSpeed sends SetDistanceToReachZeroSpeed.
     pub fn input_SetDistanceToReachZeroSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetDistanceToReachZeroSpeed", Some(value.into()))
+        send(self.handle, "SetDistanceToReachZeroSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetDistanceToReachZeroSpeed_by sends SetDistanceToReachZeroSpeed
+    /// as input_SetDistanceToReachZeroSpeed does, caused by the entity of
+    /// handle activator.
+    pub fn input_SetDistanceToReachZeroSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDistanceToReachZeroSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetFollowDistance sends SetFollowDistance.
     pub fn input_SetFollowDistance(self, value: f32) -> bool {
-        send(self.handle, "SetFollowDistance", Some(value.into()))
+        send(self.handle, "SetFollowDistance", Some(value.into()), None)
+    }
+
+    /// input_SetFollowDistance_by sends SetFollowDistance as
+    /// input_SetFollowDistance does, caused by the entity of handle activator.
+    pub fn input_SetFollowDistance_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFollowDistance", Some(value.into()), Some(activator))
     }
 
     /// input_SetFollowMinimumSpeed sends SetFollowMinimumSpeed.
     pub fn input_SetFollowMinimumSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetFollowMinimumSpeed", Some(value.into()))
+        send(self.handle, "SetFollowMinimumSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetFollowMinimumSpeed_by sends SetFollowMinimumSpeed as
+    /// input_SetFollowMinimumSpeed does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetFollowMinimumSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFollowMinimumSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetFollowMoverConstraintType sends SetFollowMoverConstraintType.
     pub fn input_SetFollowMoverConstraintType(self, value: i32) -> bool {
-        send(self.handle, "SetFollowMoverConstraintType", Some(value.into()))
+        send(self.handle, "SetFollowMoverConstraintType", Some(value.into()), None)
+    }
+
+    /// input_SetFollowMoverConstraintType_by sends SetFollowMoverConstraintType
+    /// as input_SetFollowMoverConstraintType does, caused by the entity of
+    /// handle activator.
+    pub fn input_SetFollowMoverConstraintType_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetFollowMoverConstraintType", Some(value.into()), Some(activator))
     }
 
     /// input_SetFollowMoverEntityToClosestOnSpline sends
     /// SetFollowMoverEntityToClosestOnSpline.
     pub fn input_SetFollowMoverEntityToClosestOnSpline(self) -> bool {
-        send(self.handle, "SetFollowMoverEntityToClosestOnSpline", None)
+        send(self.handle, "SetFollowMoverEntityToClosestOnSpline", None, None)
+    }
+
+    /// input_SetFollowMoverEntityToClosestOnSpline_by sends
+    /// SetFollowMoverEntityToClosestOnSpline as
+    /// input_SetFollowMoverEntityToClosestOnSpline does, caused by the entity
+    /// of handle activator.
+    pub fn input_SetFollowMoverEntityToClosestOnSpline_by(self, activator: u32) -> bool {
+        send(self.handle, "SetFollowMoverEntityToClosestOnSpline", None, Some(activator))
     }
 
     /// input_SetFollowMoverSpringStrength sends SetFollowMoverSpringStrength.
     pub fn input_SetFollowMoverSpringStrength(self, value: i32) -> bool {
-        send(self.handle, "SetFollowMoverSpringStrength", Some(value.into()))
+        send(self.handle, "SetFollowMoverSpringStrength", Some(value.into()), None)
+    }
+
+    /// input_SetFollowMoverSpringStrength_by sends SetFollowMoverSpringStrength
+    /// as input_SetFollowMoverSpringStrength does, caused by the entity of
+    /// handle activator.
+    pub fn input_SetFollowMoverSpringStrength_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetFollowMoverSpringStrength", Some(value.into()), Some(activator))
     }
 
     /// input_SetMoveType sends SetMoveType.
     pub fn input_SetMoveType(self, value: i32) -> bool {
-        send(self.handle, "SetMoveType", Some(value.into()))
+        send(self.handle, "SetMoveType", Some(value.into()), None)
+    }
+
+    /// input_SetMoveType_by sends SetMoveType as input_SetMoveType does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetMoveType_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetMoveType", Some(value.into()), Some(activator))
     }
 
     /// input_SetMoverOffsetFromPath sends SetMoverOffsetFromPath. Set the
     /// offset from the spline the mover rides at, in the movers own space. The
     /// mover snaps to the new offset, its location along the path is unchanged.
     pub fn input_SetMoverOffsetFromPath(self, value: Vector) -> bool {
-        send(self.handle, "SetMoverOffsetFromPath", Some(value.into()))
+        send(self.handle, "SetMoverOffsetFromPath", Some(value.into()), None)
+    }
+
+    /// input_SetMoverOffsetFromPath_by sends SetMoverOffsetFromPath as
+    /// input_SetMoverOffsetFromPath does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMoverOffsetFromPath_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "SetMoverOffsetFromPath", Some(value.into()), Some(activator))
     }
 
     /// input_SetOffsetFromPath sends SetOffsetFromPath.
     pub fn input_SetOffsetFromPath(self, value: Vector) -> bool {
-        send(self.handle, "SetOffsetFromPath", Some(value.into()))
+        send(self.handle, "SetOffsetFromPath", Some(value.into()), None)
+    }
+
+    /// input_SetOffsetFromPath_by sends SetOffsetFromPath as
+    /// input_SetOffsetFromPath does, caused by the entity of handle activator.
+    pub fn input_SetOffsetFromPath_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "SetOffsetFromPath", Some(value.into()), Some(activator))
     }
 
     /// input_SetOrientationMode sends SetOrientationMode.
     pub fn input_SetOrientationMode(self, value: i32) -> bool {
-        send(self.handle, "SetOrientationMode", Some(value.into()))
+        send(self.handle, "SetOrientationMode", Some(value.into()), None)
+    }
+
+    /// input_SetOrientationMode_by sends SetOrientationMode as
+    /// input_SetOrientationMode does, caused by the entity of handle activator.
+    pub fn input_SetOrientationMode_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetOrientationMode", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeed sends SetSpeed.
     pub fn input_SetSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetSpeed", Some(value.into()))
+        send(self.handle, "SetSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetSpeed_by sends SetSpeed as input_SetSpeed does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeedImmediate sends SetSpeedImmediate.
     pub fn input_SetSpeedImmediate(self, value: f32) -> bool {
-        send(self.handle, "SetSpeedImmediate", Some(value.into()))
+        send(self.handle, "SetSpeedImmediate", Some(value.into()), None)
+    }
+
+    /// input_SetSpeedImmediate_by sends SetSpeedImmediate as
+    /// input_SetSpeedImmediate does, caused by the entity of handle activator.
+    pub fn input_SetSpeedImmediate_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeedImmediate", Some(value.into()), Some(activator))
     }
 
     /// input_SetTimeToBlendToNewOrientation sends
     /// SetTimeToBlendToNewOrientation.
     pub fn input_SetTimeToBlendToNewOrientation(self, value: f32) -> bool {
-        send(self.handle, "SetTimeToBlendToNewOrientation", Some(value.into()))
+        send(self.handle, "SetTimeToBlendToNewOrientation", Some(value.into()), None)
+    }
+
+    /// input_SetTimeToBlendToNewOrientation_by sends
+    /// SetTimeToBlendToNewOrientation as input_SetTimeToBlendToNewOrientation
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetTimeToBlendToNewOrientation_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetTimeToBlendToNewOrientation", Some(value.into()), Some(activator))
     }
 
     /// input_SetTimeToReachMaxSpeed sends SetTimeToReachMaxSpeed.
     pub fn input_SetTimeToReachMaxSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetTimeToReachMaxSpeed", Some(value.into()))
+        send(self.handle, "SetTimeToReachMaxSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetTimeToReachMaxSpeed_by sends SetTimeToReachMaxSpeed as
+    /// input_SetTimeToReachMaxSpeed does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetTimeToReachMaxSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetTimeToReachMaxSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetTimeToReachZeroSpeed sends SetTimeToReachZeroSpeed.
     pub fn input_SetTimeToReachZeroSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetTimeToReachZeroSpeed", Some(value.into()))
+        send(self.handle, "SetTimeToReachZeroSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetTimeToReachZeroSpeed_by sends SetTimeToReachZeroSpeed as
+    /// input_SetTimeToReachZeroSpeed does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetTimeToReachZeroSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetTimeToReachZeroSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_Start sends Start.
     pub fn input_Start(self) -> bool {
-        send(self.handle, "Start", None)
+        send(self.handle, "Start", None, None)
+    }
+
+    /// input_Start_by sends Start as input_Start does, caused by the entity of
+    /// handle activator.
+    pub fn input_Start_by(self, activator: u32) -> bool {
+        send(self.handle, "Start", None, Some(activator))
     }
 
     /// input_StartForward sends StartForward.
     pub fn input_StartForward(self) -> bool {
-        send(self.handle, "StartForward", None)
+        send(self.handle, "StartForward", None, None)
+    }
+
+    /// input_StartForward_by sends StartForward as input_StartForward does,
+    /// caused by the entity of handle activator.
+    pub fn input_StartForward_by(self, activator: u32) -> bool {
+        send(self.handle, "StartForward", None, Some(activator))
     }
 
     /// input_StartReverse sends StartReverse.
     pub fn input_StartReverse(self) -> bool {
-        send(self.handle, "StartReverse", None)
+        send(self.handle, "StartReverse", None, None)
+    }
+
+    /// input_StartReverse_by sends StartReverse as input_StartReverse does,
+    /// caused by the entity of handle activator.
+    pub fn input_StartReverse_by(self, activator: u32) -> bool {
+        send(self.handle, "StartReverse", None, Some(activator))
     }
 
     /// input_Stop sends Stop.
     pub fn input_Stop(self) -> bool {
-        send(self.handle, "Stop", None)
+        send(self.handle, "Stop", None, None)
+    }
+
+    /// input_Stop_by sends Stop as input_Stop does, caused by the entity of
+    /// handle activator.
+    pub fn input_Stop_by(self, activator: u32) -> bool {
+        send(self.handle, "Stop", None, Some(activator))
     }
 
     /// input_StopImmediate sends StopImmediate.
     pub fn input_StopImmediate(self) -> bool {
-        send(self.handle, "StopImmediate", None)
+        send(self.handle, "StopImmediate", None, None)
+    }
+
+    /// input_StopImmediate_by sends StopImmediate as input_StopImmediate does,
+    /// caused by the entity of handle activator.
+    pub fn input_StopImmediate_by(self, activator: u32) -> bool {
+        send(self.handle, "StopImmediate", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_ToggleDirection sends ToggleDirection.
     pub fn input_ToggleDirection(self) -> bool {
-        send(self.handle, "ToggleDirection", None)
+        send(self.handle, "ToggleDirection", None, None)
+    }
+
+    /// input_ToggleDirection_by sends ToggleDirection as input_ToggleDirection
+    /// does, caused by the entity of handle activator.
+    pub fn input_ToggleDirection_by(self, activator: u32) -> bool {
+        send(self.handle, "ToggleDirection", None, Some(activator))
     }
 
     /// input_Unpause sends Unpause.
     pub fn input_Unpause(self) -> bool {
-        send(self.handle, "Unpause", None)
+        send(self.handle, "Unpause", None, None)
+    }
+
+    /// input_Unpause_by sends Unpause as input_Unpause does, caused by the
+    /// entity of handle activator.
+    pub fn input_Unpause_by(self, activator: u32) -> bool {
+        send(self.handle, "Unpause", None, Some(activator))
     }
 }
 
 impl CFuncNavBlocker {
     /// input_BlockNav sends BlockNav.
     pub fn input_BlockNav(self) -> bool {
-        send(self.handle, "BlockNav", None)
+        send(self.handle, "BlockNav", None, None)
+    }
+
+    /// input_BlockNav_by sends BlockNav as input_BlockNav does, caused by the
+    /// entity of handle activator.
+    pub fn input_BlockNav_by(self, activator: u32) -> bool {
+        send(self.handle, "BlockNav", None, Some(activator))
     }
 
     /// input_UnblockNav sends UnblockNav.
     pub fn input_UnblockNav(self) -> bool {
-        send(self.handle, "UnblockNav", None)
+        send(self.handle, "UnblockNav", None, None)
+    }
+
+    /// input_UnblockNav_by sends UnblockNav as input_UnblockNav does, caused by
+    /// the entity of handle activator.
+    pub fn input_UnblockNav_by(self, activator: u32) -> bool {
+        send(self.handle, "UnblockNav", None, Some(activator))
     }
 }
 
 impl CFuncRotating {
     /// input_DisableAccelDecel sends DisableAccelDecel.
     pub fn input_DisableAccelDecel(self) -> bool {
-        send(self.handle, "DisableAccelDecel", None)
+        send(self.handle, "DisableAccelDecel", None, None)
+    }
+
+    /// input_DisableAccelDecel_by sends DisableAccelDecel as
+    /// input_DisableAccelDecel does, caused by the entity of handle activator.
+    pub fn input_DisableAccelDecel_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableAccelDecel", None, Some(activator))
     }
 
     /// input_EnableAccelDecel sends EnableAccelDecel.
     pub fn input_EnableAccelDecel(self) -> bool {
-        send(self.handle, "EnableAccelDecel", None)
+        send(self.handle, "EnableAccelDecel", None, None)
+    }
+
+    /// input_EnableAccelDecel_by sends EnableAccelDecel as
+    /// input_EnableAccelDecel does, caused by the entity of handle activator.
+    pub fn input_EnableAccelDecel_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableAccelDecel", None, Some(activator))
     }
 
     /// input_Reverse sends Reverse.
     pub fn input_Reverse(self) -> bool {
-        send(self.handle, "Reverse", None)
+        send(self.handle, "Reverse", None, None)
+    }
+
+    /// input_Reverse_by sends Reverse as input_Reverse does, caused by the
+    /// entity of handle activator.
+    pub fn input_Reverse_by(self, activator: u32) -> bool {
+        send(self.handle, "Reverse", None, Some(activator))
     }
 
     /// input_SetSpeed sends SetSpeed.
     pub fn input_SetSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetSpeed", Some(value.into()))
+        send(self.handle, "SetSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetSpeed_by sends SetSpeed as input_SetSpeed does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetStartPos sends SetStartPos.
     pub fn input_SetStartPos(self, value: Vector) -> bool {
-        send(self.handle, "SetStartPos", Some(value.into()))
+        send(self.handle, "SetStartPos", Some(value.into()), None)
+    }
+
+    /// input_SetStartPos_by sends SetStartPos as input_SetStartPos does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetStartPos_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "SetStartPos", Some(value.into()), Some(activator))
     }
 
     /// input_SnapToStartPos sends SnapToStartPos.
     pub fn input_SnapToStartPos(self) -> bool {
-        send(self.handle, "SnapToStartPos", None)
+        send(self.handle, "SnapToStartPos", None, None)
+    }
+
+    /// input_SnapToStartPos_by sends SnapToStartPos as input_SnapToStartPos
+    /// does, caused by the entity of handle activator.
+    pub fn input_SnapToStartPos_by(self, activator: u32) -> bool {
+        send(self.handle, "SnapToStartPos", None, Some(activator))
     }
 
     /// input_Start sends Start.
     pub fn input_Start(self) -> bool {
-        send(self.handle, "Start", None)
+        send(self.handle, "Start", None, None)
+    }
+
+    /// input_Start_by sends Start as input_Start does, caused by the entity of
+    /// handle activator.
+    pub fn input_Start_by(self, activator: u32) -> bool {
+        send(self.handle, "Start", None, Some(activator))
     }
 
     /// input_StartBackward sends StartBackward.
     pub fn input_StartBackward(self) -> bool {
-        send(self.handle, "StartBackward", None)
+        send(self.handle, "StartBackward", None, None)
+    }
+
+    /// input_StartBackward_by sends StartBackward as input_StartBackward does,
+    /// caused by the entity of handle activator.
+    pub fn input_StartBackward_by(self, activator: u32) -> bool {
+        send(self.handle, "StartBackward", None, Some(activator))
     }
 
     /// input_StartForward sends StartForward.
     pub fn input_StartForward(self) -> bool {
-        send(self.handle, "StartForward", None)
+        send(self.handle, "StartForward", None, None)
+    }
+
+    /// input_StartForward_by sends StartForward as input_StartForward does,
+    /// caused by the entity of handle activator.
+    pub fn input_StartForward_by(self, activator: u32) -> bool {
+        send(self.handle, "StartForward", None, Some(activator))
     }
 
     /// input_Stop sends Stop.
     pub fn input_Stop(self) -> bool {
-        send(self.handle, "Stop", None)
+        send(self.handle, "Stop", None, None)
+    }
+
+    /// input_Stop_by sends Stop as input_Stop does, caused by the entity of
+    /// handle activator.
+    pub fn input_Stop_by(self, activator: u32) -> bool {
+        send(self.handle, "Stop", None, Some(activator))
     }
 
     /// input_StopAtStartPos sends StopAtStartPos.
     pub fn input_StopAtStartPos(self) -> bool {
-        send(self.handle, "StopAtStartPos", None)
+        send(self.handle, "StopAtStartPos", None, None)
+    }
+
+    /// input_StopAtStartPos_by sends StopAtStartPos as input_StopAtStartPos
+    /// does, caused by the entity of handle activator.
+    pub fn input_StopAtStartPos_by(self, activator: u32) -> bool {
+        send(self.handle, "StopAtStartPos", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CFuncRotator {
     /// input_Pitch sends Pitch.
     pub fn input_Pitch(self, value: f32) -> bool {
-        send(self.handle, "Pitch", Some(value.into()))
+        send(self.handle, "Pitch", Some(value.into()), None)
+    }
+
+    /// input_Pitch_by sends Pitch as input_Pitch does, caused by the entity of
+    /// handle activator.
+    pub fn input_Pitch_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Pitch", Some(value.into()), Some(activator))
     }
 
     /// input_ReturnToInitialOrientation sends ReturnToInitialOrientation.
     pub fn input_ReturnToInitialOrientation(self) -> bool {
-        send(self.handle, "ReturnToInitialOrientation", None)
+        send(self.handle, "ReturnToInitialOrientation", None, None)
+    }
+
+    /// input_ReturnToInitialOrientation_by sends ReturnToInitialOrientation as
+    /// input_ReturnToInitialOrientation does, caused by the entity of handle
+    /// activator.
+    pub fn input_ReturnToInitialOrientation_by(self, activator: u32) -> bool {
+        send(self.handle, "ReturnToInitialOrientation", None, Some(activator))
     }
 
     /// input_Roll sends Roll.
     pub fn input_Roll(self, value: f32) -> bool {
-        send(self.handle, "Roll", Some(value.into()))
+        send(self.handle, "Roll", Some(value.into()), None)
+    }
+
+    /// input_Roll_by sends Roll as input_Roll does, caused by the entity of
+    /// handle activator.
+    pub fn input_Roll_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Roll", Some(value.into()), Some(activator))
     }
 
     /// input_SetRotateType sends SetRotateType.
     pub fn input_SetRotateType(self, value: i32) -> bool {
-        send(self.handle, "SetRotateType", Some(value.into()))
+        send(self.handle, "SetRotateType", Some(value.into()), None)
+    }
+
+    /// input_SetRotateType_by sends SetRotateType as input_SetRotateType does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetRotateType_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetRotateType", Some(value.into()), Some(activator))
     }
 
     /// input_SetRotatorTarget sends SetRotatorTarget.
     pub fn input_SetRotatorTarget(self, value: &str) -> bool {
-        send(self.handle, "SetRotatorTarget", Some(value.into()))
+        send(self.handle, "SetRotatorTarget", Some(value.into()), None)
+    }
+
+    /// input_SetRotatorTarget_by sends SetRotatorTarget as
+    /// input_SetRotatorTarget does, caused by the entity of handle activator.
+    pub fn input_SetRotatorTarget_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetRotatorTarget", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeed sends SetSpeed.
     pub fn input_SetSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetSpeed", Some(value.into()))
+        send(self.handle, "SetSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetSpeed_by sends SetSpeed as input_SetSpeed does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetTimeToCompleteRotation sends SetTimeToCompleteRotation.
     pub fn input_SetTimeToCompleteRotation(self, value: f32) -> bool {
-        send(self.handle, "SetTimeToCompleteRotation", Some(value.into()))
+        send(self.handle, "SetTimeToCompleteRotation", Some(value.into()), None)
+    }
+
+    /// input_SetTimeToCompleteRotation_by sends SetTimeToCompleteRotation as
+    /// input_SetTimeToCompleteRotation does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetTimeToCompleteRotation_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetTimeToCompleteRotation", Some(value.into()), Some(activator))
     }
 
     /// input_Start sends Start.
     pub fn input_Start(self) -> bool {
-        send(self.handle, "Start", None)
+        send(self.handle, "Start", None, None)
+    }
+
+    /// input_Start_by sends Start as input_Start does, caused by the entity of
+    /// handle activator.
+    pub fn input_Start_by(self, activator: u32) -> bool {
+        send(self.handle, "Start", None, Some(activator))
     }
 
     /// input_StartForward sends StartForward.
     pub fn input_StartForward(self) -> bool {
-        send(self.handle, "StartForward", None)
+        send(self.handle, "StartForward", None, None)
+    }
+
+    /// input_StartForward_by sends StartForward as input_StartForward does,
+    /// caused by the entity of handle activator.
+    pub fn input_StartForward_by(self, activator: u32) -> bool {
+        send(self.handle, "StartForward", None, Some(activator))
     }
 
     /// input_Stop sends Stop.
     pub fn input_Stop(self) -> bool {
-        send(self.handle, "Stop", None)
+        send(self.handle, "Stop", None, None)
+    }
+
+    /// input_Stop_by sends Stop as input_Stop does, caused by the entity of
+    /// handle activator.
+    pub fn input_Stop_by(self, activator: u32) -> bool {
+        send(self.handle, "Stop", None, Some(activator))
     }
 
     /// input_Yaw sends Yaw.
     pub fn input_Yaw(self, value: f32) -> bool {
-        send(self.handle, "Yaw", Some(value.into()))
+        send(self.handle, "Yaw", Some(value.into()), None)
+    }
+
+    /// input_Yaw_by sends Yaw as input_Yaw does, caused by the entity of handle
+    /// activator.
+    pub fn input_Yaw_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Yaw", Some(value.into()), Some(activator))
     }
 }
 
 impl CFuncShatterglass {
     /// input_Hit sends Hit.
     pub fn input_Hit(self) -> bool {
-        send(self.handle, "Hit", None)
+        send(self.handle, "Hit", None, None)
+    }
+
+    /// input_Hit_by sends Hit as input_Hit does, caused by the entity of handle
+    /// activator.
+    pub fn input_Hit_by(self, activator: u32) -> bool {
+        send(self.handle, "Hit", None, Some(activator))
     }
 
     /// input_Restore sends Restore.
     pub fn input_Restore(self) -> bool {
-        send(self.handle, "Restore", None)
+        send(self.handle, "Restore", None, None)
+    }
+
+    /// input_Restore_by sends Restore as input_Restore does, caused by the
+    /// entity of handle activator.
+    pub fn input_Restore_by(self, activator: u32) -> bool {
+        send(self.handle, "Restore", None, Some(activator))
     }
 
     /// input_Shatter sends Shatter.
     pub fn input_Shatter(self) -> bool {
-        send(self.handle, "Shatter", None)
+        send(self.handle, "Shatter", None, None)
+    }
+
+    /// input_Shatter_by sends Shatter as input_Shatter does, caused by the
+    /// entity of handle activator.
+    pub fn input_Shatter_by(self, activator: u32) -> bool {
+        send(self.handle, "Shatter", None, Some(activator))
     }
 }
 
 impl CFuncTrackTrain {
     /// input_LockOrientation sends LockOrientation.
     pub fn input_LockOrientation(self) -> bool {
-        send(self.handle, "LockOrientation", None)
+        send(self.handle, "LockOrientation", None, None)
+    }
+
+    /// input_LockOrientation_by sends LockOrientation as input_LockOrientation
+    /// does, caused by the entity of handle activator.
+    pub fn input_LockOrientation_by(self, activator: u32) -> bool {
+        send(self.handle, "LockOrientation", None, Some(activator))
     }
 
     /// input_MoveToPathNode sends MoveToPathNode.
     pub fn input_MoveToPathNode(self, value: &str) -> bool {
-        send(self.handle, "MoveToPathNode", Some(value.into()))
+        send(self.handle, "MoveToPathNode", Some(value.into()), None)
+    }
+
+    /// input_MoveToPathNode_by sends MoveToPathNode as input_MoveToPathNode
+    /// does, caused by the entity of handle activator.
+    pub fn input_MoveToPathNode_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "MoveToPathNode", Some(value.into()), Some(activator))
     }
 
     /// input_Resume sends Resume.
     pub fn input_Resume(self) -> bool {
-        send(self.handle, "Resume", None)
+        send(self.handle, "Resume", None, None)
+    }
+
+    /// input_Resume_by sends Resume as input_Resume does, caused by the entity
+    /// of handle activator.
+    pub fn input_Resume_by(self, activator: u32) -> bool {
+        send(self.handle, "Resume", None, Some(activator))
     }
 
     /// input_Reverse sends Reverse.
     pub fn input_Reverse(self) -> bool {
-        send(self.handle, "Reverse", None)
+        send(self.handle, "Reverse", None, None)
+    }
+
+    /// input_Reverse_by sends Reverse as input_Reverse does, caused by the
+    /// entity of handle activator.
+    pub fn input_Reverse_by(self, activator: u32) -> bool {
+        send(self.handle, "Reverse", None, Some(activator))
     }
 
     /// input_SetMaxSpeed sends SetMaxSpeed.
     pub fn input_SetMaxSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetMaxSpeed", Some(value.into()))
+        send(self.handle, "SetMaxSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetMaxSpeed_by sends SetMaxSpeed as input_SetMaxSpeed does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetMaxSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMaxSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeed sends SetSpeed.
     pub fn input_SetSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetSpeed", Some(value.into()))
+        send(self.handle, "SetSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetSpeed_by sends SetSpeed as input_SetSpeed does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeedDir sends SetSpeedDir.
     pub fn input_SetSpeedDir(self, value: f32) -> bool {
-        send(self.handle, "SetSpeedDir", Some(value.into()))
+        send(self.handle, "SetSpeedDir", Some(value.into()), None)
+    }
+
+    /// input_SetSpeedDir_by sends SetSpeedDir as input_SetSpeedDir does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetSpeedDir_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeedDir", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeedDirAccel sends SetSpeedDirAccel.
     pub fn input_SetSpeedDirAccel(self, value: f32) -> bool {
-        send(self.handle, "SetSpeedDirAccel", Some(value.into()))
+        send(self.handle, "SetSpeedDirAccel", Some(value.into()), None)
+    }
+
+    /// input_SetSpeedDirAccel_by sends SetSpeedDirAccel as
+    /// input_SetSpeedDirAccel does, caused by the entity of handle activator.
+    pub fn input_SetSpeedDirAccel_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeedDirAccel", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeedReal sends SetSpeedReal.
     pub fn input_SetSpeedReal(self, value: f32) -> bool {
-        send(self.handle, "SetSpeedReal", Some(value.into()))
+        send(self.handle, "SetSpeedReal", Some(value.into()), None)
+    }
+
+    /// input_SetSpeedReal_by sends SetSpeedReal as input_SetSpeedReal does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetSpeedReal_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeedReal", Some(value.into()), Some(activator))
     }
 
     /// input_StartBackward sends StartBackward.
     pub fn input_StartBackward(self) -> bool {
-        send(self.handle, "StartBackward", None)
+        send(self.handle, "StartBackward", None, None)
+    }
+
+    /// input_StartBackward_by sends StartBackward as input_StartBackward does,
+    /// caused by the entity of handle activator.
+    pub fn input_StartBackward_by(self, activator: u32) -> bool {
+        send(self.handle, "StartBackward", None, Some(activator))
     }
 
     /// input_StartForward sends StartForward.
     pub fn input_StartForward(self) -> bool {
-        send(self.handle, "StartForward", None)
+        send(self.handle, "StartForward", None, None)
+    }
+
+    /// input_StartForward_by sends StartForward as input_StartForward does,
+    /// caused by the entity of handle activator.
+    pub fn input_StartForward_by(self, activator: u32) -> bool {
+        send(self.handle, "StartForward", None, Some(activator))
     }
 
     /// input_Stop sends Stop.
     pub fn input_Stop(self) -> bool {
-        send(self.handle, "Stop", None)
+        send(self.handle, "Stop", None, None)
+    }
+
+    /// input_Stop_by sends Stop as input_Stop does, caused by the entity of
+    /// handle activator.
+    pub fn input_Stop_by(self, activator: u32) -> bool {
+        send(self.handle, "Stop", None, Some(activator))
     }
 
     /// input_TeleportToPathNode sends TeleportToPathNode.
     pub fn input_TeleportToPathNode(self, value: &str) -> bool {
-        send(self.handle, "TeleportToPathNode", Some(value.into()))
+        send(self.handle, "TeleportToPathNode", Some(value.into()), None)
+    }
+
+    /// input_TeleportToPathNode_by sends TeleportToPathNode as
+    /// input_TeleportToPathNode does, caused by the entity of handle activator.
+    pub fn input_TeleportToPathNode_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "TeleportToPathNode", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_UnlockOrientation sends UnlockOrientation.
     pub fn input_UnlockOrientation(self) -> bool {
-        send(self.handle, "UnlockOrientation", None)
+        send(self.handle, "UnlockOrientation", None, None)
+    }
+
+    /// input_UnlockOrientation_by sends UnlockOrientation as
+    /// input_UnlockOrientation does, caused by the entity of handle activator.
+    pub fn input_UnlockOrientation_by(self, activator: u32) -> bool {
+        send(self.handle, "UnlockOrientation", None, Some(activator))
     }
 }
 
 impl CFuncVPhysicsClip {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CFuncVehicleClip {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetNonsolid sends SetNonsolid.
     pub fn input_SetNonsolid(self) -> bool {
-        send(self.handle, "SetNonsolid", None)
+        send(self.handle, "SetNonsolid", None, None)
+    }
+
+    /// input_SetNonsolid_by sends SetNonsolid as input_SetNonsolid does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetNonsolid_by(self, activator: u32) -> bool {
+        send(self.handle, "SetNonsolid", None, Some(activator))
     }
 
     /// input_SetSolid sends SetSolid.
     pub fn input_SetSolid(self) -> bool {
-        send(self.handle, "SetSolid", None)
+        send(self.handle, "SetSolid", None, None)
+    }
+
+    /// input_SetSolid_by sends SetSolid as input_SetSolid does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSolid_by(self, activator: u32) -> bool {
+        send(self.handle, "SetSolid", None, Some(activator))
     }
 }
 
 impl CFuncWallToggle {
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CLightEntity {
     /// input_SetAppearance sends SetAppearance.
     pub fn input_SetAppearance(self, value: i32) -> bool {
-        send(self.handle, "SetAppearance", Some(value.into()))
+        send(self.handle, "SetAppearance", Some(value.into()), None)
+    }
+
+    /// input_SetAppearance_by sends SetAppearance as input_SetAppearance does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetAppearance_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetAppearance", Some(value.into()), Some(activator))
     }
 
     /// input_SetCustomAppearance sends SetCustomAppearance.
     pub fn input_SetCustomAppearance(self, value: &str) -> bool {
-        send(self.handle, "SetCustomAppearance", Some(value.into()))
+        send(self.handle, "SetCustomAppearance", Some(value.into()), None)
+    }
+
+    /// input_SetCustomAppearance_by sends SetCustomAppearance as
+    /// input_SetCustomAppearance does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetCustomAppearance_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetCustomAppearance", Some(value.into()), Some(activator))
     }
 
     /// input_SetLightBrightness sends SetLightBrightness.
     pub fn input_SetLightBrightness(self, value: f32) -> bool {
-        send(self.handle, "SetLightBrightness", Some(value.into()))
+        send(self.handle, "SetLightBrightness", Some(value.into()), None)
+    }
+
+    /// input_SetLightBrightness_by sends SetLightBrightness as
+    /// input_SetLightBrightness does, caused by the entity of handle activator.
+    pub fn input_SetLightBrightness_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLightBrightness", Some(value.into()), Some(activator))
     }
 
     /// input_SetLightColor sends SetLightColor.
     pub fn input_SetLightColor(self, value: u32) -> bool {
-        send(self.handle, "SetLightColor", Some(value.into()))
+        send(self.handle, "SetLightColor", Some(value.into()), None)
+    }
+
+    /// input_SetLightColor_by sends SetLightColor as input_SetLightColor does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetLightColor_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "SetLightColor", Some(value.into()), Some(activator))
     }
 
     /// input_SetLightEnabled sends SetLightEnabled.
     pub fn input_SetLightEnabled(self, value: bool) -> bool {
-        send(self.handle, "SetLightEnabled", Some(value.into()))
+        send(self.handle, "SetLightEnabled", Some(value.into()), None)
+    }
+
+    /// input_SetLightEnabled_by sends SetLightEnabled as input_SetLightEnabled
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetLightEnabled_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetLightEnabled", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
 impl CMarkupVolume {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CEnvExplosion {
     /// input_Explode sends Explode.
     pub fn input_Explode(self) -> bool {
-        send(self.handle, "Explode", None)
+        send(self.handle, "Explode", None, None)
+    }
+
+    /// input_Explode_by sends Explode as input_Explode does, caused by the
+    /// entity of handle activator.
+    pub fn input_Explode_by(self, activator: u32) -> bool {
+        send(self.handle, "Explode", None, Some(activator))
     }
 }
 
 impl CPointWorldText {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetIntMessage sends SetIntMessage.
     pub fn input_SetIntMessage(self, value: i32) -> bool {
-        send(self.handle, "SetIntMessage", Some(value.into()))
+        send(self.handle, "SetIntMessage", Some(value.into()), None)
+    }
+
+    /// input_SetIntMessage_by sends SetIntMessage as input_SetIntMessage does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetIntMessage_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetIntMessage", Some(value.into()), Some(activator))
     }
 
     /// input_SetMessage sends SetMessage.
     pub fn input_SetMessage(self, value: &str) -> bool {
-        send(self.handle, "SetMessage", Some(value.into()))
+        send(self.handle, "SetMessage", Some(value.into()), None)
+    }
+
+    /// input_SetMessage_by sends SetMessage as input_SetMessage does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetMessage_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetMessage", Some(value.into()), Some(activator))
     }
 
     /// input_SetTextColor sends SetTextColor.
     pub fn input_SetTextColor(self, value: u32) -> bool {
-        send(self.handle, "SetTextColor", Some(value.into()))
+        send(self.handle, "SetTextColor", Some(value.into()), None)
+    }
+
+    /// input_SetTextColor_by sends SetTextColor as input_SetTextColor does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetTextColor_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "SetTextColor", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CRevertSaved {
     /// input_Reload sends Reload.
     pub fn input_Reload(self) -> bool {
-        send(self.handle, "Reload", None)
+        send(self.handle, "Reload", None, None)
+    }
+
+    /// input_Reload_by sends Reload as input_Reload does, caused by the entity
+    /// of handle activator.
+    pub fn input_Reload_by(self, activator: u32) -> bool {
+        send(self.handle, "Reload", None, Some(activator))
     }
 }
 
 impl CParticleSystem {
     /// input_DestroyImmediately sends DestroyImmediately.
     pub fn input_DestroyImmediately(self) -> bool {
-        send(self.handle, "DestroyImmediately", None)
+        send(self.handle, "DestroyImmediately", None, None)
+    }
+
+    /// input_DestroyImmediately_by sends DestroyImmediately as
+    /// input_DestroyImmediately does, caused by the entity of handle activator.
+    pub fn input_DestroyImmediately_by(self, activator: u32) -> bool {
+        send(self.handle, "DestroyImmediately", None, Some(activator))
     }
 
     /// input_Freeze sends Freeze.
     pub fn input_Freeze(self, value: f32) -> bool {
-        send(self.handle, "Freeze", Some(value.into()))
+        send(self.handle, "Freeze", Some(value.into()), None)
+    }
+
+    /// input_Freeze_by sends Freeze as input_Freeze does, caused by the entity
+    /// of handle activator.
+    pub fn input_Freeze_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Freeze", Some(value.into()), Some(activator))
     }
 
     /// input_SetControlPoint sends SetControlPoint.
     pub fn input_SetControlPoint(self, value: &str) -> bool {
-        send(self.handle, "SetControlPoint", Some(value.into()))
+        send(self.handle, "SetControlPoint", Some(value.into()), None)
+    }
+
+    /// input_SetControlPoint_by sends SetControlPoint as input_SetControlPoint
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetControlPoint_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetControlPoint", Some(value.into()), Some(activator))
     }
 
     /// input_SetDataControlPointX sends SetDataControlPointX.
     pub fn input_SetDataControlPointX(self, value: f32) -> bool {
-        send(self.handle, "SetDataControlPointX", Some(value.into()))
+        send(self.handle, "SetDataControlPointX", Some(value.into()), None)
+    }
+
+    /// input_SetDataControlPointX_by sends SetDataControlPointX as
+    /// input_SetDataControlPointX does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetDataControlPointX_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDataControlPointX", Some(value.into()), Some(activator))
     }
 
     /// input_SetDataControlPointY sends SetDataControlPointY.
     pub fn input_SetDataControlPointY(self, value: f32) -> bool {
-        send(self.handle, "SetDataControlPointY", Some(value.into()))
+        send(self.handle, "SetDataControlPointY", Some(value.into()), None)
+    }
+
+    /// input_SetDataControlPointY_by sends SetDataControlPointY as
+    /// input_SetDataControlPointY does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetDataControlPointY_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDataControlPointY", Some(value.into()), Some(activator))
     }
 
     /// input_SetDataControlPointZ sends SetDataControlPointZ.
     pub fn input_SetDataControlPointZ(self, value: f32) -> bool {
-        send(self.handle, "SetDataControlPointZ", Some(value.into()))
+        send(self.handle, "SetDataControlPointZ", Some(value.into()), None)
+    }
+
+    /// input_SetDataControlPointZ_by sends SetDataControlPointZ as
+    /// input_SetDataControlPointZ does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetDataControlPointZ_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDataControlPointZ", Some(value.into()), Some(activator))
     }
 
     /// input_Start sends Start.
     pub fn input_Start(self) -> bool {
-        send(self.handle, "Start", None)
+        send(self.handle, "Start", None, None)
+    }
+
+    /// input_Start_by sends Start as input_Start does, caused by the entity of
+    /// handle activator.
+    pub fn input_Start_by(self, activator: u32) -> bool {
+        send(self.handle, "Start", None, Some(activator))
     }
 
     /// input_Stop sends Stop.
     pub fn input_Stop(self) -> bool {
-        send(self.handle, "Stop", None)
+        send(self.handle, "Stop", None, None)
+    }
+
+    /// input_Stop_by sends Stop as input_Stop does, caused by the entity of
+    /// handle activator.
+    pub fn input_Stop_by(self, activator: u32) -> bool {
+        send(self.handle, "Stop", None, Some(activator))
     }
 
     /// input_StopPlayEndCap sends StopPlayEndCap.
     pub fn input_StopPlayEndCap(self) -> bool {
-        send(self.handle, "StopPlayEndCap", None)
+        send(self.handle, "StopPlayEndCap", None, None)
+    }
+
+    /// input_StopPlayEndCap_by sends StopPlayEndCap as input_StopPlayEndCap
+    /// does, caused by the entity of handle activator.
+    pub fn input_StopPlayEndCap_by(self, activator: u32) -> bool {
+        send(self.handle, "StopPlayEndCap", None, Some(activator))
     }
 
     /// input_Thaw sends Thaw.
     pub fn input_Thaw(self, value: f32) -> bool {
-        send(self.handle, "Thaw", Some(value.into()))
+        send(self.handle, "Thaw", Some(value.into()), None)
+    }
+
+    /// input_Thaw_by sends Thaw as input_Thaw does, caused by the entity of
+    /// handle activator.
+    pub fn input_Thaw_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Thaw", Some(value.into()), Some(activator))
     }
 }
 
 impl CEnvParticleGlow {
     /// input_setalphascale sends setalphascale.
     pub fn input_setalphascale(self, value: f32) -> bool {
-        send(self.handle, "setalphascale", Some(value.into()))
+        send(self.handle, "setalphascale", Some(value.into()), None)
+    }
+
+    /// input_setalphascale_by sends setalphascale as input_setalphascale does,
+    /// caused by the entity of handle activator.
+    pub fn input_setalphascale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "setalphascale", Some(value.into()), Some(activator))
     }
 
     /// input_setcolortint sends setcolortint.
     pub fn input_setcolortint(self, value: u32) -> bool {
-        send(self.handle, "setcolortint", Some(value.into()))
+        send(self.handle, "setcolortint", Some(value.into()), None)
+    }
+
+    /// input_setcolortint_by sends setcolortint as input_setcolortint does,
+    /// caused by the entity of handle activator.
+    pub fn input_setcolortint_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "setcolortint", Some(value.into()), Some(activator))
     }
 
     /// input_setscale sends setscale.
     pub fn input_setscale(self, value: f32) -> bool {
-        send(self.handle, "setscale", Some(value.into()))
+        send(self.handle, "setscale", Some(value.into()), None)
+    }
+
+    /// input_setscale_by sends setscale as input_setscale does, caused by the
+    /// entity of handle activator.
+    pub fn input_setscale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "setscale", Some(value.into()), Some(activator))
     }
 }
 
 impl CRopeKeyframe {
     /// input_Break sends Break.
     pub fn input_Break(self) -> bool {
-        send(self.handle, "Break", None)
+        send(self.handle, "Break", None, None)
+    }
+
+    /// input_Break_by sends Break as input_Break does, caused by the entity of
+    /// handle activator.
+    pub fn input_Break_by(self, activator: u32) -> bool {
+        send(self.handle, "Break", None, Some(activator))
     }
 
     /// input_SetForce sends SetForce.
     pub fn input_SetForce(self, value: Vector) -> bool {
-        send(self.handle, "SetForce", Some(value.into()))
+        send(self.handle, "SetForce", Some(value.into()), None)
+    }
+
+    /// input_SetForce_by sends SetForce as input_SetForce does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetForce_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "SetForce", Some(value.into()), Some(activator))
     }
 
     /// input_SetScrollSpeed sends SetScrollSpeed.
     pub fn input_SetScrollSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetScrollSpeed", Some(value.into()))
+        send(self.handle, "SetScrollSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetScrollSpeed_by sends SetScrollSpeed as input_SetScrollSpeed
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetScrollSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetScrollSpeed", Some(value.into()), Some(activator))
     }
 }
 
 impl CGamePlayerZone {
     /// input_CountPlayersInZone sends CountPlayersInZone.
     pub fn input_CountPlayersInZone(self) -> bool {
-        send(self.handle, "CountPlayersInZone", None)
+        send(self.handle, "CountPlayersInZone", None, None)
+    }
+
+    /// input_CountPlayersInZone_by sends CountPlayersInZone as
+    /// input_CountPlayersInZone does, caused by the entity of handle activator.
+    pub fn input_CountPlayersInZone_by(self, activator: u32) -> bool {
+        send(self.handle, "CountPlayersInZone", None, Some(activator))
     }
 }
 
 impl CGamePlayerEquip {
     /// input_TriggerForActivatedPlayer sends TriggerForActivatedPlayer.
     pub fn input_TriggerForActivatedPlayer(self, value: &str) -> bool {
-        send(self.handle, "TriggerForActivatedPlayer", Some(value.into()))
+        send(self.handle, "TriggerForActivatedPlayer", Some(value.into()), None)
+    }
+
+    /// input_TriggerForActivatedPlayer_by sends TriggerForActivatedPlayer as
+    /// input_TriggerForActivatedPlayer does, caused by the entity of handle
+    /// activator.
+    pub fn input_TriggerForActivatedPlayer_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "TriggerForActivatedPlayer", Some(value.into()), Some(activator))
     }
 
     /// input_TriggerForAllPlayers sends TriggerForAllPlayers.
     pub fn input_TriggerForAllPlayers(self) -> bool {
-        send(self.handle, "TriggerForAllPlayers", None)
+        send(self.handle, "TriggerForAllPlayers", None, None)
+    }
+
+    /// input_TriggerForAllPlayers_by sends TriggerForAllPlayers as
+    /// input_TriggerForAllPlayers does, caused by the entity of handle
+    /// activator.
+    pub fn input_TriggerForAllPlayers_by(self, activator: u32) -> bool {
+        send(self.handle, "TriggerForAllPlayers", None, Some(activator))
     }
 }
 
 impl CGameText {
     /// input_Display sends Display.
     pub fn input_Display(self) -> bool {
-        send(self.handle, "Display", None)
+        send(self.handle, "Display", None, None)
+    }
+
+    /// input_Display_by sends Display as input_Display does, caused by the
+    /// entity of handle activator.
+    pub fn input_Display_by(self, activator: u32) -> bool {
+        send(self.handle, "Display", None, Some(activator))
     }
 
     /// input_SetText sends SetText.
     pub fn input_SetText(self, value: &str) -> bool {
-        send(self.handle, "SetText", Some(value.into()))
+        send(self.handle, "SetText", Some(value.into()), None)
+    }
+
+    /// input_SetText_by sends SetText as input_SetText does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetText_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetText", Some(value.into()), Some(activator))
     }
 }
 
 impl CFogVolume {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CSprite {
     /// input_ColorBlueValue sends ColorBlueValue.
     pub fn input_ColorBlueValue(self, value: f32) -> bool {
-        send(self.handle, "ColorBlueValue", Some(value.into()))
+        send(self.handle, "ColorBlueValue", Some(value.into()), None)
+    }
+
+    /// input_ColorBlueValue_by sends ColorBlueValue as input_ColorBlueValue
+    /// does, caused by the entity of handle activator.
+    pub fn input_ColorBlueValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "ColorBlueValue", Some(value.into()), Some(activator))
     }
 
     /// input_ColorGreenValue sends ColorGreenValue.
     pub fn input_ColorGreenValue(self, value: f32) -> bool {
-        send(self.handle, "ColorGreenValue", Some(value.into()))
+        send(self.handle, "ColorGreenValue", Some(value.into()), None)
+    }
+
+    /// input_ColorGreenValue_by sends ColorGreenValue as input_ColorGreenValue
+    /// does, caused by the entity of handle activator.
+    pub fn input_ColorGreenValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "ColorGreenValue", Some(value.into()), Some(activator))
     }
 
     /// input_ColorRedValue sends ColorRedValue.
     pub fn input_ColorRedValue(self, value: f32) -> bool {
-        send(self.handle, "ColorRedValue", Some(value.into()))
+        send(self.handle, "ColorRedValue", Some(value.into()), None)
+    }
+
+    /// input_ColorRedValue_by sends ColorRedValue as input_ColorRedValue does,
+    /// caused by the entity of handle activator.
+    pub fn input_ColorRedValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "ColorRedValue", Some(value.into()), Some(activator))
     }
 
     /// input_HideSprite sends HideSprite.
     pub fn input_HideSprite(self) -> bool {
-        send(self.handle, "HideSprite", None)
+        send(self.handle, "HideSprite", None, None)
+    }
+
+    /// input_HideSprite_by sends HideSprite as input_HideSprite does, caused by
+    /// the entity of handle activator.
+    pub fn input_HideSprite_by(self, activator: u32) -> bool {
+        send(self.handle, "HideSprite", None, Some(activator))
     }
 
     /// input_ShowSprite sends ShowSprite.
     pub fn input_ShowSprite(self) -> bool {
-        send(self.handle, "ShowSprite", None)
+        send(self.handle, "ShowSprite", None, None)
+    }
+
+    /// input_ShowSprite_by sends ShowSprite as input_ShowSprite does, caused by
+    /// the entity of handle activator.
+    pub fn input_ShowSprite_by(self, activator: u32) -> bool {
+        send(self.handle, "ShowSprite", None, Some(activator))
     }
 
     /// input_ToggleSprite sends ToggleSprite.
     pub fn input_ToggleSprite(self) -> bool {
-        send(self.handle, "ToggleSprite", None)
+        send(self.handle, "ToggleSprite", None, None)
+    }
+
+    /// input_ToggleSprite_by sends ToggleSprite as input_ToggleSprite does,
+    /// caused by the entity of handle activator.
+    pub fn input_ToggleSprite_by(self, activator: u32) -> bool {
+        send(self.handle, "ToggleSprite", None, Some(activator))
     }
 }
 
 impl CTextureBasedAnimatable {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_Start sends Start.
     pub fn input_Start(self) -> bool {
-        send(self.handle, "Start", None)
+        send(self.handle, "Start", None, None)
+    }
+
+    /// input_Start_by sends Start as input_Start does, caused by the entity of
+    /// handle activator.
+    pub fn input_Start_by(self, activator: u32) -> bool {
+        send(self.handle, "Start", None, Some(activator))
     }
 
     /// input_Stop sends Stop.
     pub fn input_Stop(self) -> bool {
-        send(self.handle, "Stop", None)
+        send(self.handle, "Stop", None, None)
+    }
+
+    /// input_Stop_by sends Stop as input_Stop does, caused by the entity of
+    /// handle activator.
+    pub fn input_Stop_by(self, activator: u32) -> bool {
+        send(self.handle, "Stop", None, Some(activator))
     }
 }
 
 impl CTriggerBrush {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CBaseNPCMaker {
     /// input_AddMaxChildren sends AddMaxChildren.
     pub fn input_AddMaxChildren(self, value: i32) -> bool {
-        send(self.handle, "AddMaxChildren", Some(value.into()))
+        send(self.handle, "AddMaxChildren", Some(value.into()), None)
+    }
+
+    /// input_AddMaxChildren_by sends AddMaxChildren as input_AddMaxChildren
+    /// does, caused by the entity of handle activator.
+    pub fn input_AddMaxChildren_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "AddMaxChildren", Some(value.into()), Some(activator))
     }
 
     /// input_ChangeDestinationGroup sends ChangeDestinationGroup.
     pub fn input_ChangeDestinationGroup(self, value: &str) -> bool {
-        send(self.handle, "ChangeDestinationGroup", Some(value.into()))
+        send(self.handle, "ChangeDestinationGroup", Some(value.into()), None)
+    }
+
+    /// input_ChangeDestinationGroup_by sends ChangeDestinationGroup as
+    /// input_ChangeDestinationGroup does, caused by the entity of handle
+    /// activator.
+    pub fn input_ChangeDestinationGroup_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "ChangeDestinationGroup", Some(value.into()), Some(activator))
     }
 
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_DisableInfiniteSpawns sends DisableInfiniteSpawns.
     pub fn input_DisableInfiniteSpawns(self, value: bool) -> bool {
-        send(self.handle, "DisableInfiniteSpawns", Some(value.into()))
+        send(self.handle, "DisableInfiniteSpawns", Some(value.into()), None)
+    }
+
+    /// input_DisableInfiniteSpawns_by sends DisableInfiniteSpawns as
+    /// input_DisableInfiniteSpawns does, caused by the entity of handle
+    /// activator.
+    pub fn input_DisableInfiniteSpawns_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "DisableInfiniteSpawns", Some(value.into()), Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_EnableInfiniteSpawns sends EnableInfiniteSpawns.
     pub fn input_EnableInfiniteSpawns(self) -> bool {
-        send(self.handle, "EnableInfiniteSpawns", None)
+        send(self.handle, "EnableInfiniteSpawns", None, None)
+    }
+
+    /// input_EnableInfiniteSpawns_by sends EnableInfiniteSpawns as
+    /// input_EnableInfiniteSpawns does, caused by the entity of handle
+    /// activator.
+    pub fn input_EnableInfiniteSpawns_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableInfiniteSpawns", None, Some(activator))
     }
 
     /// input_SetBatchCount sends SetBatchCount.
     pub fn input_SetBatchCount(self, value: i32) -> bool {
-        send(self.handle, "SetBatchCount", Some(value.into()))
+        send(self.handle, "SetBatchCount", Some(value.into()), None)
+    }
+
+    /// input_SetBatchCount_by sends SetBatchCount as input_SetBatchCount does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetBatchCount_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetBatchCount", Some(value.into()), Some(activator))
     }
 
     /// input_SetMaxChildren sends SetMaxChildren.
     pub fn input_SetMaxChildren(self, value: i32) -> bool {
-        send(self.handle, "SetMaxChildren", Some(value.into()))
+        send(self.handle, "SetMaxChildren", Some(value.into()), None)
+    }
+
+    /// input_SetMaxChildren_by sends SetMaxChildren as input_SetMaxChildren
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetMaxChildren_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetMaxChildren", Some(value.into()), Some(activator))
     }
 
     /// input_SetMaxLiveChildren sends SetMaxLiveChildren.
     pub fn input_SetMaxLiveChildren(self, value: i32) -> bool {
-        send(self.handle, "SetMaxLiveChildren", Some(value.into()))
+        send(self.handle, "SetMaxLiveChildren", Some(value.into()), None)
+    }
+
+    /// input_SetMaxLiveChildren_by sends SetMaxLiveChildren as
+    /// input_SetMaxLiveChildren does, caused by the entity of handle activator.
+    pub fn input_SetMaxLiveChildren_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetMaxLiveChildren", Some(value.into()), Some(activator))
     }
 
     /// input_SetMinimumSpawnDistance sends SetMinimumSpawnDistance.
     pub fn input_SetMinimumSpawnDistance(self, value: i32) -> bool {
-        send(self.handle, "SetMinimumSpawnDistance", Some(value.into()))
+        send(self.handle, "SetMinimumSpawnDistance", Some(value.into()), None)
+    }
+
+    /// input_SetMinimumSpawnDistance_by sends SetMinimumSpawnDistance as
+    /// input_SetMinimumSpawnDistance does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMinimumSpawnDistance_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetMinimumSpawnDistance", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpawnEntity sends SetSpawnEntity.
     pub fn input_SetSpawnEntity(self, value: &str) -> bool {
-        send(self.handle, "SetSpawnEntity", Some(value.into()))
+        send(self.handle, "SetSpawnEntity", Some(value.into()), None)
+    }
+
+    /// input_SetSpawnEntity_by sends SetSpawnEntity as input_SetSpawnEntity
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetSpawnEntity_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetSpawnEntity", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpawnFrequency sends SetSpawnFrequency.
     pub fn input_SetSpawnFrequency(self, value: f32) -> bool {
-        send(self.handle, "SetSpawnFrequency", Some(value.into()))
+        send(self.handle, "SetSpawnFrequency", Some(value.into()), None)
+    }
+
+    /// input_SetSpawnFrequency_by sends SetSpawnFrequency as
+    /// input_SetSpawnFrequency does, caused by the entity of handle activator.
+    pub fn input_SetSpawnFrequency_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpawnFrequency", Some(value.into()), Some(activator))
     }
 
     /// input_Spawn sends Spawn.
     pub fn input_Spawn(self) -> bool {
-        send(self.handle, "Spawn", None)
+        send(self.handle, "Spawn", None, None)
+    }
+
+    /// input_Spawn_by sends Spawn as input_Spawn does, caused by the entity of
+    /// handle activator.
+    pub fn input_Spawn_by(self, activator: u32) -> bool {
+        send(self.handle, "Spawn", None, Some(activator))
     }
 
     /// input_SpawnInLine sends SpawnInLine.
     pub fn input_SpawnInLine(self) -> bool {
-        send(self.handle, "SpawnInLine", None)
+        send(self.handle, "SpawnInLine", None, None)
+    }
+
+    /// input_SpawnInLine_by sends SpawnInLine as input_SpawnInLine does, caused
+    /// by the entity of handle activator.
+    pub fn input_SpawnInLine_by(self, activator: u32) -> bool {
+        send(self.handle, "SpawnInLine", None, Some(activator))
     }
 
     /// input_SpawnInRadius sends SpawnInRadius.
     pub fn input_SpawnInRadius(self) -> bool {
-        send(self.handle, "SpawnInRadius", None)
+        send(self.handle, "SpawnInRadius", None, None)
+    }
+
+    /// input_SpawnInRadius_by sends SpawnInRadius as input_SpawnInRadius does,
+    /// caused by the entity of handle activator.
+    pub fn input_SpawnInRadius_by(self, activator: u32) -> bool {
+        send(self.handle, "SpawnInRadius", None, Some(activator))
     }
 
     /// input_SpawnMultiple sends SpawnMultiple.
     pub fn input_SpawnMultiple(self, value: i32) -> bool {
-        send(self.handle, "SpawnMultiple", Some(value.into()))
+        send(self.handle, "SpawnMultiple", Some(value.into()), None)
+    }
+
+    /// input_SpawnMultiple_by sends SpawnMultiple as input_SpawnMultiple does,
+    /// caused by the entity of handle activator.
+    pub fn input_SpawnMultiple_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SpawnMultiple", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CCitadelGaffer {
     /// input_BlendTo sends BlendTo.
     pub fn input_BlendTo(self, value: &str) -> bool {
-        send(self.handle, "BlendTo", Some(value.into()))
+        send(self.handle, "BlendTo", Some(value.into()), None)
+    }
+
+    /// input_BlendTo_by sends BlendTo as input_BlendTo does, caused by the
+    /// entity of handle activator.
+    pub fn input_BlendTo_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "BlendTo", Some(value.into()), Some(activator))
     }
 }
 
 impl CColorCorrection {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetFadeInDuration sends SetFadeInDuration.
     pub fn input_SetFadeInDuration(self, value: f32) -> bool {
-        send(self.handle, "SetFadeInDuration", Some(value.into()))
+        send(self.handle, "SetFadeInDuration", Some(value.into()), None)
+    }
+
+    /// input_SetFadeInDuration_by sends SetFadeInDuration as
+    /// input_SetFadeInDuration does, caused by the entity of handle activator.
+    pub fn input_SetFadeInDuration_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFadeInDuration", Some(value.into()), Some(activator))
     }
 
     /// input_SetFadeOutDuration sends SetFadeOutDuration.
     pub fn input_SetFadeOutDuration(self, value: f32) -> bool {
-        send(self.handle, "SetFadeOutDuration", Some(value.into()))
+        send(self.handle, "SetFadeOutDuration", Some(value.into()), None)
+    }
+
+    /// input_SetFadeOutDuration_by sends SetFadeOutDuration as
+    /// input_SetFadeOutDuration does, caused by the entity of handle activator.
+    pub fn input_SetFadeOutDuration_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFadeOutDuration", Some(value.into()), Some(activator))
     }
 }
 
 impl CCommentaryAuto {
     /// input_MultiplayerSpawned sends MultiplayerSpawned.
     pub fn input_MultiplayerSpawned(self) -> bool {
-        send(self.handle, "MultiplayerSpawned", None)
+        send(self.handle, "MultiplayerSpawned", None, None)
+    }
+
+    /// input_MultiplayerSpawned_by sends MultiplayerSpawned as
+    /// input_MultiplayerSpawned does, caused by the entity of handle activator.
+    pub fn input_MultiplayerSpawned_by(self, activator: u32) -> bool {
+        send(self.handle, "MultiplayerSpawned", None, Some(activator))
     }
 }
 
 impl CEnvBeverage {
     /// input_Activate sends Activate.
     pub fn input_Activate(self) -> bool {
-        send(self.handle, "Activate", None)
+        send(self.handle, "Activate", None, None)
+    }
+
+    /// input_Activate_by sends Activate as input_Activate does, caused by the
+    /// entity of handle activator.
+    pub fn input_Activate_by(self, activator: u32) -> bool {
+        send(self.handle, "Activate", None, Some(activator))
     }
 }
 
 impl CEnvCombinedLightProbeVolume {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetBrightness sends SetBrightness.
     pub fn input_SetBrightness(self, value: f32) -> bool {
-        send(self.handle, "SetBrightness", Some(value.into()))
+        send(self.handle, "SetBrightness", Some(value.into()), None)
+    }
+
+    /// input_SetBrightness_by sends SetBrightness as input_SetBrightness does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetBrightness_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetBrightness", Some(value.into()), Some(activator))
     }
 
     /// input_SetColor sends SetColor.
     pub fn input_SetColor(self, value: u32) -> bool {
-        send(self.handle, "SetColor", Some(value.into()))
+        send(self.handle, "SetColor", Some(value.into()), None)
+    }
+
+    /// input_SetColor_by sends SetColor as input_SetColor does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetColor_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "SetColor", Some(value.into()), Some(activator))
     }
 }
 
 impl CEnvCubemap {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CEnvCubemapFog {
     /// input_Disable sends Disable.
     pub fn input_Disable(self, value: bool) -> bool {
-        send(self.handle, "Disable", Some(value.into()))
+        send(self.handle, "Disable", Some(value.into()), None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "Disable", Some(value.into()), Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self, value: bool) -> bool {
-        send(self.handle, "Enable", Some(value.into()))
+        send(self.handle, "Enable", Some(value.into()), None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "Enable", Some(value.into()), Some(activator))
     }
 }
 
 impl CEnvEntityIgniter {
     /// input_Ignite sends Ignite.
     pub fn input_Ignite(self) -> bool {
-        send(self.handle, "Ignite", None)
+        send(self.handle, "Ignite", None, None)
+    }
+
+    /// input_Ignite_by sends Ignite as input_Ignite does, caused by the entity
+    /// of handle activator.
+    pub fn input_Ignite_by(self, activator: u32) -> bool {
+        send(self.handle, "Ignite", None, Some(activator))
     }
 }
 
 impl CEnvLightProbeVolume {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CEnvSoundscape {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_ToggleEnabled sends ToggleEnabled.
     pub fn input_ToggleEnabled(self) -> bool {
-        send(self.handle, "ToggleEnabled", None)
+        send(self.handle, "ToggleEnabled", None, None)
+    }
+
+    /// input_ToggleEnabled_by sends ToggleEnabled as input_ToggleEnabled does,
+    /// caused by the entity of handle activator.
+    pub fn input_ToggleEnabled_by(self, activator: u32) -> bool {
+        send(self.handle, "ToggleEnabled", None, Some(activator))
     }
 }
 
 impl CEnvVolumetricFogController {
     /// input_Disable sends Disable.
     pub fn input_Disable(self, value: bool) -> bool {
-        send(self.handle, "Disable", Some(value.into()))
+        send(self.handle, "Disable", Some(value.into()), None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "Disable", Some(value.into()), Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self, value: bool) -> bool {
-        send(self.handle, "Enable", Some(value.into()))
+        send(self.handle, "Enable", Some(value.into()), None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "Enable", Some(value.into()), Some(activator))
     }
 
     /// input_EnableIndirect sends EnableIndirect.
     pub fn input_EnableIndirect(self, value: bool) -> bool {
-        send(self.handle, "EnableIndirect", Some(value.into()))
+        send(self.handle, "EnableIndirect", Some(value.into()), None)
+    }
+
+    /// input_EnableIndirect_by sends EnableIndirect as input_EnableIndirect
+    /// does, caused by the entity of handle activator.
+    pub fn input_EnableIndirect_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "EnableIndirect", Some(value.into()), Some(activator))
     }
 
     /// input_ForceRefresh sends ForceRefresh.
     pub fn input_ForceRefresh(self) -> bool {
-        send(self.handle, "ForceRefresh", None)
+        send(self.handle, "ForceRefresh", None, None)
+    }
+
+    /// input_ForceRefresh_by sends ForceRefresh as input_ForceRefresh does,
+    /// caused by the entity of handle activator.
+    pub fn input_ForceRefresh_by(self, activator: u32) -> bool {
+        send(self.handle, "ForceRefresh", None, Some(activator))
     }
 
     /// input_SetAnisotropy sends SetAnisotropy.
     pub fn input_SetAnisotropy(self, value: f32) -> bool {
-        send(self.handle, "SetAnisotropy", Some(value.into()))
+        send(self.handle, "SetAnisotropy", Some(value.into()), None)
+    }
+
+    /// input_SetAnisotropy_by sends SetAnisotropy as input_SetAnisotropy does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetAnisotropy_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAnisotropy", Some(value.into()), Some(activator))
     }
 
     /// input_SetDrawDistance sends SetDrawDistance.
     pub fn input_SetDrawDistance(self, value: f32) -> bool {
-        send(self.handle, "SetDrawDistance", Some(value.into()))
+        send(self.handle, "SetDrawDistance", Some(value.into()), None)
+    }
+
+    /// input_SetDrawDistance_by sends SetDrawDistance as input_SetDrawDistance
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetDrawDistance_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDrawDistance", Some(value.into()), Some(activator))
     }
 
     /// input_SetFadeSpeed sends SetFadeSpeed.
     pub fn input_SetFadeSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetFadeSpeed", Some(value.into()))
+        send(self.handle, "SetFadeSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetFadeSpeed_by sends SetFadeSpeed as input_SetFadeSpeed does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetFadeSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFadeSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogStrength sends SetFogStrength.
     pub fn input_SetFogStrength(self, value: f32) -> bool {
-        send(self.handle, "SetFogStrength", Some(value.into()))
+        send(self.handle, "SetFogStrength", Some(value.into()), None)
+    }
+
+    /// input_SetFogStrength_by sends SetFogStrength as input_SetFogStrength
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetFogStrength_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFogStrength", Some(value.into()), Some(activator))
     }
 
     /// input_SetToDefaults sends SetToDefaults.
     pub fn input_SetToDefaults(self) -> bool {
-        send(self.handle, "SetToDefaults", None)
+        send(self.handle, "SetToDefaults", None, None)
+    }
+
+    /// input_SetToDefaults_by sends SetToDefaults as input_SetToDefaults does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetToDefaults_by(self, activator: u32) -> bool {
+        send(self.handle, "SetToDefaults", None, Some(activator))
     }
 }
 
 impl CEnvVolumetricFogVolume {
     /// input_Disable sends Disable.
     pub fn input_Disable(self, value: bool) -> bool {
-        send(self.handle, "Disable", Some(value.into()))
+        send(self.handle, "Disable", Some(value.into()), None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "Disable", Some(value.into()), Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self, value: bool) -> bool {
-        send(self.handle, "Enable", Some(value.into()))
+        send(self.handle, "Enable", Some(value.into()), None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "Enable", Some(value.into()), Some(activator))
     }
 }
 
 impl CFogController {
     /// input_Set2DSkyboxFogFactor sends Set2DSkyboxFogFactor.
     pub fn input_Set2DSkyboxFogFactor(self, value: f32) -> bool {
-        send(self.handle, "Set2DSkyboxFogFactor", Some(value.into()))
+        send(self.handle, "Set2DSkyboxFogFactor", Some(value.into()), None)
+    }
+
+    /// input_Set2DSkyboxFogFactor_by sends Set2DSkyboxFogFactor as
+    /// input_Set2DSkyboxFogFactor does, caused by the entity of handle
+    /// activator.
+    pub fn input_Set2DSkyboxFogFactor_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Set2DSkyboxFogFactor", Some(value.into()), Some(activator))
     }
 
     /// input_Set2DSkyboxFogFactorLerpTo sends Set2DSkyboxFogFactorLerpTo.
     pub fn input_Set2DSkyboxFogFactorLerpTo(self, value: f32) -> bool {
-        send(self.handle, "Set2DSkyboxFogFactorLerpTo", Some(value.into()))
+        send(self.handle, "Set2DSkyboxFogFactorLerpTo", Some(value.into()), None)
+    }
+
+    /// input_Set2DSkyboxFogFactorLerpTo_by sends Set2DSkyboxFogFactorLerpTo as
+    /// input_Set2DSkyboxFogFactorLerpTo does, caused by the entity of handle
+    /// activator.
+    pub fn input_Set2DSkyboxFogFactorLerpTo_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Set2DSkyboxFogFactorLerpTo", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngles sends SetAngles.
     pub fn input_SetAngles(self, value: &str) -> bool {
-        send(self.handle, "SetAngles", Some(value.into()))
+        send(self.handle, "SetAngles", Some(value.into()), None)
+    }
+
+    /// input_SetAngles_by sends SetAngles as input_SetAngles does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetAngles_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetAngles", Some(value.into()), Some(activator))
     }
 
     /// input_SetColor sends SetColor.
     pub fn input_SetColor(self, value: u32) -> bool {
-        send(self.handle, "SetColor", Some(value.into()))
+        send(self.handle, "SetColor", Some(value.into()), None)
+    }
+
+    /// input_SetColor_by sends SetColor as input_SetColor does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetColor_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "SetColor", Some(value.into()), Some(activator))
     }
 
     /// input_SetColorLerpTo sends SetColorLerpTo.
     pub fn input_SetColorLerpTo(self, value: u32) -> bool {
-        send(self.handle, "SetColorLerpTo", Some(value.into()))
+        send(self.handle, "SetColorLerpTo", Some(value.into()), None)
+    }
+
+    /// input_SetColorLerpTo_by sends SetColorLerpTo as input_SetColorLerpTo
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetColorLerpTo_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "SetColorLerpTo", Some(value.into()), Some(activator))
     }
 
     /// input_SetColorSecondary sends SetColorSecondary.
     pub fn input_SetColorSecondary(self, value: u32) -> bool {
-        send(self.handle, "SetColorSecondary", Some(value.into()))
+        send(self.handle, "SetColorSecondary", Some(value.into()), None)
+    }
+
+    /// input_SetColorSecondary_by sends SetColorSecondary as
+    /// input_SetColorSecondary does, caused by the entity of handle activator.
+    pub fn input_SetColorSecondary_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "SetColorSecondary", Some(value.into()), Some(activator))
     }
 
     /// input_SetColorSecondaryLerpTo sends SetColorSecondaryLerpTo.
     pub fn input_SetColorSecondaryLerpTo(self, value: u32) -> bool {
-        send(self.handle, "SetColorSecondaryLerpTo", Some(value.into()))
+        send(self.handle, "SetColorSecondaryLerpTo", Some(value.into()), None)
+    }
+
+    /// input_SetColorSecondaryLerpTo_by sends SetColorSecondaryLerpTo as
+    /// input_SetColorSecondaryLerpTo does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetColorSecondaryLerpTo_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "SetColorSecondaryLerpTo", Some(value.into()), Some(activator))
     }
 
     /// input_SetEndDist sends SetEndDist.
     pub fn input_SetEndDist(self, value: f32) -> bool {
-        send(self.handle, "SetEndDist", Some(value.into()))
+        send(self.handle, "SetEndDist", Some(value.into()), None)
+    }
+
+    /// input_SetEndDist_by sends SetEndDist as input_SetEndDist does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetEndDist_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetEndDist", Some(value.into()), Some(activator))
     }
 
     /// input_SetEndDistLerpTo sends SetEndDistLerpTo.
     pub fn input_SetEndDistLerpTo(self, value: f32) -> bool {
-        send(self.handle, "SetEndDistLerpTo", Some(value.into()))
+        send(self.handle, "SetEndDistLerpTo", Some(value.into()), None)
+    }
+
+    /// input_SetEndDistLerpTo_by sends SetEndDistLerpTo as
+    /// input_SetEndDistLerpTo does, caused by the entity of handle activator.
+    pub fn input_SetEndDistLerpTo_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetEndDistLerpTo", Some(value.into()), Some(activator))
     }
 
     /// input_SetFarZ sends SetFarZ.
     pub fn input_SetFarZ(self, value: i32) -> bool {
-        send(self.handle, "SetFarZ", Some(value.into()))
+        send(self.handle, "SetFarZ", Some(value.into()), None)
+    }
+
+    /// input_SetFarZ_by sends SetFarZ as input_SetFarZ does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetFarZ_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetFarZ", Some(value.into()), Some(activator))
     }
 
     /// input_SetMaxDensity sends SetMaxDensity.
     pub fn input_SetMaxDensity(self, value: f32) -> bool {
-        send(self.handle, "SetMaxDensity", Some(value.into()))
+        send(self.handle, "SetMaxDensity", Some(value.into()), None)
+    }
+
+    /// input_SetMaxDensity_by sends SetMaxDensity as input_SetMaxDensity does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetMaxDensity_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMaxDensity", Some(value.into()), Some(activator))
     }
 
     /// input_SetMaxDensityLerpTo sends SetMaxDensityLerpTo.
     pub fn input_SetMaxDensityLerpTo(self, value: f32) -> bool {
-        send(self.handle, "SetMaxDensityLerpTo", Some(value.into()))
+        send(self.handle, "SetMaxDensityLerpTo", Some(value.into()), None)
+    }
+
+    /// input_SetMaxDensityLerpTo_by sends SetMaxDensityLerpTo as
+    /// input_SetMaxDensityLerpTo does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMaxDensityLerpTo_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMaxDensityLerpTo", Some(value.into()), Some(activator))
     }
 
     /// input_SetStartDist sends SetStartDist.
     pub fn input_SetStartDist(self, value: f32) -> bool {
-        send(self.handle, "SetStartDist", Some(value.into()))
+        send(self.handle, "SetStartDist", Some(value.into()), None)
+    }
+
+    /// input_SetStartDist_by sends SetStartDist as input_SetStartDist does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetStartDist_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetStartDist", Some(value.into()), Some(activator))
     }
 
     /// input_SetStartDistLerpTo sends SetStartDistLerpTo.
     pub fn input_SetStartDistLerpTo(self, value: f32) -> bool {
-        send(self.handle, "SetStartDistLerpTo", Some(value.into()))
+        send(self.handle, "SetStartDistLerpTo", Some(value.into()), None)
+    }
+
+    /// input_SetStartDistLerpTo_by sends SetStartDistLerpTo as
+    /// input_SetStartDistLerpTo does, caused by the entity of handle activator.
+    pub fn input_SetStartDistLerpTo_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetStartDistLerpTo", Some(value.into()), Some(activator))
     }
 
     /// input_StartFogTransition sends StartFogTransition.
     pub fn input_StartFogTransition(self) -> bool {
-        send(self.handle, "StartFogTransition", None)
+        send(self.handle, "StartFogTransition", None, None)
+    }
+
+    /// input_StartFogTransition_by sends StartFogTransition as
+    /// input_StartFogTransition does, caused by the entity of handle activator.
+    pub fn input_StartFogTransition_by(self, activator: u32) -> bool {
+        send(self.handle, "StartFogTransition", None, Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
 impl CFuncTimescale {
     /// input_Reset sends Reset.
     pub fn input_Reset(self) -> bool {
-        send(self.handle, "Reset", None)
+        send(self.handle, "Reset", None, None)
+    }
+
+    /// input_Reset_by sends Reset as input_Reset does, caused by the entity of
+    /// handle activator.
+    pub fn input_Reset_by(self, activator: u32) -> bool {
+        send(self.handle, "Reset", None, Some(activator))
     }
 
     /// input_Start sends Start.
     pub fn input_Start(self) -> bool {
-        send(self.handle, "Start", None)
+        send(self.handle, "Start", None, None)
+    }
+
+    /// input_Start_by sends Start as input_Start does, caused by the entity of
+    /// handle activator.
+    pub fn input_Start_by(self, activator: u32) -> bool {
+        send(self.handle, "Start", None, Some(activator))
     }
 
     /// input_Stop sends Stop.
     pub fn input_Stop(self) -> bool {
-        send(self.handle, "Stop", None)
+        send(self.handle, "Stop", None, None)
+    }
+
+    /// input_Stop_by sends Stop as input_Stop does, caused by the entity of
+    /// handle activator.
+    pub fn input_Stop_by(self, activator: u32) -> bool {
+        send(self.handle, "Stop", None, Some(activator))
     }
 }
 
 impl CGameGibManager {
     /// input_SetMaxPieces sends SetMaxPieces.
     pub fn input_SetMaxPieces(self, value: i32) -> bool {
-        send(self.handle, "SetMaxPieces", Some(value.into()))
+        send(self.handle, "SetMaxPieces", Some(value.into()), None)
+    }
+
+    /// input_SetMaxPieces_by sends SetMaxPieces as input_SetMaxPieces does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetMaxPieces_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetMaxPieces", Some(value.into()), Some(activator))
     }
 
     /// input_SetMaxPiecesDX8 sends SetMaxPiecesDX8.
     pub fn input_SetMaxPiecesDX8(self, value: i32) -> bool {
-        send(self.handle, "SetMaxPiecesDX8", Some(value.into()))
+        send(self.handle, "SetMaxPiecesDX8", Some(value.into()), None)
+    }
+
+    /// input_SetMaxPiecesDX8_by sends SetMaxPiecesDX8 as input_SetMaxPiecesDX8
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetMaxPiecesDX8_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetMaxPiecesDX8", Some(value.into()), Some(activator))
     }
 }
 
 impl CGradientFog {
     /// input_Disable sends Disable.
     pub fn input_Disable(self, value: bool) -> bool {
-        send(self.handle, "Disable", Some(value.into()))
+        send(self.handle, "Disable", Some(value.into()), None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "Disable", Some(value.into()), Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self, value: bool) -> bool {
-        send(self.handle, "Enable", Some(value.into()))
+        send(self.handle, "Enable", Some(value.into()), None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "Enable", Some(value.into()), Some(activator))
     }
 
     /// input_SetFarZ sends SetFarZ.
     pub fn input_SetFarZ(self, value: f32) -> bool {
-        send(self.handle, "SetFarZ", Some(value.into()))
+        send(self.handle, "SetFarZ", Some(value.into()), None)
+    }
+
+    /// input_SetFarZ_by sends SetFarZ as input_SetFarZ does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetFarZ_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFarZ", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogColor sends SetFogColor.
     pub fn input_SetFogColor(self, value: u32) -> bool {
-        send(self.handle, "SetFogColor", Some(value.into()))
+        send(self.handle, "SetFogColor", Some(value.into()), None)
+    }
+
+    /// input_SetFogColor_by sends SetFogColor as input_SetFogColor does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetFogColor_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "SetFogColor", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogEndDistance sends SetFogEndDistance.
     pub fn input_SetFogEndDistance(self, value: f32) -> bool {
-        send(self.handle, "SetFogEndDistance", Some(value.into()))
+        send(self.handle, "SetFogEndDistance", Some(value.into()), None)
+    }
+
+    /// input_SetFogEndDistance_by sends SetFogEndDistance as
+    /// input_SetFogEndDistance does, caused by the entity of handle activator.
+    pub fn input_SetFogEndDistance_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFogEndDistance", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogEndHeight sends SetFogEndHeight.
     pub fn input_SetFogEndHeight(self, value: f32) -> bool {
-        send(self.handle, "SetFogEndHeight", Some(value.into()))
+        send(self.handle, "SetFogEndHeight", Some(value.into()), None)
+    }
+
+    /// input_SetFogEndHeight_by sends SetFogEndHeight as input_SetFogEndHeight
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetFogEndHeight_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFogEndHeight", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogFalloffExponent sends SetFogFalloffExponent.
     pub fn input_SetFogFalloffExponent(self, value: f32) -> bool {
-        send(self.handle, "SetFogFalloffExponent", Some(value.into()))
+        send(self.handle, "SetFogFalloffExponent", Some(value.into()), None)
+    }
+
+    /// input_SetFogFalloffExponent_by sends SetFogFalloffExponent as
+    /// input_SetFogFalloffExponent does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetFogFalloffExponent_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFogFalloffExponent", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogMaxOpacity sends SetFogMaxOpacity.
     pub fn input_SetFogMaxOpacity(self, value: f32) -> bool {
-        send(self.handle, "SetFogMaxOpacity", Some(value.into()))
+        send(self.handle, "SetFogMaxOpacity", Some(value.into()), None)
+    }
+
+    /// input_SetFogMaxOpacity_by sends SetFogMaxOpacity as
+    /// input_SetFogMaxOpacity does, caused by the entity of handle activator.
+    pub fn input_SetFogMaxOpacity_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFogMaxOpacity", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogStartDistance sends SetFogStartDistance.
     pub fn input_SetFogStartDistance(self, value: f32) -> bool {
-        send(self.handle, "SetFogStartDistance", Some(value.into()))
+        send(self.handle, "SetFogStartDistance", Some(value.into()), None)
+    }
+
+    /// input_SetFogStartDistance_by sends SetFogStartDistance as
+    /// input_SetFogStartDistance does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetFogStartDistance_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFogStartDistance", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogStartHeight sends SetFogStartHeight.
     pub fn input_SetFogStartHeight(self, value: f32) -> bool {
-        send(self.handle, "SetFogStartHeight", Some(value.into()))
+        send(self.handle, "SetFogStartHeight", Some(value.into()), None)
+    }
+
+    /// input_SetFogStartHeight_by sends SetFogStartHeight as
+    /// input_SetFogStartHeight does, caused by the entity of handle activator.
+    pub fn input_SetFogStartHeight_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFogStartHeight", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogStrength sends SetFogStrength.
     pub fn input_SetFogStrength(self, value: f32) -> bool {
-        send(self.handle, "SetFogStrength", Some(value.into()))
+        send(self.handle, "SetFogStrength", Some(value.into()), None)
+    }
+
+    /// input_SetFogStrength_by sends SetFogStrength as input_SetFogStrength
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetFogStrength_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFogStrength", Some(value.into()), Some(activator))
     }
 
     /// input_SetFogVerticalExponent sends SetFogVerticalExponent.
     pub fn input_SetFogVerticalExponent(self, value: f32) -> bool {
-        send(self.handle, "SetFogVerticalExponent", Some(value.into()))
+        send(self.handle, "SetFogVerticalExponent", Some(value.into()), None)
+    }
+
+    /// input_SetFogVerticalExponent_by sends SetFogVerticalExponent as
+    /// input_SetFogVerticalExponent does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetFogVerticalExponent_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFogVerticalExponent", Some(value.into()), Some(activator))
     }
 }
 
 impl CInfoVisibilityBox {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CInfoWorldLayer {
     /// input_DestroyEntities sends DestroyEntities.
     pub fn input_DestroyEntities(self) -> bool {
-        send(self.handle, "DestroyEntities", None)
+        send(self.handle, "DestroyEntities", None, None)
+    }
+
+    /// input_DestroyEntities_by sends DestroyEntities as input_DestroyEntities
+    /// does, caused by the entity of handle activator.
+    pub fn input_DestroyEntities_by(self, activator: u32) -> bool {
+        send(self.handle, "DestroyEntities", None, Some(activator))
     }
 
     /// input_HideWorldLayer sends HideWorldLayer.
     pub fn input_HideWorldLayer(self) -> bool {
-        send(self.handle, "HideWorldLayer", None)
+        send(self.handle, "HideWorldLayer", None, None)
+    }
+
+    /// input_HideWorldLayer_by sends HideWorldLayer as input_HideWorldLayer
+    /// does, caused by the entity of handle activator.
+    pub fn input_HideWorldLayer_by(self, activator: u32) -> bool {
+        send(self.handle, "HideWorldLayer", None, Some(activator))
     }
 
     /// input_HideWorldLayerAndDestroyEntities sends
     /// HideWorldLayerAndDestroyEntities.
     pub fn input_HideWorldLayerAndDestroyEntities(self) -> bool {
-        send(self.handle, "HideWorldLayerAndDestroyEntities", None)
+        send(self.handle, "HideWorldLayerAndDestroyEntities", None, None)
+    }
+
+    /// input_HideWorldLayerAndDestroyEntities_by sends
+    /// HideWorldLayerAndDestroyEntities as
+    /// input_HideWorldLayerAndDestroyEntities does, caused by the entity of
+    /// handle activator.
+    pub fn input_HideWorldLayerAndDestroyEntities_by(self, activator: u32) -> bool {
+        send(self.handle, "HideWorldLayerAndDestroyEntities", None, Some(activator))
     }
 
     /// input_ShowWorldLayer sends ShowWorldLayer.
     pub fn input_ShowWorldLayer(self) -> bool {
-        send(self.handle, "ShowWorldLayer", None)
+        send(self.handle, "ShowWorldLayer", None, None)
+    }
+
+    /// input_ShowWorldLayer_by sends ShowWorldLayer as input_ShowWorldLayer
+    /// does, caused by the entity of handle activator.
+    pub fn input_ShowWorldLayer_by(self, activator: u32) -> bool {
+        send(self.handle, "ShowWorldLayer", None, Some(activator))
     }
 
     /// input_ShowWorldLayerAndSpawnEntities sends
     /// ShowWorldLayerAndSpawnEntities.
     pub fn input_ShowWorldLayerAndSpawnEntities(self) -> bool {
-        send(self.handle, "ShowWorldLayerAndSpawnEntities", None)
+        send(self.handle, "ShowWorldLayerAndSpawnEntities", None, None)
+    }
+
+    /// input_ShowWorldLayerAndSpawnEntities_by sends
+    /// ShowWorldLayerAndSpawnEntities as input_ShowWorldLayerAndSpawnEntities
+    /// does, caused by the entity of handle activator.
+    pub fn input_ShowWorldLayerAndSpawnEntities_by(self, activator: u32) -> bool {
+        send(self.handle, "ShowWorldLayerAndSpawnEntities", None, Some(activator))
     }
 
     /// input_SpawnEntities sends SpawnEntities.
     pub fn input_SpawnEntities(self) -> bool {
-        send(self.handle, "SpawnEntities", None)
+        send(self.handle, "SpawnEntities", None, None)
+    }
+
+    /// input_SpawnEntities_by sends SpawnEntities as input_SpawnEntities does,
+    /// caused by the entity of handle activator.
+    pub fn input_SpawnEntities_by(self, activator: u32) -> bool {
+        send(self.handle, "SpawnEntities", None, Some(activator))
     }
 }
 
@@ -2979,462 +6338,963 @@ impl CLogicGameStateReport {
     /// input_ClearCollections sends ClearCollections. Must clear all
     /// collections each pass.
     pub fn input_ClearCollections(self) -> bool {
-        send(self.handle, "ClearCollections", None)
+        send(self.handle, "ClearCollections", None, None)
+    }
+
+    /// input_ClearCollections_by sends ClearCollections as
+    /// input_ClearCollections does, caused by the entity of handle activator.
+    pub fn input_ClearCollections_by(self, activator: u32) -> bool {
+        send(self.handle, "ClearCollections", None, Some(activator))
     }
 
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CLogicNPCCounter {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetSourceEntity sends SetSourceEntity.
     pub fn input_SetSourceEntity(self, value: &str) -> bool {
-        send(self.handle, "SetSourceEntity", Some(value.into()))
+        send(self.handle, "SetSourceEntity", Some(value.into()), None)
+    }
+
+    /// input_SetSourceEntity_by sends SetSourceEntity as input_SetSourceEntity
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetSourceEntity_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetSourceEntity", Some(value.into()), Some(activator))
     }
 }
 
 impl CPathParticleRope {
     /// input_DestroyImmediately sends DestroyImmediately.
     pub fn input_DestroyImmediately(self) -> bool {
-        send(self.handle, "DestroyImmediately", None)
+        send(self.handle, "DestroyImmediately", None, None)
+    }
+
+    /// input_DestroyImmediately_by sends DestroyImmediately as
+    /// input_DestroyImmediately does, caused by the entity of handle activator.
+    pub fn input_DestroyImmediately_by(self, activator: u32) -> bool {
+        send(self.handle, "DestroyImmediately", None, Some(activator))
     }
 
     /// input_DisablePin sends DisablePin.
     pub fn input_DisablePin(self, value: &str) -> bool {
-        send(self.handle, "DisablePin", Some(value.into()))
+        send(self.handle, "DisablePin", Some(value.into()), None)
+    }
+
+    /// input_DisablePin_by sends DisablePin as input_DisablePin does, caused by
+    /// the entity of handle activator.
+    pub fn input_DisablePin_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "DisablePin", Some(value.into()), Some(activator))
     }
 
     /// input_SetRadius sends SetRadius.
     pub fn input_SetRadius(self, value: f32) -> bool {
-        send(self.handle, "SetRadius", Some(value.into()))
+        send(self.handle, "SetRadius", Some(value.into()), None)
+    }
+
+    /// input_SetRadius_by sends SetRadius as input_SetRadius does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetRadius_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetRadius", Some(value.into()), Some(activator))
     }
 
     /// input_SetSlack sends SetSlack.
     pub fn input_SetSlack(self, value: f32) -> bool {
-        send(self.handle, "SetSlack", Some(value.into()))
+        send(self.handle, "SetSlack", Some(value.into()), None)
+    }
+
+    /// input_SetSlack_by sends SetSlack as input_SetSlack does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSlack_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSlack", Some(value.into()), Some(activator))
     }
 
     /// input_Start sends Start.
     pub fn input_Start(self) -> bool {
-        send(self.handle, "Start", None)
+        send(self.handle, "Start", None, None)
+    }
+
+    /// input_Start_by sends Start as input_Start does, caused by the entity of
+    /// handle activator.
+    pub fn input_Start_by(self, activator: u32) -> bool {
+        send(self.handle, "Start", None, Some(activator))
     }
 
     /// input_Stop sends Stop.
     pub fn input_Stop(self) -> bool {
-        send(self.handle, "Stop", None)
+        send(self.handle, "Stop", None, None)
+    }
+
+    /// input_Stop_by sends Stop as input_Stop does, caused by the entity of
+    /// handle activator.
+    pub fn input_Stop_by(self, activator: u32) -> bool {
+        send(self.handle, "Stop", None, Some(activator))
     }
 
     /// input_StopPlayEndCap sends StopPlayEndCap.
     pub fn input_StopPlayEndCap(self) -> bool {
-        send(self.handle, "StopPlayEndCap", None)
+        send(self.handle, "StopPlayEndCap", None, None)
+    }
+
+    /// input_StopPlayEndCap_by sends StopPlayEndCap as input_StopPlayEndCap
+    /// does, caused by the entity of handle activator.
+    pub fn input_StopPlayEndCap_by(self, activator: u32) -> bool {
+        send(self.handle, "StopPlayEndCap", None, Some(activator))
     }
 }
 
 impl CPhysicsSpring {
     /// input_AddRestLength sends AddRestLength.
     pub fn input_AddRestLength(self, value: f32) -> bool {
-        send(self.handle, "AddRestLength", Some(value.into()))
+        send(self.handle, "AddRestLength", Some(value.into()), None)
+    }
+
+    /// input_AddRestLength_by sends AddRestLength as input_AddRestLength does,
+    /// caused by the entity of handle activator.
+    pub fn input_AddRestLength_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "AddRestLength", Some(value.into()), Some(activator))
     }
 
     /// input_RemoveRestLength sends RemoveRestLength.
     pub fn input_RemoveRestLength(self, value: f32) -> bool {
-        send(self.handle, "RemoveRestLength", Some(value.into()))
+        send(self.handle, "RemoveRestLength", Some(value.into()), None)
+    }
+
+    /// input_RemoveRestLength_by sends RemoveRestLength as
+    /// input_RemoveRestLength does, caused by the entity of handle activator.
+    pub fn input_RemoveRestLength_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "RemoveRestLength", Some(value.into()), Some(activator))
     }
 
     /// input_SetDampingRatio sends SetDampingRatio.
     pub fn input_SetDampingRatio(self, value: f32) -> bool {
-        send(self.handle, "SetDampingRatio", Some(value.into()))
+        send(self.handle, "SetDampingRatio", Some(value.into()), None)
+    }
+
+    /// input_SetDampingRatio_by sends SetDampingRatio as input_SetDampingRatio
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetDampingRatio_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDampingRatio", Some(value.into()), Some(activator))
     }
 
     /// input_SetFrequency sends SetFrequency.
     pub fn input_SetFrequency(self, value: f32) -> bool {
-        send(self.handle, "SetFrequency", Some(value.into()))
+        send(self.handle, "SetFrequency", Some(value.into()), None)
+    }
+
+    /// input_SetFrequency_by sends SetFrequency as input_SetFrequency does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetFrequency_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFrequency", Some(value.into()), Some(activator))
     }
 
     /// input_SetRestLength sends SetRestLength.
     pub fn input_SetRestLength(self, value: f32) -> bool {
-        send(self.handle, "SetRestLength", Some(value.into()))
+        send(self.handle, "SetRestLength", Some(value.into()), None)
+    }
+
+    /// input_SetRestLength_by sends SetRestLength as input_SetRestLength does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetRestLength_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetRestLength", Some(value.into()), Some(activator))
     }
 }
 
 impl CPlayerVisibility {
     /// input_Disable sends Disable.
     pub fn input_Disable(self, value: bool) -> bool {
-        send(self.handle, "Disable", Some(value.into()))
+        send(self.handle, "Disable", Some(value.into()), None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "Disable", Some(value.into()), Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self, value: bool) -> bool {
-        send(self.handle, "Enable", Some(value.into()))
+        send(self.handle, "Enable", Some(value.into()), None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "Enable", Some(value.into()), Some(activator))
     }
 
     /// input_SetPlayerFogDistanceMultiplier sends
     /// SetPlayerFogDistanceMultiplier.
     pub fn input_SetPlayerFogDistanceMultiplier(self, value: f32) -> bool {
-        send(self.handle, "SetPlayerFogDistanceMultiplier", Some(value.into()))
+        send(self.handle, "SetPlayerFogDistanceMultiplier", Some(value.into()), None)
+    }
+
+    /// input_SetPlayerFogDistanceMultiplier_by sends
+    /// SetPlayerFogDistanceMultiplier as input_SetPlayerFogDistanceMultiplier
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetPlayerFogDistanceMultiplier_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetPlayerFogDistanceMultiplier", Some(value.into()), Some(activator))
     }
 
     /// input_SetPlayerFogMaxDensityMultiplier sends
     /// SetPlayerFogMaxDensityMultiplier.
     pub fn input_SetPlayerFogMaxDensityMultiplier(self, value: f32) -> bool {
-        send(self.handle, "SetPlayerFogMaxDensityMultiplier", Some(value.into()))
+        send(self.handle, "SetPlayerFogMaxDensityMultiplier", Some(value.into()), None)
+    }
+
+    /// input_SetPlayerFogMaxDensityMultiplier_by sends
+    /// SetPlayerFogMaxDensityMultiplier as
+    /// input_SetPlayerFogMaxDensityMultiplier does, caused by the entity of
+    /// handle activator.
+    pub fn input_SetPlayerFogMaxDensityMultiplier_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetPlayerFogMaxDensityMultiplier", Some(value.into()), Some(activator))
     }
 
     /// input_SetPlayerVisibilityStrength sends SetPlayerVisibilityStrength.
     pub fn input_SetPlayerVisibilityStrength(self, value: f32) -> bool {
-        send(self.handle, "SetPlayerVisibilityStrength", Some(value.into()))
+        send(self.handle, "SetPlayerVisibilityStrength", Some(value.into()), None)
+    }
+
+    /// input_SetPlayerVisibilityStrength_by sends SetPlayerVisibilityStrength
+    /// as input_SetPlayerVisibilityStrength does, caused by the entity of
+    /// handle activator.
+    pub fn input_SetPlayerVisibilityStrength_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetPlayerVisibilityStrength", Some(value.into()), Some(activator))
     }
 }
 
 impl CPointCamera {
     /// input_Activate sends Activate.
     pub fn input_Activate(self) -> bool {
-        send(self.handle, "Activate", None)
+        send(self.handle, "Activate", None, None)
+    }
+
+    /// input_Activate_by sends Activate as input_Activate does, caused by the
+    /// entity of handle activator.
+    pub fn input_Activate_by(self, activator: u32) -> bool {
+        send(self.handle, "Activate", None, Some(activator))
     }
 
     /// input_ChangeFOV sends ChangeFOV.
     pub fn input_ChangeFOV(self, value: &str) -> bool {
-        send(self.handle, "ChangeFOV", Some(value.into()))
+        send(self.handle, "ChangeFOV", Some(value.into()), None)
+    }
+
+    /// input_ChangeFOV_by sends ChangeFOV as input_ChangeFOV does, caused by
+    /// the entity of handle activator.
+    pub fn input_ChangeFOV_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "ChangeFOV", Some(value.into()), Some(activator))
     }
 
     /// input_Deactivate sends Deactivate.
     pub fn input_Deactivate(self) -> bool {
-        send(self.handle, "Deactivate", None)
+        send(self.handle, "Deactivate", None, None)
+    }
+
+    /// input_Deactivate_by sends Deactivate as input_Deactivate does, caused by
+    /// the entity of handle activator.
+    pub fn input_Deactivate_by(self, activator: u32) -> bool {
+        send(self.handle, "Deactivate", None, Some(activator))
     }
 
     /// input_DisableDOF sends DisableDOF.
     pub fn input_DisableDOF(self) -> bool {
-        send(self.handle, "DisableDOF", None)
+        send(self.handle, "DisableDOF", None, None)
+    }
+
+    /// input_DisableDOF_by sends DisableDOF as input_DisableDOF does, caused by
+    /// the entity of handle activator.
+    pub fn input_DisableDOF_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableDOF", None, Some(activator))
     }
 
     /// input_EnableDOF sends EnableDOF.
     pub fn input_EnableDOF(self) -> bool {
-        send(self.handle, "EnableDOF", None)
+        send(self.handle, "EnableDOF", None, None)
+    }
+
+    /// input_EnableDOF_by sends EnableDOF as input_EnableDOF does, caused by
+    /// the entity of handle activator.
+    pub fn input_EnableDOF_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableDOF", None, Some(activator))
     }
 
     /// input_SetDOFFarBlurry sends SetDOFFarBlurry.
     pub fn input_SetDOFFarBlurry(self, value: f32) -> bool {
-        send(self.handle, "SetDOFFarBlurry", Some(value.into()))
+        send(self.handle, "SetDOFFarBlurry", Some(value.into()), None)
+    }
+
+    /// input_SetDOFFarBlurry_by sends SetDOFFarBlurry as input_SetDOFFarBlurry
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetDOFFarBlurry_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDOFFarBlurry", Some(value.into()), Some(activator))
     }
 
     /// input_SetDOFFarCrisp sends SetDOFFarCrisp.
     pub fn input_SetDOFFarCrisp(self, value: f32) -> bool {
-        send(self.handle, "SetDOFFarCrisp", Some(value.into()))
+        send(self.handle, "SetDOFFarCrisp", Some(value.into()), None)
+    }
+
+    /// input_SetDOFFarCrisp_by sends SetDOFFarCrisp as input_SetDOFFarCrisp
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetDOFFarCrisp_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDOFFarCrisp", Some(value.into()), Some(activator))
     }
 
     /// input_SetDOFNearBlurry sends SetDOFNearBlurry.
     pub fn input_SetDOFNearBlurry(self, value: f32) -> bool {
-        send(self.handle, "SetDOFNearBlurry", Some(value.into()))
+        send(self.handle, "SetDOFNearBlurry", Some(value.into()), None)
+    }
+
+    /// input_SetDOFNearBlurry_by sends SetDOFNearBlurry as
+    /// input_SetDOFNearBlurry does, caused by the entity of handle activator.
+    pub fn input_SetDOFNearBlurry_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDOFNearBlurry", Some(value.into()), Some(activator))
     }
 
     /// input_SetDOFNearCrisp sends SetDOFNearCrisp.
     pub fn input_SetDOFNearCrisp(self, value: f32) -> bool {
-        send(self.handle, "SetDOFNearCrisp", Some(value.into()))
+        send(self.handle, "SetDOFNearCrisp", Some(value.into()), None)
+    }
+
+    /// input_SetDOFNearCrisp_by sends SetDOFNearCrisp as input_SetDOFNearCrisp
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetDOFNearCrisp_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDOFNearCrisp", Some(value.into()), Some(activator))
     }
 
     /// input_SetDOFTiltToGround sends SetDOFTiltToGround.
     pub fn input_SetDOFTiltToGround(self, value: f32) -> bool {
-        send(self.handle, "SetDOFTiltToGround", Some(value.into()))
+        send(self.handle, "SetDOFTiltToGround", Some(value.into()), None)
+    }
+
+    /// input_SetDOFTiltToGround_by sends SetDOFTiltToGround as
+    /// input_SetDOFTiltToGround does, caused by the entity of handle activator.
+    pub fn input_SetDOFTiltToGround_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDOFTiltToGround", Some(value.into()), Some(activator))
     }
 
     /// input_SetOff sends SetOff.
     pub fn input_SetOff(self) -> bool {
-        send(self.handle, "SetOff", None)
+        send(self.handle, "SetOff", None, None)
+    }
+
+    /// input_SetOff_by sends SetOff as input_SetOff does, caused by the entity
+    /// of handle activator.
+    pub fn input_SetOff_by(self, activator: u32) -> bool {
+        send(self.handle, "SetOff", None, Some(activator))
     }
 
     /// input_SetOn sends SetOn.
     pub fn input_SetOn(self) -> bool {
-        send(self.handle, "SetOn", None)
+        send(self.handle, "SetOn", None, None)
+    }
+
+    /// input_SetOn_by sends SetOn as input_SetOn does, caused by the entity of
+    /// handle activator.
+    pub fn input_SetOn_by(self, activator: u32) -> bool {
+        send(self.handle, "SetOn", None, Some(activator))
     }
 
     /// input_SetOnAndTurnOthersOff sends SetOnAndTurnOthersOff.
     pub fn input_SetOnAndTurnOthersOff(self) -> bool {
-        send(self.handle, "SetOnAndTurnOthersOff", None)
+        send(self.handle, "SetOnAndTurnOthersOff", None, None)
+    }
+
+    /// input_SetOnAndTurnOthersOff_by sends SetOnAndTurnOthersOff as
+    /// input_SetOnAndTurnOthersOff does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetOnAndTurnOthersOff_by(self, activator: u32) -> bool {
+        send(self.handle, "SetOnAndTurnOthersOff", None, Some(activator))
     }
 }
 
 impl CPointEntity {
     /// input_SetPosition sends SetPosition.
     pub fn input_SetPosition(self, value: Vector) -> bool {
-        send(self.handle, "SetPosition", Some(value.into()))
+        send(self.handle, "SetPosition", Some(value.into()), None)
+    }
+
+    /// input_SetPosition_by sends SetPosition as input_SetPosition does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetPosition_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "SetPosition", Some(value.into()), Some(activator))
     }
 }
 
 impl CAI_VolumetricEventEntity {
     /// input_EmitAIVolumetricEvent sends EmitAIVolumetricEvent.
     pub fn input_EmitAIVolumetricEvent(self) -> bool {
-        send(self.handle, "EmitAIVolumetricEvent", None)
+        send(self.handle, "EmitAIVolumetricEvent", None, None)
+    }
+
+    /// input_EmitAIVolumetricEvent_by sends EmitAIVolumetricEvent as
+    /// input_EmitAIVolumetricEvent does, caused by the entity of handle
+    /// activator.
+    pub fn input_EmitAIVolumetricEvent_by(self, activator: u32) -> bool {
+        send(self.handle, "EmitAIVolumetricEvent", None, Some(activator))
     }
 
     /// input_StopAIVolumetricEvent sends StopAIVolumetricEvent.
     pub fn input_StopAIVolumetricEvent(self) -> bool {
-        send(self.handle, "StopAIVolumetricEvent", None)
+        send(self.handle, "StopAIVolumetricEvent", None, None)
+    }
+
+    /// input_StopAIVolumetricEvent_by sends StopAIVolumetricEvent as
+    /// input_StopAIVolumetricEvent does, caused by the entity of handle
+    /// activator.
+    pub fn input_StopAIVolumetricEvent_by(self, activator: u32) -> bool {
+        send(self.handle, "StopAIVolumetricEvent", None, Some(activator))
     }
 }
 
 impl CAI_VolumetricEventSensor {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CAmbientGeneric {
     /// input_FadeIn sends FadeIn.
     pub fn input_FadeIn(self, value: f32) -> bool {
-        send(self.handle, "FadeIn", Some(value.into()))
+        send(self.handle, "FadeIn", Some(value.into()), None)
+    }
+
+    /// input_FadeIn_by sends FadeIn as input_FadeIn does, caused by the entity
+    /// of handle activator.
+    pub fn input_FadeIn_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "FadeIn", Some(value.into()), Some(activator))
     }
 
     /// input_FadeOut sends FadeOut.
     pub fn input_FadeOut(self, value: f32) -> bool {
-        send(self.handle, "FadeOut", Some(value.into()))
+        send(self.handle, "FadeOut", Some(value.into()), None)
+    }
+
+    /// input_FadeOut_by sends FadeOut as input_FadeOut does, caused by the
+    /// entity of handle activator.
+    pub fn input_FadeOut_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "FadeOut", Some(value.into()), Some(activator))
     }
 
     /// input_Pitch sends Pitch.
     pub fn input_Pitch(self, value: f32) -> bool {
-        send(self.handle, "Pitch", Some(value.into()))
+        send(self.handle, "Pitch", Some(value.into()), None)
+    }
+
+    /// input_Pitch_by sends Pitch as input_Pitch does, caused by the entity of
+    /// handle activator.
+    pub fn input_Pitch_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Pitch", Some(value.into()), Some(activator))
     }
 
     /// input_PlaySound sends PlaySound.
     pub fn input_PlaySound(self) -> bool {
-        send(self.handle, "PlaySound", None)
+        send(self.handle, "PlaySound", None, None)
+    }
+
+    /// input_PlaySound_by sends PlaySound as input_PlaySound does, caused by
+    /// the entity of handle activator.
+    pub fn input_PlaySound_by(self, activator: u32) -> bool {
+        send(self.handle, "PlaySound", None, Some(activator))
     }
 
     /// input_StopSound sends StopSound.
     pub fn input_StopSound(self) -> bool {
-        send(self.handle, "StopSound", None)
+        send(self.handle, "StopSound", None, None)
+    }
+
+    /// input_StopSound_by sends StopSound as input_StopSound does, caused by
+    /// the entity of handle activator.
+    pub fn input_StopSound_by(self, activator: u32) -> bool {
+        send(self.handle, "StopSound", None, Some(activator))
     }
 
     /// input_ToggleSound sends ToggleSound.
     pub fn input_ToggleSound(self) -> bool {
-        send(self.handle, "ToggleSound", None)
+        send(self.handle, "ToggleSound", None, None)
+    }
+
+    /// input_ToggleSound_by sends ToggleSound as input_ToggleSound does, caused
+    /// by the entity of handle activator.
+    pub fn input_ToggleSound_by(self, activator: u32) -> bool {
+        send(self.handle, "ToggleSound", None, Some(activator))
     }
 
     /// input_Volume sends Volume.
     pub fn input_Volume(self, value: f32) -> bool {
-        send(self.handle, "Volume", Some(value.into()))
+        send(self.handle, "Volume", Some(value.into()), None)
+    }
+
+    /// input_Volume_by sends Volume as input_Volume does, caused by the entity
+    /// of handle activator.
+    pub fn input_Volume_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Volume", Some(value.into()), Some(activator))
     }
 }
 
 impl CCredits {
     /// input_RollCredits sends RollCredits.
     pub fn input_RollCredits(self) -> bool {
-        send(self.handle, "RollCredits", None)
+        send(self.handle, "RollCredits", None, None)
+    }
+
+    /// input_RollCredits_by sends RollCredits as input_RollCredits does, caused
+    /// by the entity of handle activator.
+    pub fn input_RollCredits_by(self, activator: u32) -> bool {
+        send(self.handle, "RollCredits", None, Some(activator))
     }
 
     /// input_RollOutroCredits sends RollOutroCredits.
     pub fn input_RollOutroCredits(self) -> bool {
-        send(self.handle, "RollOutroCredits", None)
+        send(self.handle, "RollOutroCredits", None, None)
+    }
+
+    /// input_RollOutroCredits_by sends RollOutroCredits as
+    /// input_RollOutroCredits does, caused by the entity of handle activator.
+    pub fn input_RollOutroCredits_by(self, activator: u32) -> bool {
+        send(self.handle, "RollOutroCredits", None, Some(activator))
     }
 
     /// input_SetLogoLength sends SetLogoLength.
     pub fn input_SetLogoLength(self, value: f32) -> bool {
-        send(self.handle, "SetLogoLength", Some(value.into()))
+        send(self.handle, "SetLogoLength", Some(value.into()), None)
+    }
+
+    /// input_SetLogoLength_by sends SetLogoLength as input_SetLogoLength does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetLogoLength_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLogoLength", Some(value.into()), Some(activator))
     }
 
     /// input_ShowLogo sends ShowLogo.
     pub fn input_ShowLogo(self) -> bool {
-        send(self.handle, "ShowLogo", None)
+        send(self.handle, "ShowLogo", None, None)
+    }
+
+    /// input_ShowLogo_by sends ShowLogo as input_ShowLogo does, caused by the
+    /// entity of handle activator.
+    pub fn input_ShowLogo_by(self, activator: u32) -> bool {
+        send(self.handle, "ShowLogo", None, Some(activator))
     }
 }
 
 impl CEnvEntityMaker {
     /// input_ForceSpawn sends ForceSpawn.
     pub fn input_ForceSpawn(self) -> bool {
-        send(self.handle, "ForceSpawn", None)
+        send(self.handle, "ForceSpawn", None, None)
+    }
+
+    /// input_ForceSpawn_by sends ForceSpawn as input_ForceSpawn does, caused by
+    /// the entity of handle activator.
+    pub fn input_ForceSpawn_by(self, activator: u32) -> bool {
+        send(self.handle, "ForceSpawn", None, Some(activator))
     }
 
     /// input_ForceSpawnAtEntityOrigin sends ForceSpawnAtEntityOrigin.
     pub fn input_ForceSpawnAtEntityOrigin(self, value: &str) -> bool {
-        send(self.handle, "ForceSpawnAtEntityOrigin", Some(value.into()))
+        send(self.handle, "ForceSpawnAtEntityOrigin", Some(value.into()), None)
+    }
+
+    /// input_ForceSpawnAtEntityOrigin_by sends ForceSpawnAtEntityOrigin as
+    /// input_ForceSpawnAtEntityOrigin does, caused by the entity of handle
+    /// activator.
+    pub fn input_ForceSpawnAtEntityOrigin_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "ForceSpawnAtEntityOrigin", Some(value.into()), Some(activator))
     }
 }
 
 impl CEnvInstructorHint {
     /// input_EndHint sends EndHint.
     pub fn input_EndHint(self) -> bool {
-        send(self.handle, "EndHint", None)
+        send(self.handle, "EndHint", None, None)
+    }
+
+    /// input_EndHint_by sends EndHint as input_EndHint does, caused by the
+    /// entity of handle activator.
+    pub fn input_EndHint_by(self, activator: u32) -> bool {
+        send(self.handle, "EndHint", None, Some(activator))
     }
 
     /// input_ShowHint sends ShowHint.
     pub fn input_ShowHint(self, value: &str) -> bool {
-        send(self.handle, "ShowHint", Some(value.into()))
+        send(self.handle, "ShowHint", Some(value.into()), None)
+    }
+
+    /// input_ShowHint_by sends ShowHint as input_ShowHint does, caused by the
+    /// entity of handle activator.
+    pub fn input_ShowHint_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "ShowHint", Some(value.into()), Some(activator))
     }
 }
 
 impl CEnvInstructorVRHint {
     /// input_EndHint sends EndHint.
     pub fn input_EndHint(self) -> bool {
-        send(self.handle, "EndHint", None)
+        send(self.handle, "EndHint", None, None)
+    }
+
+    /// input_EndHint_by sends EndHint as input_EndHint does, caused by the
+    /// entity of handle activator.
+    pub fn input_EndHint_by(self, activator: u32) -> bool {
+        send(self.handle, "EndHint", None, Some(activator))
     }
 
     /// input_ShowHint sends ShowHint.
     pub fn input_ShowHint(self, value: &str) -> bool {
-        send(self.handle, "ShowHint", Some(value.into()))
+        send(self.handle, "ShowHint", Some(value.into()), None)
+    }
+
+    /// input_ShowHint_by sends ShowHint as input_ShowHint does, caused by the
+    /// entity of handle activator.
+    pub fn input_ShowHint_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "ShowHint", Some(value.into()), Some(activator))
     }
 }
 
 impl CEnvMuzzleFlash {
     /// input_Fire sends Fire.
     pub fn input_Fire(self) -> bool {
-        send(self.handle, "Fire", None)
+        send(self.handle, "Fire", None, None)
+    }
+
+    /// input_Fire_by sends Fire as input_Fire does, caused by the entity of
+    /// handle activator.
+    pub fn input_Fire_by(self, activator: u32) -> bool {
+        send(self.handle, "Fire", None, Some(activator))
     }
 }
 
 impl CEnvShake {
     /// input_Amplitude sends Amplitude.
     pub fn input_Amplitude(self, value: f32) -> bool {
-        send(self.handle, "Amplitude", Some(value.into()))
+        send(self.handle, "Amplitude", Some(value.into()), None)
+    }
+
+    /// input_Amplitude_by sends Amplitude as input_Amplitude does, caused by
+    /// the entity of handle activator.
+    pub fn input_Amplitude_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Amplitude", Some(value.into()), Some(activator))
     }
 
     /// input_Frequency sends Frequency.
     pub fn input_Frequency(self, value: f32) -> bool {
-        send(self.handle, "Frequency", Some(value.into()))
+        send(self.handle, "Frequency", Some(value.into()), None)
+    }
+
+    /// input_Frequency_by sends Frequency as input_Frequency does, caused by
+    /// the entity of handle activator.
+    pub fn input_Frequency_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Frequency", Some(value.into()), Some(activator))
     }
 
     /// input_StartShake sends StartShake.
     pub fn input_StartShake(self) -> bool {
-        send(self.handle, "StartShake", None)
+        send(self.handle, "StartShake", None, None)
+    }
+
+    /// input_StartShake_by sends StartShake as input_StartShake does, caused by
+    /// the entity of handle activator.
+    pub fn input_StartShake_by(self, activator: u32) -> bool {
+        send(self.handle, "StartShake", None, Some(activator))
     }
 
     /// input_StopShake sends StopShake.
     pub fn input_StopShake(self) -> bool {
-        send(self.handle, "StopShake", None)
+        send(self.handle, "StopShake", None, None)
+    }
+
+    /// input_StopShake_by sends StopShake as input_StopShake does, caused by
+    /// the entity of handle activator.
+    pub fn input_StopShake_by(self, activator: u32) -> bool {
+        send(self.handle, "StopShake", None, Some(activator))
     }
 }
 
 impl CEnvSpark {
     /// input_SparkOnce sends SparkOnce.
     pub fn input_SparkOnce(self) -> bool {
-        send(self.handle, "SparkOnce", None)
+        send(self.handle, "SparkOnce", None, None)
+    }
+
+    /// input_SparkOnce_by sends SparkOnce as input_SparkOnce does, caused by
+    /// the entity of handle activator.
+    pub fn input_SparkOnce_by(self, activator: u32) -> bool {
+        send(self.handle, "SparkOnce", None, Some(activator))
     }
 
     /// input_StartSpark sends StartSpark.
     pub fn input_StartSpark(self) -> bool {
-        send(self.handle, "StartSpark", None)
+        send(self.handle, "StartSpark", None, None)
+    }
+
+    /// input_StartSpark_by sends StartSpark as input_StartSpark does, caused by
+    /// the entity of handle activator.
+    pub fn input_StartSpark_by(self, activator: u32) -> bool {
+        send(self.handle, "StartSpark", None, Some(activator))
     }
 
     /// input_StopSpark sends StopSpark.
     pub fn input_StopSpark(self) -> bool {
-        send(self.handle, "StopSpark", None)
+        send(self.handle, "StopSpark", None, None)
+    }
+
+    /// input_StopSpark_by sends StopSpark as input_StopSpark does, caused by
+    /// the entity of handle activator.
+    pub fn input_StopSpark_by(self, activator: u32) -> bool {
+        send(self.handle, "StopSpark", None, Some(activator))
     }
 
     /// input_ToggleSpark sends ToggleSpark.
     pub fn input_ToggleSpark(self) -> bool {
-        send(self.handle, "ToggleSpark", None)
+        send(self.handle, "ToggleSpark", None, None)
+    }
+
+    /// input_ToggleSpark_by sends ToggleSpark as input_ToggleSpark does, caused
+    /// by the entity of handle activator.
+    pub fn input_ToggleSpark_by(self, activator: u32) -> bool {
+        send(self.handle, "ToggleSpark", None, Some(activator))
     }
 }
 
 impl CEnvSplash {
     /// input_Splash sends Splash.
     pub fn input_Splash(self) -> bool {
-        send(self.handle, "Splash", None)
+        send(self.handle, "Splash", None, None)
+    }
+
+    /// input_Splash_by sends Splash as input_Splash does, caused by the entity
+    /// of handle activator.
+    pub fn input_Splash_by(self, activator: u32) -> bool {
+        send(self.handle, "Splash", None, Some(activator))
     }
 }
 
 impl CEnvTilt {
     /// input_StartTilt sends StartTilt.
     pub fn input_StartTilt(self) -> bool {
-        send(self.handle, "StartTilt", None)
+        send(self.handle, "StartTilt", None, None)
+    }
+
+    /// input_StartTilt_by sends StartTilt as input_StartTilt does, caused by
+    /// the entity of handle activator.
+    pub fn input_StartTilt_by(self, activator: u32) -> bool {
+        send(self.handle, "StartTilt", None, Some(activator))
     }
 
     /// input_StopTilt sends StopTilt.
     pub fn input_StopTilt(self) -> bool {
-        send(self.handle, "StopTilt", None)
+        send(self.handle, "StopTilt", None, None)
+    }
+
+    /// input_StopTilt_by sends StopTilt as input_StopTilt does, caused by the
+    /// entity of handle activator.
+    pub fn input_StopTilt_by(self, activator: u32) -> bool {
+        send(self.handle, "StopTilt", None, Some(activator))
     }
 }
 
 impl CEnvViewPunch {
     /// input_ViewPunch sends ViewPunch.
     pub fn input_ViewPunch(self) -> bool {
-        send(self.handle, "ViewPunch", None)
+        send(self.handle, "ViewPunch", None, None)
+    }
+
+    /// input_ViewPunch_by sends ViewPunch as input_ViewPunch does, caused by
+    /// the entity of handle activator.
+    pub fn input_ViewPunch_by(self, activator: u32) -> bool {
+        send(self.handle, "ViewPunch", None, Some(activator))
     }
 }
 
 impl CInfoCitadelHideout {
     /// input_ToggleFastCooldowns sends ToggleFastCooldowns.
     pub fn input_ToggleFastCooldowns(self) -> bool {
-        send(self.handle, "ToggleFastCooldowns", None)
+        send(self.handle, "ToggleFastCooldowns", None, None)
+    }
+
+    /// input_ToggleFastCooldowns_by sends ToggleFastCooldowns as
+    /// input_ToggleFastCooldowns does, caused by the entity of handle
+    /// activator.
+    pub fn input_ToggleFastCooldowns_by(self, activator: u32) -> bool {
+        send(self.handle, "ToggleFastCooldowns", None, Some(activator))
     }
 }
 
 impl CInfoDynamicShadowHint {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CInfoGameEventProxy {
     /// input_GenerateGameEvent sends GenerateGameEvent.
     pub fn input_GenerateGameEvent(self, value: &str) -> bool {
-        send(self.handle, "GenerateGameEvent", Some(value.into()))
+        send(self.handle, "GenerateGameEvent", Some(value.into()), None)
+    }
+
+    /// input_GenerateGameEvent_by sends GenerateGameEvent as
+    /// input_GenerateGameEvent does, caused by the entity of handle activator.
+    pub fn input_GenerateGameEvent_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "GenerateGameEvent", Some(value.into()), Some(activator))
     }
 }
 
 impl CInfoOffscreenPanoramaTexture {
     /// input_AddCSSClass sends AddCSSClass.
     pub fn input_AddCSSClass(self, value: &str) -> bool {
-        send(self.handle, "AddCSSClass", Some(value.into()))
+        send(self.handle, "AddCSSClass", Some(value.into()), None)
+    }
+
+    /// input_AddCSSClass_by sends AddCSSClass as input_AddCSSClass does, caused
+    /// by the entity of handle activator.
+    pub fn input_AddCSSClass_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "AddCSSClass", Some(value.into()), Some(activator))
     }
 
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_RemoveCSSClass sends RemoveCSSClass.
     pub fn input_RemoveCSSClass(self, value: &str) -> bool {
-        send(self.handle, "RemoveCSSClass", Some(value.into()))
+        send(self.handle, "RemoveCSSClass", Some(value.into()), None)
+    }
+
+    /// input_RemoveCSSClass_by sends RemoveCSSClass as input_RemoveCSSClass
+    /// does, caused by the entity of handle activator.
+    pub fn input_RemoveCSSClass_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "RemoveCSSClass", Some(value.into()), Some(activator))
     }
 }
 
 impl CInfoPlayerStart {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
@@ -3442,902 +7302,1880 @@ impl CInfoTrooperNeutralCamp {
     /// input_RemoveNeutrals sends RemoveNeutrals. Remove every neutral
     /// currently spawned by the camp.
     pub fn input_RemoveNeutrals(self) -> bool {
-        send(self.handle, "RemoveNeutrals", None)
+        send(self.handle, "RemoveNeutrals", None, None)
+    }
+
+    /// input_RemoveNeutrals_by sends RemoveNeutrals as input_RemoveNeutrals
+    /// does, caused by the entity of handle activator.
+    pub fn input_RemoveNeutrals_by(self, activator: u32) -> bool {
+        send(self.handle, "RemoveNeutrals", None, Some(activator))
     }
 
     /// input_SetDisabled sends SetDisabled.
     pub fn input_SetDisabled(self, value: bool) -> bool {
-        send(self.handle, "SetDisabled", Some(value.into()))
+        send(self.handle, "SetDisabled", Some(value.into()), None)
+    }
+
+    /// input_SetDisabled_by sends SetDisabled as input_SetDisabled does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetDisabled_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetDisabled", Some(value.into()), Some(activator))
     }
 
     /// input_SpawnNeutrals sends SpawnNeutrals. Fill every spawn point in the
     /// camp now.
     pub fn input_SpawnNeutrals(self) -> bool {
-        send(self.handle, "SpawnNeutrals", None)
+        send(self.handle, "SpawnNeutrals", None, None)
+    }
+
+    /// input_SpawnNeutrals_by sends SpawnNeutrals as input_SpawnNeutrals does,
+    /// caused by the entity of handle activator.
+    pub fn input_SpawnNeutrals_by(self, activator: u32) -> bool {
+        send(self.handle, "SpawnNeutrals", None, Some(activator))
     }
 }
 
 impl CInstructorEventEntity {
     /// input_EndHint sends EndHint.
     pub fn input_EndHint(self) -> bool {
-        send(self.handle, "EndHint", None)
+        send(self.handle, "EndHint", None, None)
+    }
+
+    /// input_EndHint_by sends EndHint as input_EndHint does, caused by the
+    /// entity of handle activator.
+    pub fn input_EndHint_by(self, activator: u32) -> bool {
+        send(self.handle, "EndHint", None, Some(activator))
     }
 
     /// input_SetTargetPlayerToActivator sends SetTargetPlayerToActivator.
     pub fn input_SetTargetPlayerToActivator(self) -> bool {
-        send(self.handle, "SetTargetPlayerToActivator", None)
+        send(self.handle, "SetTargetPlayerToActivator", None, None)
+    }
+
+    /// input_SetTargetPlayerToActivator_by sends SetTargetPlayerToActivator as
+    /// input_SetTargetPlayerToActivator does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetTargetPlayerToActivator_by(self, activator: u32) -> bool {
+        send(self.handle, "SetTargetPlayerToActivator", None, Some(activator))
     }
 
     /// input_ShowHint sends ShowHint.
     pub fn input_ShowHint(self, value: &str) -> bool {
-        send(self.handle, "ShowHint", Some(value.into()))
+        send(self.handle, "ShowHint", Some(value.into()), None)
+    }
+
+    /// input_ShowHint_by sends ShowHint as input_ShowHint does, caused by the
+    /// entity of handle activator.
+    pub fn input_ShowHint_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "ShowHint", Some(value.into()), Some(activator))
     }
 }
 
 impl CKeepUpright {
     /// input_SetAngularLimit sends SetAngularLimit.
     pub fn input_SetAngularLimit(self, value: f32) -> bool {
-        send(self.handle, "SetAngularLimit", Some(value.into()))
+        send(self.handle, "SetAngularLimit", Some(value.into()), None)
+    }
+
+    /// input_SetAngularLimit_by sends SetAngularLimit as input_SetAngularLimit
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetAngularLimit_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngularLimit", Some(value.into()), Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
 impl CMessage {
     /// input_ShowMessage sends ShowMessage.
     pub fn input_ShowMessage(self) -> bool {
-        send(self.handle, "ShowMessage", None)
+        send(self.handle, "ShowMessage", None, None)
+    }
+
+    /// input_ShowMessage_by sends ShowMessage as input_ShowMessage does, caused
+    /// by the entity of handle activator.
+    pub fn input_ShowMessage_by(self, activator: u32) -> bool {
+        send(self.handle, "ShowMessage", None, Some(activator))
     }
 }
 
 impl CMessageEntity {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetMessage sends SetMessage.
     pub fn input_SetMessage(self, value: &str) -> bool {
-        send(self.handle, "SetMessage", Some(value.into()))
+        send(self.handle, "SetMessage", Some(value.into()), None)
+    }
+
+    /// input_SetMessage_by sends SetMessage as input_SetMessage does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetMessage_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetMessage", Some(value.into()), Some(activator))
     }
 }
 
 impl CNavLinkAreaEntity {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_Update sends Update.
     pub fn input_Update(self) -> bool {
-        send(self.handle, "Update", None)
+        send(self.handle, "Update", None, None)
+    }
+
+    /// input_Update_by sends Update as input_Update does, caused by the entity
+    /// of handle activator.
+    pub fn input_Update_by(self, activator: u32) -> bool {
+        send(self.handle, "Update", None, Some(activator))
     }
 }
 
 impl CPathCorner {
     /// input_InPass sends InPass.
     pub fn input_InPass(self) -> bool {
-        send(self.handle, "InPass", None)
+        send(self.handle, "InPass", None, None)
+    }
+
+    /// input_InPass_by sends InPass as input_InPass does, caused by the entity
+    /// of handle activator.
+    pub fn input_InPass_by(self, activator: u32) -> bool {
+        send(self.handle, "InPass", None, Some(activator))
     }
 
     /// input_SetNextPathCorner sends SetNextPathCorner.
     pub fn input_SetNextPathCorner(self, value: &str) -> bool {
-        send(self.handle, "SetNextPathCorner", Some(value.into()))
+        send(self.handle, "SetNextPathCorner", Some(value.into()), None)
+    }
+
+    /// input_SetNextPathCorner_by sends SetNextPathCorner as
+    /// input_SetNextPathCorner does, caused by the entity of handle activator.
+    pub fn input_SetNextPathCorner_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetNextPathCorner", Some(value.into()), Some(activator))
     }
 }
 
 impl CPathTrack {
     /// input_DisableAlternatePath sends DisableAlternatePath.
     pub fn input_DisableAlternatePath(self) -> bool {
-        send(self.handle, "DisableAlternatePath", None)
+        send(self.handle, "DisableAlternatePath", None, None)
+    }
+
+    /// input_DisableAlternatePath_by sends DisableAlternatePath as
+    /// input_DisableAlternatePath does, caused by the entity of handle
+    /// activator.
+    pub fn input_DisableAlternatePath_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableAlternatePath", None, Some(activator))
     }
 
     /// input_DisablePath sends DisablePath.
     pub fn input_DisablePath(self) -> bool {
-        send(self.handle, "DisablePath", None)
+        send(self.handle, "DisablePath", None, None)
+    }
+
+    /// input_DisablePath_by sends DisablePath as input_DisablePath does, caused
+    /// by the entity of handle activator.
+    pub fn input_DisablePath_by(self, activator: u32) -> bool {
+        send(self.handle, "DisablePath", None, Some(activator))
     }
 
     /// input_EnableAlternatePath sends EnableAlternatePath.
     pub fn input_EnableAlternatePath(self) -> bool {
-        send(self.handle, "EnableAlternatePath", None)
+        send(self.handle, "EnableAlternatePath", None, None)
+    }
+
+    /// input_EnableAlternatePath_by sends EnableAlternatePath as
+    /// input_EnableAlternatePath does, caused by the entity of handle
+    /// activator.
+    pub fn input_EnableAlternatePath_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableAlternatePath", None, Some(activator))
     }
 
     /// input_EnablePath sends EnablePath.
     pub fn input_EnablePath(self) -> bool {
-        send(self.handle, "EnablePath", None)
+        send(self.handle, "EnablePath", None, None)
+    }
+
+    /// input_EnablePath_by sends EnablePath as input_EnablePath does, caused by
+    /// the entity of handle activator.
+    pub fn input_EnablePath_by(self, activator: u32) -> bool {
+        send(self.handle, "EnablePath", None, Some(activator))
     }
 
     /// input_InPass sends InPass.
     pub fn input_InPass(self) -> bool {
-        send(self.handle, "InPass", None)
+        send(self.handle, "InPass", None, None)
+    }
+
+    /// input_InPass_by sends InPass as input_InPass does, caused by the entity
+    /// of handle activator.
+    pub fn input_InPass_by(self, activator: u32) -> bool {
+        send(self.handle, "InPass", None, Some(activator))
     }
 
     /// input_ToggleAlternatePath sends ToggleAlternatePath.
     pub fn input_ToggleAlternatePath(self) -> bool {
-        send(self.handle, "ToggleAlternatePath", None)
+        send(self.handle, "ToggleAlternatePath", None, None)
+    }
+
+    /// input_ToggleAlternatePath_by sends ToggleAlternatePath as
+    /// input_ToggleAlternatePath does, caused by the entity of handle
+    /// activator.
+    pub fn input_ToggleAlternatePath_by(self, activator: u32) -> bool {
+        send(self.handle, "ToggleAlternatePath", None, Some(activator))
     }
 
     /// input_TogglePath sends TogglePath.
     pub fn input_TogglePath(self) -> bool {
-        send(self.handle, "TogglePath", None)
+        send(self.handle, "TogglePath", None, None)
+    }
+
+    /// input_TogglePath_by sends TogglePath as input_TogglePath does, caused by
+    /// the entity of handle activator.
+    pub fn input_TogglePath_by(self, activator: u32) -> bool {
+        send(self.handle, "TogglePath", None, Some(activator))
     }
 }
 
 impl CPhysExplosion {
     /// input_Explode sends Explode.
     pub fn input_Explode(self) -> bool {
-        send(self.handle, "Explode", None)
+        send(self.handle, "Explode", None, None)
+    }
+
+    /// input_Explode_by sends Explode as input_Explode does, caused by the
+    /// entity of handle activator.
+    pub fn input_Explode_by(self, activator: u32) -> bool {
+        send(self.handle, "Explode", None, Some(activator))
     }
 }
 
 impl CPhysForce {
     /// input_Activate sends Activate.
     pub fn input_Activate(self) -> bool {
-        send(self.handle, "Activate", None)
+        send(self.handle, "Activate", None, None)
+    }
+
+    /// input_Activate_by sends Activate as input_Activate does, caused by the
+    /// entity of handle activator.
+    pub fn input_Activate_by(self, activator: u32) -> bool {
+        send(self.handle, "Activate", None, Some(activator))
     }
 
     /// input_Deactivate sends Deactivate.
     pub fn input_Deactivate(self) -> bool {
-        send(self.handle, "Deactivate", None)
+        send(self.handle, "Deactivate", None, None)
+    }
+
+    /// input_Deactivate_by sends Deactivate as input_Deactivate does, caused by
+    /// the entity of handle activator.
+    pub fn input_Deactivate_by(self, activator: u32) -> bool {
+        send(self.handle, "Deactivate", None, Some(activator))
     }
 
     /// input_scale sends scale.
     pub fn input_scale(self, value: f32) -> bool {
-        send(self.handle, "scale", Some(value.into()))
+        send(self.handle, "scale", Some(value.into()), None)
+    }
+
+    /// input_scale_by sends scale as input_scale does, caused by the entity of
+    /// handle activator.
+    pub fn input_scale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "scale", Some(value.into()), Some(activator))
     }
 }
 
 impl CPhysImpact {
     /// input_Impact sends Impact.
     pub fn input_Impact(self) -> bool {
-        send(self.handle, "Impact", None)
+        send(self.handle, "Impact", None, None)
+    }
+
+    /// input_Impact_by sends Impact as input_Impact does, caused by the entity
+    /// of handle activator.
+    pub fn input_Impact_by(self, activator: u32) -> bool {
+        send(self.handle, "Impact", None, Some(activator))
     }
 }
 
 impl CPointAngleSensor {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetTargetEntity sends SetTargetEntity.
     pub fn input_SetTargetEntity(self, value: &str) -> bool {
-        send(self.handle, "SetTargetEntity", Some(value.into()))
+        send(self.handle, "SetTargetEntity", Some(value.into()), None)
+    }
+
+    /// input_SetTargetEntity_by sends SetTargetEntity as input_SetTargetEntity
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetTargetEntity_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetTargetEntity", Some(value.into()), Some(activator))
     }
 
     /// input_Test sends Test.
     pub fn input_Test(self) -> bool {
-        send(self.handle, "Test", None)
+        send(self.handle, "Test", None, None)
+    }
+
+    /// input_Test_by sends Test as input_Test does, caused by the entity of
+    /// handle activator.
+    pub fn input_Test_by(self, activator: u32) -> bool {
+        send(self.handle, "Test", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CPointAngularVelocitySensor {
     /// input_Test sends Test.
     pub fn input_Test(self) -> bool {
-        send(self.handle, "Test", None)
+        send(self.handle, "Test", None, None)
+    }
+
+    /// input_Test_by sends Test as input_Test does, caused by the entity of
+    /// handle activator.
+    pub fn input_Test_by(self, activator: u32) -> bool {
+        send(self.handle, "Test", None, Some(activator))
     }
 
     /// input_TestWithInterval sends TestWithInterval.
     pub fn input_TestWithInterval(self) -> bool {
-        send(self.handle, "TestWithInterval", None)
+        send(self.handle, "TestWithInterval", None, None)
+    }
+
+    /// input_TestWithInterval_by sends TestWithInterval as
+    /// input_TestWithInterval does, caused by the entity of handle activator.
+    pub fn input_TestWithInterval_by(self, activator: u32) -> bool {
+        send(self.handle, "TestWithInterval", None, Some(activator))
     }
 }
 
 impl CPointBroadcastClientCommand {
     /// input_Command sends Command.
     pub fn input_Command(self, value: &str) -> bool {
-        send(self.handle, "Command", Some(value.into()))
+        send(self.handle, "Command", Some(value.into()), None)
+    }
+
+    /// input_Command_by sends Command as input_Command does, caused by the
+    /// entity of handle activator.
+    pub fn input_Command_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "Command", Some(value.into()), Some(activator))
     }
 }
 
 impl CPointClientCommand {
     /// input_Command sends Command.
     pub fn input_Command(self, value: &str) -> bool {
-        send(self.handle, "Command", Some(value.into()))
+        send(self.handle, "Command", Some(value.into()), None)
+    }
+
+    /// input_Command_by sends Command as input_Command does, caused by the
+    /// entity of handle activator.
+    pub fn input_Command_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "Command", Some(value.into()), Some(activator))
     }
 }
 
 impl CPointHurt {
     /// input_Hurt sends Hurt.
     pub fn input_Hurt(self) -> bool {
-        send(self.handle, "Hurt", None)
+        send(self.handle, "Hurt", None, None)
+    }
+
+    /// input_Hurt_by sends Hurt as input_Hurt does, caused by the entity of
+    /// handle activator.
+    pub fn input_Hurt_by(self, activator: u32) -> bool {
+        send(self.handle, "Hurt", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
 impl CPointProximitySensor {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetTargetEntity sends SetTargetEntity.
     pub fn input_SetTargetEntity(self, value: &str) -> bool {
-        send(self.handle, "SetTargetEntity", Some(value.into()))
+        send(self.handle, "SetTargetEntity", Some(value.into()), None)
+    }
+
+    /// input_SetTargetEntity_by sends SetTargetEntity as input_SetTargetEntity
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetTargetEntity_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetTargetEntity", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CPointPush {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CPointServerCommand {
     /// input_Command sends Command.
     pub fn input_Command(self, value: &str) -> bool {
-        send(self.handle, "Command", Some(value.into()))
+        send(self.handle, "Command", Some(value.into()), None)
+    }
+
+    /// input_Command_by sends Command as input_Command does, caused by the
+    /// entity of handle activator.
+    pub fn input_Command_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "Command", Some(value.into()), Some(activator))
     }
 }
 
 impl CPointVelocitySensor {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CRagdollMagnet {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CSceneEntity {
     /// input_Cancel sends Cancel.
     pub fn input_Cancel(self) -> bool {
-        send(self.handle, "Cancel", None)
+        send(self.handle, "Cancel", None, None)
+    }
+
+    /// input_Cancel_by sends Cancel as input_Cancel does, caused by the entity
+    /// of handle activator.
+    pub fn input_Cancel_by(self, activator: u32) -> bool {
+        send(self.handle, "Cancel", None, Some(activator))
     }
 
     /// input_CancelAtNextInterrupt sends CancelAtNextInterrupt.
     pub fn input_CancelAtNextInterrupt(self) -> bool {
-        send(self.handle, "CancelAtNextInterrupt", None)
+        send(self.handle, "CancelAtNextInterrupt", None, None)
+    }
+
+    /// input_CancelAtNextInterrupt_by sends CancelAtNextInterrupt as
+    /// input_CancelAtNextInterrupt does, caused by the entity of handle
+    /// activator.
+    pub fn input_CancelAtNextInterrupt_by(self, activator: u32) -> bool {
+        send(self.handle, "CancelAtNextInterrupt", None, Some(activator))
     }
 
     /// input_InterjectResponse sends InterjectResponse.
     pub fn input_InterjectResponse(self, value: &str) -> bool {
-        send(self.handle, "InterjectResponse", Some(value.into()))
+        send(self.handle, "InterjectResponse", Some(value.into()), None)
+    }
+
+    /// input_InterjectResponse_by sends InterjectResponse as
+    /// input_InterjectResponse does, caused by the entity of handle activator.
+    pub fn input_InterjectResponse_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "InterjectResponse", Some(value.into()), Some(activator))
     }
 
     /// input_Pause sends Pause.
     pub fn input_Pause(self) -> bool {
-        send(self.handle, "Pause", None)
+        send(self.handle, "Pause", None, None)
+    }
+
+    /// input_Pause_by sends Pause as input_Pause does, caused by the entity of
+    /// handle activator.
+    pub fn input_Pause_by(self, activator: u32) -> bool {
+        send(self.handle, "Pause", None, Some(activator))
     }
 
     /// input_PauseAtNextInterrupt sends PauseAtNextInterrupt.
     pub fn input_PauseAtNextInterrupt(self) -> bool {
-        send(self.handle, "PauseAtNextInterrupt", None)
+        send(self.handle, "PauseAtNextInterrupt", None, None)
+    }
+
+    /// input_PauseAtNextInterrupt_by sends PauseAtNextInterrupt as
+    /// input_PauseAtNextInterrupt does, caused by the entity of handle
+    /// activator.
+    pub fn input_PauseAtNextInterrupt_by(self, activator: u32) -> bool {
+        send(self.handle, "PauseAtNextInterrupt", None, Some(activator))
     }
 
     /// input_PitchShift sends PitchShift.
     pub fn input_PitchShift(self, value: f32) -> bool {
-        send(self.handle, "PitchShift", Some(value.into()))
+        send(self.handle, "PitchShift", Some(value.into()), None)
+    }
+
+    /// input_PitchShift_by sends PitchShift as input_PitchShift does, caused by
+    /// the entity of handle activator.
+    pub fn input_PitchShift_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "PitchShift", Some(value.into()), Some(activator))
     }
 
     /// input_Resume sends Resume.
     pub fn input_Resume(self) -> bool {
-        send(self.handle, "Resume", None)
+        send(self.handle, "Resume", None, None)
+    }
+
+    /// input_Resume_by sends Resume as input_Resume does, caused by the entity
+    /// of handle activator.
+    pub fn input_Resume_by(self, activator: u32) -> bool {
+        send(self.handle, "Resume", None, Some(activator))
     }
 
     /// input_ScriptPlayerDeath sends ScriptPlayerDeath.
     pub fn input_ScriptPlayerDeath(self) -> bool {
-        send(self.handle, "ScriptPlayerDeath", None)
+        send(self.handle, "ScriptPlayerDeath", None, None)
+    }
+
+    /// input_ScriptPlayerDeath_by sends ScriptPlayerDeath as
+    /// input_ScriptPlayerDeath does, caused by the entity of handle activator.
+    pub fn input_ScriptPlayerDeath_by(self, activator: u32) -> bool {
+        send(self.handle, "ScriptPlayerDeath", None, Some(activator))
     }
 
     /// input_SetTarget1 sends SetTarget1.
     pub fn input_SetTarget1(self, value: &str) -> bool {
-        send(self.handle, "SetTarget1", Some(value.into()))
+        send(self.handle, "SetTarget1", Some(value.into()), None)
+    }
+
+    /// input_SetTarget1_by sends SetTarget1 as input_SetTarget1 does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetTarget1_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetTarget1", Some(value.into()), Some(activator))
     }
 
     /// input_SetTarget2 sends SetTarget2.
     pub fn input_SetTarget2(self, value: &str) -> bool {
-        send(self.handle, "SetTarget2", Some(value.into()))
+        send(self.handle, "SetTarget2", Some(value.into()), None)
+    }
+
+    /// input_SetTarget2_by sends SetTarget2 as input_SetTarget2 does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetTarget2_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetTarget2", Some(value.into()), Some(activator))
     }
 
     /// input_Start sends Start.
     pub fn input_Start(self) -> bool {
-        send(self.handle, "Start", None)
+        send(self.handle, "Start", None, None)
+    }
+
+    /// input_Start_by sends Start as input_Start does, caused by the entity of
+    /// handle activator.
+    pub fn input_Start_by(self, activator: u32) -> bool {
+        send(self.handle, "Start", None, Some(activator))
     }
 
     /// input_StopWaitingForActor sends StopWaitingForActor.
     pub fn input_StopWaitingForActor(self) -> bool {
-        send(self.handle, "StopWaitingForActor", None)
+        send(self.handle, "StopWaitingForActor", None, None)
+    }
+
+    /// input_StopWaitingForActor_by sends StopWaitingForActor as
+    /// input_StopWaitingForActor does, caused by the entity of handle
+    /// activator.
+    pub fn input_StopWaitingForActor_by(self, activator: u32) -> bool {
+        send(self.handle, "StopWaitingForActor", None, Some(activator))
     }
 }
 
 impl CTankTrainAI {
     /// input_TargetEntity sends TargetEntity.
     pub fn input_TargetEntity(self, value: &str) -> bool {
-        send(self.handle, "TargetEntity", Some(value.into()))
+        send(self.handle, "TargetEntity", Some(value.into()), None)
+    }
+
+    /// input_TargetEntity_by sends TargetEntity as input_TargetEntity does,
+    /// caused by the entity of handle activator.
+    pub fn input_TargetEntity_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "TargetEntity", Some(value.into()), Some(activator))
     }
 }
 
 impl CPointEntityFinder {
     /// input_FindEntity sends FindEntity.
     pub fn input_FindEntity(self) -> bool {
-        send(self.handle, "FindEntity", None)
+        send(self.handle, "FindEntity", None, None)
+    }
+
+    /// input_FindEntity_by sends FindEntity as input_FindEntity does, caused by
+    /// the entity of handle activator.
+    pub fn input_FindEntity_by(self, activator: u32) -> bool {
+        send(self.handle, "FindEntity", None, Some(activator))
     }
 }
 
 impl CPointOrient {
     /// input_SetActive sends SetActive.
     pub fn input_SetActive(self, value: bool) -> bool {
-        send(self.handle, "SetActive", Some(value.into()))
+        send(self.handle, "SetActive", Some(value.into()), None)
+    }
+
+    /// input_SetActive_by sends SetActive as input_SetActive does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetActive_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetActive", Some(value.into()), Some(activator))
     }
 
     /// input_SetTarget sends SetTarget.
     pub fn input_SetTarget(self, value: &str) -> bool {
-        send(self.handle, "SetTarget", Some(value.into()))
+        send(self.handle, "SetTarget", Some(value.into()), None)
+    }
+
+    /// input_SetTarget_by sends SetTarget as input_SetTarget does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetTarget_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetTarget", Some(value.into()), Some(activator))
     }
 }
 
 impl CPointValueRemapper {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetDisengageistance sends SetDisengageistance.
     pub fn input_SetDisengageistance(self, value: f32) -> bool {
-        send(self.handle, "SetDisengageistance", Some(value.into()))
+        send(self.handle, "SetDisengageistance", Some(value.into()), None)
+    }
+
+    /// input_SetDisengageistance_by sends SetDisengageistance as
+    /// input_SetDisengageistance does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetDisengageistance_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDisengageistance", Some(value.into()), Some(activator))
     }
 
     /// input_SetEngageDistance sends SetEngageDistance.
     pub fn input_SetEngageDistance(self, value: f32) -> bool {
-        send(self.handle, "SetEngageDistance", Some(value.into()))
+        send(self.handle, "SetEngageDistance", Some(value.into()), None)
+    }
+
+    /// input_SetEngageDistance_by sends SetEngageDistance as
+    /// input_SetEngageDistance does, caused by the entity of handle activator.
+    pub fn input_SetEngageDistance_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetEngageDistance", Some(value.into()), Some(activator))
     }
 
     /// input_SetMomentumModifier sends SetMomentumModifier.
     pub fn input_SetMomentumModifier(self, value: f32) -> bool {
-        send(self.handle, "SetMomentumModifier", Some(value.into()))
+        send(self.handle, "SetMomentumModifier", Some(value.into()), None)
+    }
+
+    /// input_SetMomentumModifier_by sends SetMomentumModifier as
+    /// input_SetMomentumModifier does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMomentumModifier_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMomentumModifier", Some(value.into()), Some(activator))
     }
 
     /// input_SetMomentumType sends SetMomentumType.
     pub fn input_SetMomentumType(self, value: i32) -> bool {
-        send(self.handle, "SetMomentumType", Some(value.into()))
+        send(self.handle, "SetMomentumType", Some(value.into()), None)
+    }
+
+    /// input_SetMomentumType_by sends SetMomentumType as input_SetMomentumType
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetMomentumType_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetMomentumType", Some(value.into()), Some(activator))
     }
 
     /// input_SetSnapValue sends SetSnapValue.
     pub fn input_SetSnapValue(self, value: f32) -> bool {
-        send(self.handle, "SetSnapValue", Some(value.into()))
+        send(self.handle, "SetSnapValue", Some(value.into()), None)
+    }
+
+    /// input_SetSnapValue_by sends SetSnapValue as input_SetSnapValue does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetSnapValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSnapValue", Some(value.into()), Some(activator))
     }
 }
 
 impl CRagdollManager {
     /// input_SetMaxRagdollCount sends SetMaxRagdollCount.
     pub fn input_SetMaxRagdollCount(self, value: i32) -> bool {
-        send(self.handle, "SetMaxRagdollCount", Some(value.into()))
+        send(self.handle, "SetMaxRagdollCount", Some(value.into()), None)
+    }
+
+    /// input_SetMaxRagdollCount_by sends SetMaxRagdollCount as
+    /// input_SetMaxRagdollCount does, caused by the entity of handle activator.
+    pub fn input_SetMaxRagdollCount_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetMaxRagdollCount", Some(value.into()), Some(activator))
     }
 }
 
 impl CScriptedSequence {
     /// input_BeginSequence sends BeginSequence.
     pub fn input_BeginSequence(self) -> bool {
-        send(self.handle, "BeginSequence", None)
+        send(self.handle, "BeginSequence", None, None)
+    }
+
+    /// input_BeginSequence_by sends BeginSequence as input_BeginSequence does,
+    /// caused by the entity of handle activator.
+    pub fn input_BeginSequence_by(self, activator: u32) -> bool {
+        send(self.handle, "BeginSequence", None, Some(activator))
     }
 
     /// input_CancelSequence sends CancelSequence.
     pub fn input_CancelSequence(self) -> bool {
-        send(self.handle, "CancelSequence", None)
+        send(self.handle, "CancelSequence", None, None)
+    }
+
+    /// input_CancelSequence_by sends CancelSequence as input_CancelSequence
+    /// does, caused by the entity of handle activator.
+    pub fn input_CancelSequence_by(self, activator: u32) -> bool {
+        send(self.handle, "CancelSequence", None, Some(activator))
     }
 
     /// input_ForceTarget sends ForceTarget.
     pub fn input_ForceTarget(self, value: &str) -> bool {
-        send(self.handle, "ForceTarget", Some(value.into()))
+        send(self.handle, "ForceTarget", Some(value.into()), None)
+    }
+
+    /// input_ForceTarget_by sends ForceTarget as input_ForceTarget does, caused
+    /// by the entity of handle activator.
+    pub fn input_ForceTarget_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "ForceTarget", Some(value.into()), Some(activator))
     }
 
     /// input_MoveToPosition sends MoveToPosition.
     pub fn input_MoveToPosition(self) -> bool {
-        send(self.handle, "MoveToPosition", None)
+        send(self.handle, "MoveToPosition", None, None)
+    }
+
+    /// input_MoveToPosition_by sends MoveToPosition as input_MoveToPosition
+    /// does, caused by the entity of handle activator.
+    pub fn input_MoveToPosition_by(self, activator: u32) -> bool {
+        send(self.handle, "MoveToPosition", None, Some(activator))
     }
 
     /// input_ScriptPlayerDeath sends ScriptPlayerDeath.
     pub fn input_ScriptPlayerDeath(self) -> bool {
-        send(self.handle, "ScriptPlayerDeath", None)
+        send(self.handle, "ScriptPlayerDeath", None, None)
+    }
+
+    /// input_ScriptPlayerDeath_by sends ScriptPlayerDeath as
+    /// input_ScriptPlayerDeath does, caused by the entity of handle activator.
+    pub fn input_ScriptPlayerDeath_by(self, activator: u32) -> bool {
+        send(self.handle, "ScriptPlayerDeath", None, Some(activator))
     }
 
     /// input_SetActionSequence sends SetActionSequence.
     pub fn input_SetActionSequence(self, value: &str) -> bool {
-        send(self.handle, "SetActionSequence", Some(value.into()))
+        send(self.handle, "SetActionSequence", Some(value.into()), None)
+    }
+
+    /// input_SetActionSequence_by sends SetActionSequence as
+    /// input_SetActionSequence does, caused by the entity of handle activator.
+    pub fn input_SetActionSequence_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetActionSequence", Some(value.into()), Some(activator))
     }
 }
 
 impl CAI_Hint {
     /// input_DisableHint sends DisableHint.
     pub fn input_DisableHint(self) -> bool {
-        send(self.handle, "DisableHint", None)
+        send(self.handle, "DisableHint", None, None)
+    }
+
+    /// input_DisableHint_by sends DisableHint as input_DisableHint does, caused
+    /// by the entity of handle activator.
+    pub fn input_DisableHint_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableHint", None, Some(activator))
     }
 
     /// input_EnableHint sends EnableHint.
     pub fn input_EnableHint(self) -> bool {
-        send(self.handle, "EnableHint", None)
+        send(self.handle, "EnableHint", None, None)
+    }
+
+    /// input_EnableHint_by sends EnableHint as input_EnableHint does, caused by
+    /// the entity of handle activator.
+    pub fn input_EnableHint_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableHint", None, Some(activator))
     }
 
     /// input_ToggleHint sends ToggleHint.
     pub fn input_ToggleHint(self) -> bool {
-        send(self.handle, "ToggleHint", None)
+        send(self.handle, "ToggleHint", None, None)
+    }
+
+    /// input_ToggleHint_by sends ToggleHint as input_ToggleHint does, caused by
+    /// the entity of handle activator.
+    pub fn input_ToggleHint_by(self, activator: u32) -> bool {
+        send(self.handle, "ToggleHint", None, Some(activator))
     }
 }
 
 impl CCitadelEnergyTower {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CBaseFilter {
     /// input_TestActivator sends TestActivator.
     pub fn input_TestActivator(self) -> bool {
-        send(self.handle, "TestActivator", None)
+        send(self.handle, "TestActivator", None, None)
+    }
+
+    /// input_TestActivator_by sends TestActivator as input_TestActivator does,
+    /// caused by the entity of handle activator.
+    pub fn input_TestActivator_by(self, activator: u32) -> bool {
+        send(self.handle, "TestActivator", None, Some(activator))
     }
 }
 
 impl CEnvFade {
     /// input_Fade sends Fade.
     pub fn input_Fade(self) -> bool {
-        send(self.handle, "Fade", None)
+        send(self.handle, "Fade", None, None)
+    }
+
+    /// input_Fade_by sends Fade as input_Fade does, caused by the entity of
+    /// handle activator.
+    pub fn input_Fade_by(self, activator: u32) -> bool {
+        send(self.handle, "Fade", None, Some(activator))
     }
 }
 
 impl CEnvGlobal {
     /// input_AddToCounter sends AddToCounter.
     pub fn input_AddToCounter(self, value: i32) -> bool {
-        send(self.handle, "AddToCounter", Some(value.into()))
+        send(self.handle, "AddToCounter", Some(value.into()), None)
+    }
+
+    /// input_AddToCounter_by sends AddToCounter as input_AddToCounter does,
+    /// caused by the entity of handle activator.
+    pub fn input_AddToCounter_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "AddToCounter", Some(value.into()), Some(activator))
     }
 
     /// input_GetCounter sends GetCounter.
     pub fn input_GetCounter(self) -> bool {
-        send(self.handle, "GetCounter", None)
+        send(self.handle, "GetCounter", None, None)
+    }
+
+    /// input_GetCounter_by sends GetCounter as input_GetCounter does, caused by
+    /// the entity of handle activator.
+    pub fn input_GetCounter_by(self, activator: u32) -> bool {
+        send(self.handle, "GetCounter", None, Some(activator))
     }
 
     /// input_Remove sends Remove.
     pub fn input_Remove(self) -> bool {
-        send(self.handle, "Remove", None)
+        send(self.handle, "Remove", None, None)
+    }
+
+    /// input_Remove_by sends Remove as input_Remove does, caused by the entity
+    /// of handle activator.
+    pub fn input_Remove_by(self, activator: u32) -> bool {
+        send(self.handle, "Remove", None, Some(activator))
     }
 
     /// input_SetCounter sends SetCounter.
     pub fn input_SetCounter(self, value: i32) -> bool {
-        send(self.handle, "SetCounter", Some(value.into()))
+        send(self.handle, "SetCounter", Some(value.into()), None)
+    }
+
+    /// input_SetCounter_by sends SetCounter as input_SetCounter does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetCounter_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetCounter", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
 impl CFuncMoverRouter {
     /// input_ClearFollowMoverEntity sends ClearFollowMoverEntity.
     pub fn input_ClearFollowMoverEntity(self) -> bool {
-        send(self.handle, "ClearFollowMoverEntity", None)
+        send(self.handle, "ClearFollowMoverEntity", None, None)
+    }
+
+    /// input_ClearFollowMoverEntity_by sends ClearFollowMoverEntity as
+    /// input_ClearFollowMoverEntity does, caused by the entity of handle
+    /// activator.
+    pub fn input_ClearFollowMoverEntity_by(self, activator: u32) -> bool {
+        send(self.handle, "ClearFollowMoverEntity", None, Some(activator))
     }
 
     /// input_ClearStartFollowingClosestMover sends
     /// ClearStartFollowingClosestMover.
     pub fn input_ClearStartFollowingClosestMover(self) -> bool {
-        send(self.handle, "ClearStartFollowingClosestMover", None)
+        send(self.handle, "ClearStartFollowingClosestMover", None, None)
+    }
+
+    /// input_ClearStartFollowingClosestMover_by sends
+    /// ClearStartFollowingClosestMover as input_ClearStartFollowingClosestMover
+    /// does, caused by the entity of handle activator.
+    pub fn input_ClearStartFollowingClosestMover_by(self, activator: u32) -> bool {
+        send(self.handle, "ClearStartFollowingClosestMover", None, Some(activator))
     }
 
     /// input_FireUser1 sends FireUser1.
     pub fn input_FireUser1(self) -> bool {
-        send(self.handle, "FireUser1", None)
+        send(self.handle, "FireUser1", None, None)
+    }
+
+    /// input_FireUser1_by sends FireUser1 as input_FireUser1 does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireUser1_by(self, activator: u32) -> bool {
+        send(self.handle, "FireUser1", None, Some(activator))
     }
 
     /// input_FireUser2 sends FireUser2.
     pub fn input_FireUser2(self) -> bool {
-        send(self.handle, "FireUser2", None)
+        send(self.handle, "FireUser2", None, None)
+    }
+
+    /// input_FireUser2_by sends FireUser2 as input_FireUser2 does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireUser2_by(self, activator: u32) -> bool {
+        send(self.handle, "FireUser2", None, Some(activator))
     }
 
     /// input_FireUser3 sends FireUser3.
     pub fn input_FireUser3(self) -> bool {
-        send(self.handle, "FireUser3", None)
+        send(self.handle, "FireUser3", None, None)
+    }
+
+    /// input_FireUser3_by sends FireUser3 as input_FireUser3 does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireUser3_by(self, activator: u32) -> bool {
+        send(self.handle, "FireUser3", None, Some(activator))
     }
 
     /// input_FireUser4 sends FireUser4.
     pub fn input_FireUser4(self) -> bool {
-        send(self.handle, "FireUser4", None)
+        send(self.handle, "FireUser4", None, None)
+    }
+
+    /// input_FireUser4_by sends FireUser4 as input_FireUser4 does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireUser4_by(self, activator: u32) -> bool {
+        send(self.handle, "FireUser4", None, Some(activator))
     }
 
     /// input_SetMoverIndex sends SetMoverIndex.
     pub fn input_SetMoverIndex(self, value: i32) -> bool {
-        send(self.handle, "SetMoverIndex", Some(value.into()))
+        send(self.handle, "SetMoverIndex", Some(value.into()), None)
+    }
+
+    /// input_SetMoverIndex_by sends SetMoverIndex as input_SetMoverIndex does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetMoverIndex_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetMoverIndex", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeed sends SetSpeed.
     pub fn input_SetSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetSpeed", Some(value.into()))
+        send(self.handle, "SetSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetSpeed_by sends SetSpeed as input_SetSpeed does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_Start sends Start.
     pub fn input_Start(self) -> bool {
-        send(self.handle, "Start", None)
+        send(self.handle, "Start", None, None)
+    }
+
+    /// input_Start_by sends Start as input_Start does, caused by the entity of
+    /// handle activator.
+    pub fn input_Start_by(self, activator: u32) -> bool {
+        send(self.handle, "Start", None, Some(activator))
     }
 
     /// input_StartForward sends StartForward.
     pub fn input_StartForward(self) -> bool {
-        send(self.handle, "StartForward", None)
+        send(self.handle, "StartForward", None, None)
+    }
+
+    /// input_StartForward_by sends StartForward as input_StartForward does,
+    /// caused by the entity of handle activator.
+    pub fn input_StartForward_by(self, activator: u32) -> bool {
+        send(self.handle, "StartForward", None, Some(activator))
     }
 
     /// input_StartReverse sends StartReverse.
     pub fn input_StartReverse(self) -> bool {
-        send(self.handle, "StartReverse", None)
+        send(self.handle, "StartReverse", None, None)
+    }
+
+    /// input_StartReverse_by sends StartReverse as input_StartReverse does,
+    /// caused by the entity of handle activator.
+    pub fn input_StartReverse_by(self, activator: u32) -> bool {
+        send(self.handle, "StartReverse", None, Some(activator))
     }
 
     /// input_Stop sends Stop.
     pub fn input_Stop(self) -> bool {
-        send(self.handle, "Stop", None)
+        send(self.handle, "Stop", None, None)
+    }
+
+    /// input_Stop_by sends Stop as input_Stop does, caused by the entity of
+    /// handle activator.
+    pub fn input_Stop_by(self, activator: u32) -> bool {
+        send(self.handle, "Stop", None, Some(activator))
     }
 
     /// input_StopImmediate sends StopImmediate.
     pub fn input_StopImmediate(self) -> bool {
-        send(self.handle, "StopImmediate", None)
+        send(self.handle, "StopImmediate", None, None)
+    }
+
+    /// input_StopImmediate_by sends StopImmediate as input_StopImmediate does,
+    /// caused by the entity of handle activator.
+    pub fn input_StopImmediate_by(self, activator: u32) -> bool {
+        send(self.handle, "StopImmediate", None, Some(activator))
     }
 }
 
 impl CInfoSpawnGroupLoadUnload {
     /// input_ActivateSpawnGroup sends ActivateSpawnGroup.
     pub fn input_ActivateSpawnGroup(self) -> bool {
-        send(self.handle, "ActivateSpawnGroup", None)
+        send(self.handle, "ActivateSpawnGroup", None, None)
+    }
+
+    /// input_ActivateSpawnGroup_by sends ActivateSpawnGroup as
+    /// input_ActivateSpawnGroup does, caused by the entity of handle activator.
+    pub fn input_ActivateSpawnGroup_by(self, activator: u32) -> bool {
+        send(self.handle, "ActivateSpawnGroup", None, Some(activator))
     }
 
     /// input_SetSpawnGroup sends SetSpawnGroup.
     pub fn input_SetSpawnGroup(self, value: &str) -> bool {
-        send(self.handle, "SetSpawnGroup", Some(value.into()))
+        send(self.handle, "SetSpawnGroup", Some(value.into()), None)
+    }
+
+    /// input_SetSpawnGroup_by sends SetSpawnGroup as input_SetSpawnGroup does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetSpawnGroup_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetSpawnGroup", Some(value.into()), Some(activator))
     }
 
     /// input_StartSpawnGroupLoad sends StartSpawnGroupLoad.
     pub fn input_StartSpawnGroupLoad(self) -> bool {
-        send(self.handle, "StartSpawnGroupLoad", None)
+        send(self.handle, "StartSpawnGroupLoad", None, None)
+    }
+
+    /// input_StartSpawnGroupLoad_by sends StartSpawnGroupLoad as
+    /// input_StartSpawnGroupLoad does, caused by the entity of handle
+    /// activator.
+    pub fn input_StartSpawnGroupLoad_by(self, activator: u32) -> bool {
+        send(self.handle, "StartSpawnGroupLoad", None, Some(activator))
     }
 
     /// input_StartSpawnGroupUnload sends StartSpawnGroupUnload.
     pub fn input_StartSpawnGroupUnload(self) -> bool {
-        send(self.handle, "StartSpawnGroupUnload", None)
+        send(self.handle, "StartSpawnGroupUnload", None, None)
+    }
+
+    /// input_StartSpawnGroupUnload_by sends StartSpawnGroupUnload as
+    /// input_StartSpawnGroupUnload does, caused by the entity of handle
+    /// activator.
+    pub fn input_StartSpawnGroupUnload_by(self, activator: u32) -> bool {
+        send(self.handle, "StartSpawnGroupUnload", None, Some(activator))
     }
 }
 
 impl CLogicAchievement {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_FireEvent sends FireEvent.
     pub fn input_FireEvent(self) -> bool {
-        send(self.handle, "FireEvent", None)
+        send(self.handle, "FireEvent", None, None)
+    }
+
+    /// input_FireEvent_by sends FireEvent as input_FireEvent does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireEvent_by(self, activator: u32) -> bool {
+        send(self.handle, "FireEvent", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CLogicActivityEvent {
     /// input_FireEvent sends FireEvent.
     pub fn input_FireEvent(self) -> bool {
-        send(self.handle, "FireEvent", None)
+        send(self.handle, "FireEvent", None, None)
+    }
+
+    /// input_FireEvent_by sends FireEvent as input_FireEvent does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireEvent_by(self, activator: u32) -> bool {
+        send(self.handle, "FireEvent", None, Some(activator))
     }
 }
 
 impl CLogicAutosave {
     /// input_Save sends Save.
     pub fn input_Save(self) -> bool {
-        send(self.handle, "Save", None)
+        send(self.handle, "Save", None, None)
+    }
+
+    /// input_Save_by sends Save as input_Save does, caused by the entity of
+    /// handle activator.
+    pub fn input_Save_by(self, activator: u32) -> bool {
+        send(self.handle, "Save", None, Some(activator))
     }
 
     /// input_SaveDangerous sends SaveDangerous.
     pub fn input_SaveDangerous(self, value: f32) -> bool {
-        send(self.handle, "SaveDangerous", Some(value.into()))
+        send(self.handle, "SaveDangerous", Some(value.into()), None)
+    }
+
+    /// input_SaveDangerous_by sends SaveDangerous as input_SaveDangerous does,
+    /// caused by the entity of handle activator.
+    pub fn input_SaveDangerous_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SaveDangerous", Some(value.into()), Some(activator))
     }
 
     /// input_SetMinHitpointsThreshold sends SetMinHitpointsThreshold.
     pub fn input_SetMinHitpointsThreshold(self, value: i32) -> bool {
-        send(self.handle, "SetMinHitpointsThreshold", Some(value.into()))
+        send(self.handle, "SetMinHitpointsThreshold", Some(value.into()), None)
+    }
+
+    /// input_SetMinHitpointsThreshold_by sends SetMinHitpointsThreshold as
+    /// input_SetMinHitpointsThreshold does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMinHitpointsThreshold_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetMinHitpointsThreshold", Some(value.into()), Some(activator))
     }
 }
 
 impl CLogicActiveAutosave {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CLogicBranch {
     /// input_SetValue sends SetValue.
     pub fn input_SetValue(self, value: bool) -> bool {
-        send(self.handle, "SetValue", Some(value.into()))
+        send(self.handle, "SetValue", Some(value.into()), None)
+    }
+
+    /// input_SetValue_by sends SetValue as input_SetValue does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetValue_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetValue", Some(value.into()), Some(activator))
     }
 
     /// input_SetValueTest sends SetValueTest.
     pub fn input_SetValueTest(self, value: bool) -> bool {
-        send(self.handle, "SetValueTest", Some(value.into()))
+        send(self.handle, "SetValueTest", Some(value.into()), None)
+    }
+
+    /// input_SetValueTest_by sends SetValueTest as input_SetValueTest does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetValueTest_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetValueTest", Some(value.into()), Some(activator))
     }
 
     /// input_Test sends Test.
     pub fn input_Test(self) -> bool {
-        send(self.handle, "Test", None)
+        send(self.handle, "Test", None, None)
+    }
+
+    /// input_Test_by sends Test as input_Test does, caused by the entity of
+    /// handle activator.
+    pub fn input_Test_by(self, activator: u32) -> bool {
+        send(self.handle, "Test", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_ToggleTest sends ToggleTest.
     pub fn input_ToggleTest(self) -> bool {
-        send(self.handle, "ToggleTest", None)
+        send(self.handle, "ToggleTest", None, None)
+    }
+
+    /// input_ToggleTest_by sends ToggleTest as input_ToggleTest does, caused by
+    /// the entity of handle activator.
+    pub fn input_ToggleTest_by(self, activator: u32) -> bool {
+        send(self.handle, "ToggleTest", None, Some(activator))
     }
 }
 
 impl CLogicBranchList {
     /// input_Test sends Test.
     pub fn input_Test(self) -> bool {
-        send(self.handle, "Test", None)
+        send(self.handle, "Test", None, None)
+    }
+
+    /// input_Test_by sends Test as input_Test does, caused by the entity of
+    /// handle activator.
+    pub fn input_Test_by(self, activator: u32) -> bool {
+        send(self.handle, "Test", None, Some(activator))
     }
 
     /// input__OnLogicBranchChanged sends _OnLogicBranchChanged.
     pub fn input__OnLogicBranchChanged(self) -> bool {
-        send(self.handle, "_OnLogicBranchChanged", None)
+        send(self.handle, "_OnLogicBranchChanged", None, None)
+    }
+
+    /// input__OnLogicBranchChanged_by sends _OnLogicBranchChanged as
+    /// input__OnLogicBranchChanged does, caused by the entity of handle
+    /// activator.
+    pub fn input__OnLogicBranchChanged_by(self, activator: u32) -> bool {
+        send(self.handle, "_OnLogicBranchChanged", None, Some(activator))
     }
 
     /// input__OnLogicBranchRemoved sends _OnLogicBranchRemoved.
     pub fn input__OnLogicBranchRemoved(self) -> bool {
-        send(self.handle, "_OnLogicBranchRemoved", None)
+        send(self.handle, "_OnLogicBranchRemoved", None, None)
+    }
+
+    /// input__OnLogicBranchRemoved_by sends _OnLogicBranchRemoved as
+    /// input__OnLogicBranchRemoved does, caused by the entity of handle
+    /// activator.
+    pub fn input__OnLogicBranchRemoved_by(self, activator: u32) -> bool {
+        send(self.handle, "_OnLogicBranchRemoved", None, Some(activator))
     }
 }
 
 impl CLogicCase {
     /// input_PickRandom sends PickRandom.
     pub fn input_PickRandom(self) -> bool {
-        send(self.handle, "PickRandom", None)
+        send(self.handle, "PickRandom", None, None)
+    }
+
+    /// input_PickRandom_by sends PickRandom as input_PickRandom does, caused by
+    /// the entity of handle activator.
+    pub fn input_PickRandom_by(self, activator: u32) -> bool {
+        send(self.handle, "PickRandom", None, Some(activator))
     }
 
     /// input_PickRandomShuffle sends PickRandomShuffle.
     pub fn input_PickRandomShuffle(self) -> bool {
-        send(self.handle, "PickRandomShuffle", None)
+        send(self.handle, "PickRandomShuffle", None, None)
+    }
+
+    /// input_PickRandomShuffle_by sends PickRandomShuffle as
+    /// input_PickRandomShuffle does, caused by the entity of handle activator.
+    pub fn input_PickRandomShuffle_by(self, activator: u32) -> bool {
+        send(self.handle, "PickRandomShuffle", None, Some(activator))
     }
 
     /// input_ResetShuffle sends ResetShuffle.
     pub fn input_ResetShuffle(self) -> bool {
-        send(self.handle, "ResetShuffle", None)
+        send(self.handle, "ResetShuffle", None, None)
+    }
+
+    /// input_ResetShuffle_by sends ResetShuffle as input_ResetShuffle does,
+    /// caused by the entity of handle activator.
+    pub fn input_ResetShuffle_by(self, activator: u32) -> bool {
+        send(self.handle, "ResetShuffle", None, Some(activator))
     }
 }
 
 impl CLogicCollisionPair {
     /// input_DisableCollisions sends DisableCollisions.
     pub fn input_DisableCollisions(self) -> bool {
-        send(self.handle, "DisableCollisions", None)
+        send(self.handle, "DisableCollisions", None, None)
+    }
+
+    /// input_DisableCollisions_by sends DisableCollisions as
+    /// input_DisableCollisions does, caused by the entity of handle activator.
+    pub fn input_DisableCollisions_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableCollisions", None, Some(activator))
     }
 
     /// input_DisableCollisionsWith sends DisableCollisionsWith.
     pub fn input_DisableCollisionsWith(self, value: &str) -> bool {
-        send(self.handle, "DisableCollisionsWith", Some(value.into()))
+        send(self.handle, "DisableCollisionsWith", Some(value.into()), None)
+    }
+
+    /// input_DisableCollisionsWith_by sends DisableCollisionsWith as
+    /// input_DisableCollisionsWith does, caused by the entity of handle
+    /// activator.
+    pub fn input_DisableCollisionsWith_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "DisableCollisionsWith", Some(value.into()), Some(activator))
     }
 
     /// input_EnableCollisions sends EnableCollisions.
     pub fn input_EnableCollisions(self) -> bool {
-        send(self.handle, "EnableCollisions", None)
+        send(self.handle, "EnableCollisions", None, None)
+    }
+
+    /// input_EnableCollisions_by sends EnableCollisions as
+    /// input_EnableCollisions does, caused by the entity of handle activator.
+    pub fn input_EnableCollisions_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableCollisions", None, Some(activator))
     }
 }
 
 impl CLogicCompare {
     /// input_Compare sends Compare.
     pub fn input_Compare(self) -> bool {
-        send(self.handle, "Compare", None)
+        send(self.handle, "Compare", None, None)
+    }
+
+    /// input_Compare_by sends Compare as input_Compare does, caused by the
+    /// entity of handle activator.
+    pub fn input_Compare_by(self, activator: u32) -> bool {
+        send(self.handle, "Compare", None, Some(activator))
     }
 
     /// input_SetCompareValue sends SetCompareValue.
     pub fn input_SetCompareValue(self, value: f32) -> bool {
-        send(self.handle, "SetCompareValue", Some(value.into()))
+        send(self.handle, "SetCompareValue", Some(value.into()), None)
+    }
+
+    /// input_SetCompareValue_by sends SetCompareValue as input_SetCompareValue
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetCompareValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetCompareValue", Some(value.into()), Some(activator))
     }
 
     /// input_SetValue sends SetValue.
     pub fn input_SetValue(self, value: f32) -> bool {
-        send(self.handle, "SetValue", Some(value.into()))
+        send(self.handle, "SetValue", Some(value.into()), None)
+    }
+
+    /// input_SetValue_by sends SetValue as input_SetValue does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetValue", Some(value.into()), Some(activator))
     }
 
     /// input_SetValueCompare sends SetValueCompare.
     pub fn input_SetValueCompare(self, value: f32) -> bool {
-        send(self.handle, "SetValueCompare", Some(value.into()))
+        send(self.handle, "SetValueCompare", Some(value.into()), None)
+    }
+
+    /// input_SetValueCompare_by sends SetValueCompare as input_SetValueCompare
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetValueCompare_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetValueCompare", Some(value.into()), Some(activator))
     }
 }
 
 impl CLogicDistanceAutosave {
     /// input_Save sends Save.
     pub fn input_Save(self) -> bool {
-        send(self.handle, "Save", None)
+        send(self.handle, "Save", None, None)
+    }
+
+    /// input_Save_by sends Save as input_Save does, caused by the entity of
+    /// handle activator.
+    pub fn input_Save_by(self, activator: u32) -> bool {
+        send(self.handle, "Save", None, Some(activator))
     }
 
     /// input_SaveDangerous sends SaveDangerous.
     pub fn input_SaveDangerous(self, value: f32) -> bool {
-        send(self.handle, "SaveDangerous", Some(value.into()))
+        send(self.handle, "SaveDangerous", Some(value.into()), None)
+    }
+
+    /// input_SaveDangerous_by sends SaveDangerous as input_SaveDangerous does,
+    /// caused by the entity of handle activator.
+    pub fn input_SaveDangerous_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SaveDangerous", Some(value.into()), Some(activator))
     }
 }
 
 impl CLogicDistanceCheck {
     /// input_CheckDistance sends CheckDistance.
     pub fn input_CheckDistance(self) -> bool {
-        send(self.handle, "CheckDistance", None)
+        send(self.handle, "CheckDistance", None, None)
+    }
+
+    /// input_CheckDistance_by sends CheckDistance as input_CheckDistance does,
+    /// caused by the entity of handle activator.
+    pub fn input_CheckDistance_by(self, activator: u32) -> bool {
+        send(self.handle, "CheckDistance", None, Some(activator))
     }
 }
 
 impl CLogicGameEvent {
     /// input_FireEvent sends FireEvent.
     pub fn input_FireEvent(self) -> bool {
-        send(self.handle, "FireEvent", None)
+        send(self.handle, "FireEvent", None, None)
+    }
+
+    /// input_FireEvent_by sends FireEvent as input_FireEvent does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireEvent_by(self, activator: u32) -> bool {
+        send(self.handle, "FireEvent", None, Some(activator))
     }
 }
 
 impl CLogicGameEventListener {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CLogicMeasureMovement {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetMeasureReference sends SetMeasureReference.
     pub fn input_SetMeasureReference(self, value: &str) -> bool {
-        send(self.handle, "SetMeasureReference", Some(value.into()))
+        send(self.handle, "SetMeasureReference", Some(value.into()), None)
+    }
+
+    /// input_SetMeasureReference_by sends SetMeasureReference as
+    /// input_SetMeasureReference does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMeasureReference_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetMeasureReference", Some(value.into()), Some(activator))
     }
 
     /// input_SetMeasureTarget sends SetMeasureTarget.
     pub fn input_SetMeasureTarget(self, value: &str) -> bool {
-        send(self.handle, "SetMeasureTarget", Some(value.into()))
+        send(self.handle, "SetMeasureTarget", Some(value.into()), None)
+    }
+
+    /// input_SetMeasureTarget_by sends SetMeasureTarget as
+    /// input_SetMeasureTarget does, caused by the entity of handle activator.
+    pub fn input_SetMeasureTarget_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetMeasureTarget", Some(value.into()), Some(activator))
     }
 
     /// input_SetTarget sends SetTarget.
     pub fn input_SetTarget(self, value: &str) -> bool {
-        send(self.handle, "SetTarget", Some(value.into()))
+        send(self.handle, "SetTarget", Some(value.into()), None)
+    }
+
+    /// input_SetTarget_by sends SetTarget as input_SetTarget does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetTarget_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetTarget", Some(value.into()), Some(activator))
     }
 
     /// input_SetTargetReference sends SetTargetReference.
     pub fn input_SetTargetReference(self, value: &str) -> bool {
-        send(self.handle, "SetTargetReference", Some(value.into()))
+        send(self.handle, "SetTargetReference", Some(value.into()), None)
+    }
+
+    /// input_SetTargetReference_by sends SetTargetReference as
+    /// input_SetTargetReference does, caused by the entity of handle activator.
+    pub fn input_SetTargetReference_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetTargetReference", Some(value.into()), Some(activator))
     }
 
     /// input_SetTargetScale sends SetTargetScale.
     pub fn input_SetTargetScale(self, value: f32) -> bool {
-        send(self.handle, "SetTargetScale", Some(value.into()))
+        send(self.handle, "SetTargetScale", Some(value.into()), None)
+    }
+
+    /// input_SetTargetScale_by sends SetTargetScale as input_SetTargetScale
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetTargetScale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetTargetScale", Some(value.into()), Some(activator))
     }
 }
 
 impl CLogicNavigation {
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
@@ -4345,457 +9183,999 @@ impl CLogicRelay {
     /// input_CancelPending sends CancelPending. Cancel any events fired by this
     /// relay that are currently pending in the I/O event queue.
     pub fn input_CancelPending(self) -> bool {
-        send(self.handle, "CancelPending", None)
+        send(self.handle, "CancelPending", None, None)
+    }
+
+    /// input_CancelPending_by sends CancelPending as input_CancelPending does,
+    /// caused by the entity of handle activator.
+    pub fn input_CancelPending_by(self, activator: u32) -> bool {
+        send(self.handle, "CancelPending", None, Some(activator))
     }
 
     /// input_Disable sends Disable. Disable this entity.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable. Enable this entity.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_EnableRefire sends EnableRefire.
     pub fn input_EnableRefire(self) -> bool {
-        send(self.handle, "EnableRefire", None)
+        send(self.handle, "EnableRefire", None, None)
+    }
+
+    /// input_EnableRefire_by sends EnableRefire as input_EnableRefire does,
+    /// caused by the entity of handle activator.
+    pub fn input_EnableRefire_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableRefire", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle. Toggle the relay between enabled and
     /// disabled.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_Trigger sends Trigger. Trigger the relay, causing its OnTrigger
     /// output to fire if it is enabled.
     pub fn input_Trigger(self) -> bool {
-        send(self.handle, "Trigger", None)
+        send(self.handle, "Trigger", None, None)
+    }
+
+    /// input_Trigger_by sends Trigger as input_Trigger does, caused by the
+    /// entity of handle activator.
+    pub fn input_Trigger_by(self, activator: u32) -> bool {
+        send(self.handle, "Trigger", None, Some(activator))
     }
 }
 
 impl CMathColorBlend {
     /// input_InValue sends InValue.
     pub fn input_InValue(self, value: f32) -> bool {
-        send(self.handle, "InValue", Some(value.into()))
+        send(self.handle, "InValue", Some(value.into()), None)
+    }
+
+    /// input_InValue_by sends InValue as input_InValue does, caused by the
+    /// entity of handle activator.
+    pub fn input_InValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "InValue", Some(value.into()), Some(activator))
     }
 }
 
 impl CMathCounter {
     /// input_Add sends Add.
     pub fn input_Add(self, value: f32) -> bool {
-        send(self.handle, "Add", Some(value.into()))
+        send(self.handle, "Add", Some(value.into()), None)
+    }
+
+    /// input_Add_by sends Add as input_Add does, caused by the entity of handle
+    /// activator.
+    pub fn input_Add_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Add", Some(value.into()), Some(activator))
     }
 
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Divide sends Divide.
     pub fn input_Divide(self, value: f32) -> bool {
-        send(self.handle, "Divide", Some(value.into()))
+        send(self.handle, "Divide", Some(value.into()), None)
+    }
+
+    /// input_Divide_by sends Divide as input_Divide does, caused by the entity
+    /// of handle activator.
+    pub fn input_Divide_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Divide", Some(value.into()), Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_GetValue sends GetValue.
     pub fn input_GetValue(self) -> bool {
-        send(self.handle, "GetValue", None)
+        send(self.handle, "GetValue", None, None)
+    }
+
+    /// input_GetValue_by sends GetValue as input_GetValue does, caused by the
+    /// entity of handle activator.
+    pub fn input_GetValue_by(self, activator: u32) -> bool {
+        send(self.handle, "GetValue", None, Some(activator))
     }
 
     /// input_Multiply sends Multiply.
     pub fn input_Multiply(self, value: f32) -> bool {
-        send(self.handle, "Multiply", Some(value.into()))
+        send(self.handle, "Multiply", Some(value.into()), None)
+    }
+
+    /// input_Multiply_by sends Multiply as input_Multiply does, caused by the
+    /// entity of handle activator.
+    pub fn input_Multiply_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Multiply", Some(value.into()), Some(activator))
     }
 
     /// input_SetHitMax sends SetHitMax.
     pub fn input_SetHitMax(self, value: f32) -> bool {
-        send(self.handle, "SetHitMax", Some(value.into()))
+        send(self.handle, "SetHitMax", Some(value.into()), None)
+    }
+
+    /// input_SetHitMax_by sends SetHitMax as input_SetHitMax does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetHitMax_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetHitMax", Some(value.into()), Some(activator))
     }
 
     /// input_SetHitMin sends SetHitMin.
     pub fn input_SetHitMin(self, value: f32) -> bool {
-        send(self.handle, "SetHitMin", Some(value.into()))
+        send(self.handle, "SetHitMin", Some(value.into()), None)
+    }
+
+    /// input_SetHitMin_by sends SetHitMin as input_SetHitMin does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetHitMin_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetHitMin", Some(value.into()), Some(activator))
     }
 
     /// input_SetValue sends SetValue.
     pub fn input_SetValue(self, value: f32) -> bool {
-        send(self.handle, "SetValue", Some(value.into()))
+        send(self.handle, "SetValue", Some(value.into()), None)
+    }
+
+    /// input_SetValue_by sends SetValue as input_SetValue does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetValue", Some(value.into()), Some(activator))
     }
 
     /// input_SetValueNoFire sends SetValueNoFire.
     pub fn input_SetValueNoFire(self, value: f32) -> bool {
-        send(self.handle, "SetValueNoFire", Some(value.into()))
+        send(self.handle, "SetValueNoFire", Some(value.into()), None)
+    }
+
+    /// input_SetValueNoFire_by sends SetValueNoFire as input_SetValueNoFire
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetValueNoFire_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetValueNoFire", Some(value.into()), Some(activator))
     }
 
     /// input_Subtract sends Subtract.
     pub fn input_Subtract(self, value: f32) -> bool {
-        send(self.handle, "Subtract", Some(value.into()))
+        send(self.handle, "Subtract", Some(value.into()), None)
+    }
+
+    /// input_Subtract_by sends Subtract as input_Subtract does, caused by the
+    /// entity of handle activator.
+    pub fn input_Subtract_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "Subtract", Some(value.into()), Some(activator))
     }
 }
 
 impl CMathRemap {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_InValue sends InValue.
     pub fn input_InValue(self, value: f32) -> bool {
-        send(self.handle, "InValue", Some(value.into()))
+        send(self.handle, "InValue", Some(value.into()), None)
+    }
+
+    /// input_InValue_by sends InValue as input_InValue does, caused by the
+    /// entity of handle activator.
+    pub fn input_InValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "InValue", Some(value.into()), Some(activator))
     }
 }
 
 impl CMultiLightProxy {
     /// input_DisableLights sends DisableLights.
     pub fn input_DisableLights(self, value: f32) -> bool {
-        send(self.handle, "DisableLights", Some(value.into()))
+        send(self.handle, "DisableLights", Some(value.into()), None)
+    }
+
+    /// input_DisableLights_by sends DisableLights as input_DisableLights does,
+    /// caused by the entity of handle activator.
+    pub fn input_DisableLights_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "DisableLights", Some(value.into()), Some(activator))
     }
 
     /// input_FlickerLights sends FlickerLights.
     pub fn input_FlickerLights(self, value: f32) -> bool {
-        send(self.handle, "FlickerLights", Some(value.into()))
+        send(self.handle, "FlickerLights", Some(value.into()), None)
+    }
+
+    /// input_FlickerLights_by sends FlickerLights as input_FlickerLights does,
+    /// caused by the entity of handle activator.
+    pub fn input_FlickerLights_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "FlickerLights", Some(value.into()), Some(activator))
     }
 
     /// input_SetBrightnessDelta sends SetBrightnessDelta.
     pub fn input_SetBrightnessDelta(self, value: f32) -> bool {
-        send(self.handle, "SetBrightnessDelta", Some(value.into()))
+        send(self.handle, "SetBrightnessDelta", Some(value.into()), None)
+    }
+
+    /// input_SetBrightnessDelta_by sends SetBrightnessDelta as
+    /// input_SetBrightnessDelta does, caused by the entity of handle activator.
+    pub fn input_SetBrightnessDelta_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetBrightnessDelta", Some(value.into()), Some(activator))
     }
 
     /// input_SetLightsBrightnessMultiplier sends SetLightsBrightnessMultiplier.
     pub fn input_SetLightsBrightnessMultiplier(self, value: f32) -> bool {
-        send(self.handle, "SetLightsBrightnessMultiplier", Some(value.into()))
+        send(self.handle, "SetLightsBrightnessMultiplier", Some(value.into()), None)
+    }
+
+    /// input_SetLightsBrightnessMultiplier_by sends
+    /// SetLightsBrightnessMultiplier as input_SetLightsBrightnessMultiplier
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetLightsBrightnessMultiplier_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLightsBrightnessMultiplier", Some(value.into()), Some(activator))
     }
 }
 
 impl CPathMoverEntitySpawner {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_ForceSpawn sends ForceSpawn.
     pub fn input_ForceSpawn(self) -> bool {
-        send(self.handle, "ForceSpawn", None)
+        send(self.handle, "ForceSpawn", None, None)
+    }
+
+    /// input_ForceSpawn_by sends ForceSpawn as input_ForceSpawn does, caused by
+    /// the entity of handle activator.
+    pub fn input_ForceSpawn_by(self, activator: u32) -> bool {
+        send(self.handle, "ForceSpawn", None, Some(activator))
     }
 
     /// input_RemoveFromTemplate sends RemoveFromTemplate.
     pub fn input_RemoveFromTemplate(self, value: &str) -> bool {
-        send(self.handle, "RemoveFromTemplate", Some(value.into()))
+        send(self.handle, "RemoveFromTemplate", Some(value.into()), None)
+    }
+
+    /// input_RemoveFromTemplate_by sends RemoveFromTemplate as
+    /// input_RemoveFromTemplate does, caused by the entity of handle activator.
+    pub fn input_RemoveFromTemplate_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "RemoveFromTemplate", Some(value.into()), Some(activator))
     }
 
     /// input_SetPathNodeStart sends SetPathNodeStart.
     pub fn input_SetPathNodeStart(self, value: &str) -> bool {
-        send(self.handle, "SetPathNodeStart", Some(value.into()))
+        send(self.handle, "SetPathNodeStart", Some(value.into()), None)
+    }
+
+    /// input_SetPathNodeStart_by sends SetPathNodeStart as
+    /// input_SetPathNodeStart does, caused by the entity of handle activator.
+    pub fn input_SetPathNodeStart_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetPathNodeStart", Some(value.into()), Some(activator))
     }
 
     /// input_Spawn sends Spawn.
     pub fn input_Spawn(self) -> bool {
-        send(self.handle, "Spawn", None)
+        send(self.handle, "Spawn", None, None)
+    }
+
+    /// input_Spawn_by sends Spawn as input_Spawn does, caused by the entity of
+    /// handle activator.
+    pub fn input_Spawn_by(self, activator: u32) -> bool {
+        send(self.handle, "Spawn", None, Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 }
 
 impl CPhysConstraint {
     /// input_Break sends Break.
     pub fn input_Break(self) -> bool {
-        send(self.handle, "Break", None)
+        send(self.handle, "Break", None, None)
+    }
+
+    /// input_Break_by sends Break as input_Break does, caused by the entity of
+    /// handle activator.
+    pub fn input_Break_by(self, activator: u32) -> bool {
+        send(self.handle, "Break", None, Some(activator))
     }
 
     /// input_ConstraintBroken sends ConstraintBroken.
     pub fn input_ConstraintBroken(self) -> bool {
-        send(self.handle, "ConstraintBroken", None)
+        send(self.handle, "ConstraintBroken", None, None)
+    }
+
+    /// input_ConstraintBroken_by sends ConstraintBroken as
+    /// input_ConstraintBroken does, caused by the entity of handle activator.
+    pub fn input_ConstraintBroken_by(self, activator: u32) -> bool {
+        send(self.handle, "ConstraintBroken", None, Some(activator))
     }
 
     /// input_DisableAngularConstraint sends DisableAngularConstraint.
     pub fn input_DisableAngularConstraint(self) -> bool {
-        send(self.handle, "DisableAngularConstraint", None)
+        send(self.handle, "DisableAngularConstraint", None, None)
+    }
+
+    /// input_DisableAngularConstraint_by sends DisableAngularConstraint as
+    /// input_DisableAngularConstraint does, caused by the entity of handle
+    /// activator.
+    pub fn input_DisableAngularConstraint_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableAngularConstraint", None, Some(activator))
     }
 
     /// input_DisableLinearConstraint sends DisableLinearConstraint.
     pub fn input_DisableLinearConstraint(self) -> bool {
-        send(self.handle, "DisableLinearConstraint", None)
+        send(self.handle, "DisableLinearConstraint", None, None)
+    }
+
+    /// input_DisableLinearConstraint_by sends DisableLinearConstraint as
+    /// input_DisableLinearConstraint does, caused by the entity of handle
+    /// activator.
+    pub fn input_DisableLinearConstraint_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableLinearConstraint", None, Some(activator))
     }
 
     /// input_EnableAngularConstraint sends EnableAngularConstraint.
     pub fn input_EnableAngularConstraint(self) -> bool {
-        send(self.handle, "EnableAngularConstraint", None)
+        send(self.handle, "EnableAngularConstraint", None, None)
+    }
+
+    /// input_EnableAngularConstraint_by sends EnableAngularConstraint as
+    /// input_EnableAngularConstraint does, caused by the entity of handle
+    /// activator.
+    pub fn input_EnableAngularConstraint_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableAngularConstraint", None, Some(activator))
     }
 
     /// input_EnableLinearConstraint sends EnableLinearConstraint.
     pub fn input_EnableLinearConstraint(self) -> bool {
-        send(self.handle, "EnableLinearConstraint", None)
+        send(self.handle, "EnableLinearConstraint", None, None)
+    }
+
+    /// input_EnableLinearConstraint_by sends EnableLinearConstraint as
+    /// input_EnableLinearConstraint does, caused by the entity of handle
+    /// activator.
+    pub fn input_EnableLinearConstraint_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableLinearConstraint", None, Some(activator))
     }
 
     /// input_SetMotorTargetVelocity sends SetMotorTargetVelocity.
     pub fn input_SetMotorTargetVelocity(self, value: f32) -> bool {
-        send(self.handle, "SetMotorTargetVelocity", Some(value.into()))
+        send(self.handle, "SetMotorTargetVelocity", Some(value.into()), None)
+    }
+
+    /// input_SetMotorTargetVelocity_by sends SetMotorTargetVelocity as
+    /// input_SetMotorTargetVelocity does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMotorTargetVelocity_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMotorTargetVelocity", Some(value.into()), Some(activator))
     }
 
     /// input_SetMotorTorqueFactor sends SetMotorTorqueFactor.
     pub fn input_SetMotorTorqueFactor(self, value: f32) -> bool {
-        send(self.handle, "SetMotorTorqueFactor", Some(value.into()))
+        send(self.handle, "SetMotorTorqueFactor", Some(value.into()), None)
+    }
+
+    /// input_SetMotorTorqueFactor_by sends SetMotorTorqueFactor as
+    /// input_SetMotorTorqueFactor does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMotorTorqueFactor_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMotorTorqueFactor", Some(value.into()), Some(activator))
     }
 
     /// input_TurnMotorOff sends TurnMotorOff.
     pub fn input_TurnMotorOff(self) -> bool {
-        send(self.handle, "TurnMotorOff", None)
+        send(self.handle, "TurnMotorOff", None, None)
+    }
+
+    /// input_TurnMotorOff_by sends TurnMotorOff as input_TurnMotorOff does,
+    /// caused by the entity of handle activator.
+    pub fn input_TurnMotorOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnMotorOff", None, Some(activator))
     }
 
     /// input_TurnMotorOn sends TurnMotorOn.
     pub fn input_TurnMotorOn(self) -> bool {
-        send(self.handle, "TurnMotorOn", None)
+        send(self.handle, "TurnMotorOn", None, None)
+    }
+
+    /// input_TurnMotorOn_by sends TurnMotorOn as input_TurnMotorOn does, caused
+    /// by the entity of handle activator.
+    pub fn input_TurnMotorOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnMotorOn", None, Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
 impl CGenericConstraint {
     /// input_SetAngularDampingRatioX sends SetAngularDampingRatioX.
     pub fn input_SetAngularDampingRatioX(self, value: f32) -> bool {
-        send(self.handle, "SetAngularDampingRatioX", Some(value.into()))
+        send(self.handle, "SetAngularDampingRatioX", Some(value.into()), None)
+    }
+
+    /// input_SetAngularDampingRatioX_by sends SetAngularDampingRatioX as
+    /// input_SetAngularDampingRatioX does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngularDampingRatioX_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngularDampingRatioX", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngularDampingRatioY sends SetAngularDampingRatioY.
     pub fn input_SetAngularDampingRatioY(self, value: f32) -> bool {
-        send(self.handle, "SetAngularDampingRatioY", Some(value.into()))
+        send(self.handle, "SetAngularDampingRatioY", Some(value.into()), None)
+    }
+
+    /// input_SetAngularDampingRatioY_by sends SetAngularDampingRatioY as
+    /// input_SetAngularDampingRatioY does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngularDampingRatioY_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngularDampingRatioY", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngularDampingRatioZ sends SetAngularDampingRatioZ.
     pub fn input_SetAngularDampingRatioZ(self, value: f32) -> bool {
-        send(self.handle, "SetAngularDampingRatioZ", Some(value.into()))
+        send(self.handle, "SetAngularDampingRatioZ", Some(value.into()), None)
+    }
+
+    /// input_SetAngularDampingRatioZ_by sends SetAngularDampingRatioZ as
+    /// input_SetAngularDampingRatioZ does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngularDampingRatioZ_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngularDampingRatioZ", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngularFrequencyX sends SetAngularFrequencyX.
     pub fn input_SetAngularFrequencyX(self, value: f32) -> bool {
-        send(self.handle, "SetAngularFrequencyX", Some(value.into()))
+        send(self.handle, "SetAngularFrequencyX", Some(value.into()), None)
+    }
+
+    /// input_SetAngularFrequencyX_by sends SetAngularFrequencyX as
+    /// input_SetAngularFrequencyX does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngularFrequencyX_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngularFrequencyX", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngularFrequencyY sends SetAngularFrequencyY.
     pub fn input_SetAngularFrequencyY(self, value: f32) -> bool {
-        send(self.handle, "SetAngularFrequencyY", Some(value.into()))
+        send(self.handle, "SetAngularFrequencyY", Some(value.into()), None)
+    }
+
+    /// input_SetAngularFrequencyY_by sends SetAngularFrequencyY as
+    /// input_SetAngularFrequencyY does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngularFrequencyY_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngularFrequencyY", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngularFrequencyZ sends SetAngularFrequencyZ.
     pub fn input_SetAngularFrequencyZ(self, value: f32) -> bool {
-        send(self.handle, "SetAngularFrequencyZ", Some(value.into()))
+        send(self.handle, "SetAngularFrequencyZ", Some(value.into()), None)
+    }
+
+    /// input_SetAngularFrequencyZ_by sends SetAngularFrequencyZ as
+    /// input_SetAngularFrequencyZ does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngularFrequencyZ_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngularFrequencyZ", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngularMotionLockedX sends SetAngularMotionLockedX.
     pub fn input_SetAngularMotionLockedX(self, value: bool) -> bool {
-        send(self.handle, "SetAngularMotionLockedX", Some(value.into()))
+        send(self.handle, "SetAngularMotionLockedX", Some(value.into()), None)
+    }
+
+    /// input_SetAngularMotionLockedX_by sends SetAngularMotionLockedX as
+    /// input_SetAngularMotionLockedX does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngularMotionLockedX_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetAngularMotionLockedX", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngularMotionLockedY sends SetAngularMotionLockedY.
     pub fn input_SetAngularMotionLockedY(self, value: bool) -> bool {
-        send(self.handle, "SetAngularMotionLockedY", Some(value.into()))
+        send(self.handle, "SetAngularMotionLockedY", Some(value.into()), None)
+    }
+
+    /// input_SetAngularMotionLockedY_by sends SetAngularMotionLockedY as
+    /// input_SetAngularMotionLockedY does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngularMotionLockedY_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetAngularMotionLockedY", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngularMotionLockedZ sends SetAngularMotionLockedZ.
     pub fn input_SetAngularMotionLockedZ(self, value: bool) -> bool {
-        send(self.handle, "SetAngularMotionLockedZ", Some(value.into()))
+        send(self.handle, "SetAngularMotionLockedZ", Some(value.into()), None)
+    }
+
+    /// input_SetAngularMotionLockedZ_by sends SetAngularMotionLockedZ as
+    /// input_SetAngularMotionLockedZ does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngularMotionLockedZ_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetAngularMotionLockedZ", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearDampingRatioX sends SetLinearDampingRatioX.
     pub fn input_SetLinearDampingRatioX(self, value: f32) -> bool {
-        send(self.handle, "SetLinearDampingRatioX", Some(value.into()))
+        send(self.handle, "SetLinearDampingRatioX", Some(value.into()), None)
+    }
+
+    /// input_SetLinearDampingRatioX_by sends SetLinearDampingRatioX as
+    /// input_SetLinearDampingRatioX does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetLinearDampingRatioX_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLinearDampingRatioX", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearDampingRatioY sends SetLinearDampingRatioY.
     pub fn input_SetLinearDampingRatioY(self, value: f32) -> bool {
-        send(self.handle, "SetLinearDampingRatioY", Some(value.into()))
+        send(self.handle, "SetLinearDampingRatioY", Some(value.into()), None)
+    }
+
+    /// input_SetLinearDampingRatioY_by sends SetLinearDampingRatioY as
+    /// input_SetLinearDampingRatioY does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetLinearDampingRatioY_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLinearDampingRatioY", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearDampingRatioZ sends SetLinearDampingRatioZ.
     pub fn input_SetLinearDampingRatioZ(self, value: f32) -> bool {
-        send(self.handle, "SetLinearDampingRatioZ", Some(value.into()))
+        send(self.handle, "SetLinearDampingRatioZ", Some(value.into()), None)
+    }
+
+    /// input_SetLinearDampingRatioZ_by sends SetLinearDampingRatioZ as
+    /// input_SetLinearDampingRatioZ does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetLinearDampingRatioZ_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLinearDampingRatioZ", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearFrequencyX sends SetLinearFrequencyX.
     pub fn input_SetLinearFrequencyX(self, value: f32) -> bool {
-        send(self.handle, "SetLinearFrequencyX", Some(value.into()))
+        send(self.handle, "SetLinearFrequencyX", Some(value.into()), None)
+    }
+
+    /// input_SetLinearFrequencyX_by sends SetLinearFrequencyX as
+    /// input_SetLinearFrequencyX does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetLinearFrequencyX_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLinearFrequencyX", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearFrequencyY sends SetLinearFrequencyY.
     pub fn input_SetLinearFrequencyY(self, value: f32) -> bool {
-        send(self.handle, "SetLinearFrequencyY", Some(value.into()))
+        send(self.handle, "SetLinearFrequencyY", Some(value.into()), None)
+    }
+
+    /// input_SetLinearFrequencyY_by sends SetLinearFrequencyY as
+    /// input_SetLinearFrequencyY does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetLinearFrequencyY_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLinearFrequencyY", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearFrequencyZ sends SetLinearFrequencyZ.
     pub fn input_SetLinearFrequencyZ(self, value: f32) -> bool {
-        send(self.handle, "SetLinearFrequencyZ", Some(value.into()))
+        send(self.handle, "SetLinearFrequencyZ", Some(value.into()), None)
+    }
+
+    /// input_SetLinearFrequencyZ_by sends SetLinearFrequencyZ as
+    /// input_SetLinearFrequencyZ does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetLinearFrequencyZ_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLinearFrequencyZ", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearMotionLockedX sends SetLinearMotionLockedX.
     pub fn input_SetLinearMotionLockedX(self, value: bool) -> bool {
-        send(self.handle, "SetLinearMotionLockedX", Some(value.into()))
+        send(self.handle, "SetLinearMotionLockedX", Some(value.into()), None)
+    }
+
+    /// input_SetLinearMotionLockedX_by sends SetLinearMotionLockedX as
+    /// input_SetLinearMotionLockedX does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetLinearMotionLockedX_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetLinearMotionLockedX", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearMotionLockedY sends SetLinearMotionLockedY.
     pub fn input_SetLinearMotionLockedY(self, value: bool) -> bool {
-        send(self.handle, "SetLinearMotionLockedY", Some(value.into()))
+        send(self.handle, "SetLinearMotionLockedY", Some(value.into()), None)
+    }
+
+    /// input_SetLinearMotionLockedY_by sends SetLinearMotionLockedY as
+    /// input_SetLinearMotionLockedY does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetLinearMotionLockedY_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetLinearMotionLockedY", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearMotionLockedZ sends SetLinearMotionLockedZ.
     pub fn input_SetLinearMotionLockedZ(self, value: bool) -> bool {
-        send(self.handle, "SetLinearMotionLockedZ", Some(value.into()))
+        send(self.handle, "SetLinearMotionLockedZ", Some(value.into()), None)
+    }
+
+    /// input_SetLinearMotionLockedZ_by sends SetLinearMotionLockedZ as
+    /// input_SetLinearMotionLockedZ does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetLinearMotionLockedZ_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetLinearMotionLockedZ", Some(value.into()), Some(activator))
     }
 }
 
 impl CPhysFixed {
     /// input_SetAngularDampingRatio sends SetAngularDampingRatio.
     pub fn input_SetAngularDampingRatio(self, value: f32) -> bool {
-        send(self.handle, "SetAngularDampingRatio", Some(value.into()))
+        send(self.handle, "SetAngularDampingRatio", Some(value.into()), None)
+    }
+
+    /// input_SetAngularDampingRatio_by sends SetAngularDampingRatio as
+    /// input_SetAngularDampingRatio does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngularDampingRatio_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngularDampingRatio", Some(value.into()), Some(activator))
     }
 
     /// input_SetAngularFrequency sends SetAngularFrequency.
     pub fn input_SetAngularFrequency(self, value: f32) -> bool {
-        send(self.handle, "SetAngularFrequency", Some(value.into()))
+        send(self.handle, "SetAngularFrequency", Some(value.into()), None)
+    }
+
+    /// input_SetAngularFrequency_by sends SetAngularFrequency as
+    /// input_SetAngularFrequency does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetAngularFrequency_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngularFrequency", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearDampingRatio sends SetLinearDampingRatio.
     pub fn input_SetLinearDampingRatio(self, value: f32) -> bool {
-        send(self.handle, "SetLinearDampingRatio", Some(value.into()))
+        send(self.handle, "SetLinearDampingRatio", Some(value.into()), None)
+    }
+
+    /// input_SetLinearDampingRatio_by sends SetLinearDampingRatio as
+    /// input_SetLinearDampingRatio does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetLinearDampingRatio_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLinearDampingRatio", Some(value.into()), Some(activator))
     }
 
     /// input_SetLinearFrequency sends SetLinearFrequency.
     pub fn input_SetLinearFrequency(self, value: f32) -> bool {
-        send(self.handle, "SetLinearFrequency", Some(value.into()))
+        send(self.handle, "SetLinearFrequency", Some(value.into()), None)
+    }
+
+    /// input_SetLinearFrequency_by sends SetLinearFrequency as
+    /// input_SetLinearFrequency does, caused by the entity of handle activator.
+    pub fn input_SetLinearFrequency_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetLinearFrequency", Some(value.into()), Some(activator))
     }
 }
 
 impl CPhysHinge {
     /// input_SetAngularVelocity sends SetAngularVelocity.
     pub fn input_SetAngularVelocity(self, value: f32) -> bool {
-        send(self.handle, "SetAngularVelocity", Some(value.into()))
+        send(self.handle, "SetAngularVelocity", Some(value.into()), None)
+    }
+
+    /// input_SetAngularVelocity_by sends SetAngularVelocity as
+    /// input_SetAngularVelocity does, caused by the entity of handle activator.
+    pub fn input_SetAngularVelocity_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetAngularVelocity", Some(value.into()), Some(activator))
     }
 
     /// input_SetHingeFriction sends SetHingeFriction.
     pub fn input_SetHingeFriction(self, value: f32) -> bool {
-        send(self.handle, "SetHingeFriction", Some(value.into()))
+        send(self.handle, "SetHingeFriction", Some(value.into()), None)
+    }
+
+    /// input_SetHingeFriction_by sends SetHingeFriction as
+    /// input_SetHingeFriction does, caused by the entity of handle activator.
+    pub fn input_SetHingeFriction_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetHingeFriction", Some(value.into()), Some(activator))
     }
 
     /// input_SetMaxLimit sends SetMaxLimit.
     pub fn input_SetMaxLimit(self, value: f32) -> bool {
-        send(self.handle, "SetMaxLimit", Some(value.into()))
+        send(self.handle, "SetMaxLimit", Some(value.into()), None)
+    }
+
+    /// input_SetMaxLimit_by sends SetMaxLimit as input_SetMaxLimit does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetMaxLimit_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMaxLimit", Some(value.into()), Some(activator))
     }
 
     /// input_SetMinLimit sends SetMinLimit.
     pub fn input_SetMinLimit(self, value: f32) -> bool {
-        send(self.handle, "SetMinLimit", Some(value.into()))
+        send(self.handle, "SetMinLimit", Some(value.into()), None)
+    }
+
+    /// input_SetMinLimit_by sends SetMinLimit as input_SetMinLimit does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetMinLimit_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMinLimit", Some(value.into()), Some(activator))
     }
 
     /// input_SetMotorTargetAngle sends SetMotorTargetAngle.
     pub fn input_SetMotorTargetAngle(self, value: f32) -> bool {
-        send(self.handle, "SetMotorTargetAngle", Some(value.into()))
+        send(self.handle, "SetMotorTargetAngle", Some(value.into()), None)
+    }
+
+    /// input_SetMotorTargetAngle_by sends SetMotorTargetAngle as
+    /// input_SetMotorTargetAngle does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMotorTargetAngle_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMotorTargetAngle", Some(value.into()), Some(activator))
     }
 }
 
 impl CPhysSlideConstraint {
     /// input_SetOffset sends SetOffset.
     pub fn input_SetOffset(self, value: f32) -> bool {
-        send(self.handle, "SetOffset", Some(value.into()))
+        send(self.handle, "SetOffset", Some(value.into()), None)
+    }
+
+    /// input_SetOffset_by sends SetOffset as input_SetOffset does, caused by
+    /// the entity of handle activator.
+    pub fn input_SetOffset_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetOffset", Some(value.into()), Some(activator))
     }
 
     /// input_SetSlideFriction sends SetSlideFriction.
     pub fn input_SetSlideFriction(self, value: f32) -> bool {
-        send(self.handle, "SetSlideFriction", Some(value.into()))
+        send(self.handle, "SetSlideFriction", Some(value.into()), None)
+    }
+
+    /// input_SetSlideFriction_by sends SetSlideFriction as
+    /// input_SetSlideFriction does, caused by the entity of handle activator.
+    pub fn input_SetSlideFriction_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSlideFriction", Some(value.into()), Some(activator))
     }
 
     /// input_SetVelocity sends SetVelocity.
     pub fn input_SetVelocity(self, value: f32) -> bool {
-        send(self.handle, "SetVelocity", Some(value.into()))
+        send(self.handle, "SetVelocity", Some(value.into()), None)
+    }
+
+    /// input_SetVelocity_by sends SetVelocity as input_SetVelocity does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetVelocity_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetVelocity", Some(value.into()), Some(activator))
     }
 }
 
 impl CPhysWheelConstraint {
     /// input_SetMaxSuspensionOffset sends SetMaxSuspensionOffset.
     pub fn input_SetMaxSuspensionOffset(self, value: f32) -> bool {
-        send(self.handle, "SetMaxSuspensionOffset", Some(value.into()))
+        send(self.handle, "SetMaxSuspensionOffset", Some(value.into()), None)
+    }
+
+    /// input_SetMaxSuspensionOffset_by sends SetMaxSuspensionOffset as
+    /// input_SetMaxSuspensionOffset does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMaxSuspensionOffset_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMaxSuspensionOffset", Some(value.into()), Some(activator))
     }
 
     /// input_SetMinSuspensionOffset sends SetMinSuspensionOffset.
     pub fn input_SetMinSuspensionOffset(self, value: f32) -> bool {
-        send(self.handle, "SetMinSuspensionOffset", Some(value.into()))
+        send(self.handle, "SetMinSuspensionOffset", Some(value.into()), None)
+    }
+
+    /// input_SetMinSuspensionOffset_by sends SetMinSuspensionOffset as
+    /// input_SetMinSuspensionOffset does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetMinSuspensionOffset_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMinSuspensionOffset", Some(value.into()), Some(activator))
     }
 
     /// input_SetSteeringMimicsEntity sends SetSteeringMimicsEntity.
     pub fn input_SetSteeringMimicsEntity(self, value: &str) -> bool {
-        send(self.handle, "SetSteeringMimicsEntity", Some(value.into()))
+        send(self.handle, "SetSteeringMimicsEntity", Some(value.into()), None)
+    }
+
+    /// input_SetSteeringMimicsEntity_by sends SetSteeringMimicsEntity as
+    /// input_SetSteeringMimicsEntity does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetSteeringMimicsEntity_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetSteeringMimicsEntity", Some(value.into()), Some(activator))
     }
 }
 
 impl CSplineConstraint {
     /// input_DisableLimit sends DisableLimit.
     pub fn input_DisableLimit(self) -> bool {
-        send(self.handle, "DisableLimit", None)
+        send(self.handle, "DisableLimit", None, None)
+    }
+
+    /// input_DisableLimit_by sends DisableLimit as input_DisableLimit does,
+    /// caused by the entity of handle activator.
+    pub fn input_DisableLimit_by(self, activator: u32) -> bool {
+        send(self.handle, "DisableLimit", None, Some(activator))
     }
 
     /// input_EnableLimit sends EnableLimit.
     pub fn input_EnableLimit(self) -> bool {
-        send(self.handle, "EnableLimit", None)
+        send(self.handle, "EnableLimit", None, None)
+    }
+
+    /// input_EnableLimit_by sends EnableLimit as input_EnableLimit does, caused
+    /// by the entity of handle activator.
+    pub fn input_EnableLimit_by(self, activator: u32) -> bool {
+        send(self.handle, "EnableLimit", None, Some(activator))
     }
 
     /// input_SetSplineEntity sends SetSplineEntity.
     pub fn input_SetSplineEntity(self, value: &str) -> bool {
-        send(self.handle, "SetSplineEntity", Some(value.into()))
+        send(self.handle, "SetSplineEntity", Some(value.into()), None)
+    }
+
+    /// input_SetSplineEntity_by sends SetSplineEntity as input_SetSplineEntity
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetSplineEntity_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetSplineEntity", Some(value.into()), Some(activator))
     }
 
     /// input_SetTransitionTime sends SetTransitionTime.
     pub fn input_SetTransitionTime(self, value: f32) -> bool {
-        send(self.handle, "SetTransitionTime", Some(value.into()))
+        send(self.handle, "SetTransitionTime", Some(value.into()), None)
+    }
+
+    /// input_SetTransitionTime_by sends SetTransitionTime as
+    /// input_SetTransitionTime does, caused by the entity of handle activator.
+    pub fn input_SetTransitionTime_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetTransitionTime", Some(value.into()), Some(activator))
     }
 }
 
 impl CPhysMotor {
     /// input_SetFriction sends SetFriction.
     pub fn input_SetFriction(self, value: f32) -> bool {
-        send(self.handle, "SetFriction", Some(value.into()))
+        send(self.handle, "SetFriction", Some(value.into()), None)
+    }
+
+    /// input_SetFriction_by sends SetFriction as input_SetFriction does, caused
+    /// by the entity of handle activator.
+    pub fn input_SetFriction_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFriction", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpeed sends SetSpeed.
     pub fn input_SetSpeed(self, value: f32) -> bool {
-        send(self.handle, "SetSpeed", Some(value.into()))
+        send(self.handle, "SetSpeed", Some(value.into()), None)
+    }
+
+    /// input_SetSpeed_by sends SetSpeed as input_SetSpeed does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSpeed_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpeed", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpinDownTime sends SetSpinDownTime. Sets the time the motor
     /// takes to spin down to a lesser target speed when it's on.
     pub fn input_SetSpinDownTime(self, value: f32) -> bool {
-        send(self.handle, "SetSpinDownTime", Some(value.into()))
+        send(self.handle, "SetSpinDownTime", Some(value.into()), None)
+    }
+
+    /// input_SetSpinDownTime_by sends SetSpinDownTime as input_SetSpinDownTime
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetSpinDownTime_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpinDownTime", Some(value.into()), Some(activator))
     }
 
     /// input_SetSpinUpTime sends SetSpinUpTime. Sets the time the motor takes
     /// to spin up to a greater target speed when it's on.
     pub fn input_SetSpinUpTime(self, value: f32) -> bool {
-        send(self.handle, "SetSpinUpTime", Some(value.into()))
+        send(self.handle, "SetSpinUpTime", Some(value.into()), None)
+    }
+
+    /// input_SetSpinUpTime_by sends SetSpinUpTime as input_SetSpinUpTime does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetSpinUpTime_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSpinUpTime", Some(value.into()), Some(activator))
     }
 
     /// input_SetSystemInertiaScale sends SetSystemInertiaScale. Sets the
@@ -4803,17 +10183,36 @@ impl CPhysMotor {
     /// it can generate (this will also affect the actual time the motor takes
     /// to spin up or spin down).
     pub fn input_SetSystemInertiaScale(self, value: f32) -> bool {
-        send(self.handle, "SetSystemInertiaScale", Some(value.into()))
+        send(self.handle, "SetSystemInertiaScale", Some(value.into()), None)
+    }
+
+    /// input_SetSystemInertiaScale_by sends SetSystemInertiaScale as
+    /// input_SetSystemInertiaScale does, caused by the entity of handle
+    /// activator.
+    pub fn input_SetSystemInertiaScale_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSystemInertiaScale", Some(value.into()), Some(activator))
     }
 
     /// input_TurnOff sends TurnOff.
     pub fn input_TurnOff(self) -> bool {
-        send(self.handle, "TurnOff", None)
+        send(self.handle, "TurnOff", None, None)
+    }
+
+    /// input_TurnOff_by sends TurnOff as input_TurnOff does, caused by the
+    /// entity of handle activator.
+    pub fn input_TurnOff_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOff", None, Some(activator))
     }
 
     /// input_TurnOn sends TurnOn.
     pub fn input_TurnOn(self) -> bool {
-        send(self.handle, "TurnOn", None)
+        send(self.handle, "TurnOn", None, None)
+    }
+
+    /// input_TurnOn_by sends TurnOn as input_TurnOn does, caused by the entity
+    /// of handle activator.
+    pub fn input_TurnOn_by(self, activator: u32) -> bool {
+        send(self.handle, "TurnOn", None, Some(activator))
     }
 }
 
@@ -4822,169 +10221,363 @@ impl CPointTemplate {
     /// all spawn groups created by the template. Only works if you use
     /// asynchronous spawn and INSERT_INTO_NEWLY_CREATED_SPAWN_GROUP.
     pub fn input_DeleteCreatedSpawnGroups(self) -> bool {
-        send(self.handle, "DeleteCreatedSpawnGroups", None)
+        send(self.handle, "DeleteCreatedSpawnGroups", None, None)
+    }
+
+    /// input_DeleteCreatedSpawnGroups_by sends DeleteCreatedSpawnGroups as
+    /// input_DeleteCreatedSpawnGroups does, caused by the entity of handle
+    /// activator.
+    pub fn input_DeleteCreatedSpawnGroups_by(self, activator: u32) -> bool {
+        send(self.handle, "DeleteCreatedSpawnGroups", None, Some(activator))
     }
 
     /// input_ForceSpawn sends ForceSpawn. Spawn an instance of the template at
     /// the original position.
     pub fn input_ForceSpawn(self) -> bool {
-        send(self.handle, "ForceSpawn", None)
+        send(self.handle, "ForceSpawn", None, None)
+    }
+
+    /// input_ForceSpawn_by sends ForceSpawn as input_ForceSpawn does, caused by
+    /// the entity of handle activator.
+    pub fn input_ForceSpawn_by(self, activator: u32) -> bool {
+        send(self.handle, "ForceSpawn", None, Some(activator))
     }
 }
 
 impl CSceneListManager {
     /// input_Shutdown sends Shutdown.
     pub fn input_Shutdown(self) -> bool {
-        send(self.handle, "Shutdown", None)
+        send(self.handle, "Shutdown", None, None)
+    }
+
+    /// input_Shutdown_by sends Shutdown as input_Shutdown does, caused by the
+    /// entity of handle activator.
+    pub fn input_Shutdown_by(self, activator: u32) -> bool {
+        send(self.handle, "Shutdown", None, Some(activator))
     }
 }
 
 impl CTestPulseIO {
     /// input_InternalTestBool sends InternalTestBool.
     pub fn input_InternalTestBool(self, value: bool) -> bool {
-        send(self.handle, "InternalTestBool", Some(value.into()))
+        send(self.handle, "InternalTestBool", Some(value.into()), None)
+    }
+
+    /// input_InternalTestBool_by sends InternalTestBool as
+    /// input_InternalTestBool does, caused by the entity of handle activator.
+    pub fn input_InternalTestBool_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "InternalTestBool", Some(value.into()), Some(activator))
     }
 
     /// input_InternalTestColor sends InternalTestColor.
     pub fn input_InternalTestColor(self, value: u32) -> bool {
-        send(self.handle, "InternalTestColor", Some(value.into()))
+        send(self.handle, "InternalTestColor", Some(value.into()), None)
+    }
+
+    /// input_InternalTestColor_by sends InternalTestColor as
+    /// input_InternalTestColor does, caused by the entity of handle activator.
+    pub fn input_InternalTestColor_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "InternalTestColor", Some(value.into()), Some(activator))
     }
 
     /// input_InternalTestEntityName sends InternalTestEntityName.
     pub fn input_InternalTestEntityName(self, value: &str) -> bool {
-        send(self.handle, "InternalTestEntityName", Some(value.into()))
+        send(self.handle, "InternalTestEntityName", Some(value.into()), None)
+    }
+
+    /// input_InternalTestEntityName_by sends InternalTestEntityName as
+    /// input_InternalTestEntityName does, caused by the entity of handle
+    /// activator.
+    pub fn input_InternalTestEntityName_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "InternalTestEntityName", Some(value.into()), Some(activator))
     }
 
     /// input_InternalTestFloat sends InternalTestFloat.
     pub fn input_InternalTestFloat(self, value: f32) -> bool {
-        send(self.handle, "InternalTestFloat", Some(value.into()))
+        send(self.handle, "InternalTestFloat", Some(value.into()), None)
+    }
+
+    /// input_InternalTestFloat_by sends InternalTestFloat as
+    /// input_InternalTestFloat does, caused by the entity of handle activator.
+    pub fn input_InternalTestFloat_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "InternalTestFloat", Some(value.into()), Some(activator))
     }
 
     /// input_InternalTestInt sends InternalTestInt.
     pub fn input_InternalTestInt(self, value: i32) -> bool {
-        send(self.handle, "InternalTestInt", Some(value.into()))
+        send(self.handle, "InternalTestInt", Some(value.into()), None)
+    }
+
+    /// input_InternalTestInt_by sends InternalTestInt as input_InternalTestInt
+    /// does, caused by the entity of handle activator.
+    pub fn input_InternalTestInt_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "InternalTestInt", Some(value.into()), Some(activator))
     }
 
     /// input_InternalTestString sends InternalTestString.
     pub fn input_InternalTestString(self, value: &str) -> bool {
-        send(self.handle, "InternalTestString", Some(value.into()))
+        send(self.handle, "InternalTestString", Some(value.into()), None)
+    }
+
+    /// input_InternalTestString_by sends InternalTestString as
+    /// input_InternalTestString does, caused by the entity of handle activator.
+    pub fn input_InternalTestString_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "InternalTestString", Some(value.into()), Some(activator))
     }
 
     /// input_InternalTestVector sends InternalTestVector.
     pub fn input_InternalTestVector(self, value: Vector) -> bool {
-        send(self.handle, "InternalTestVector", Some(value.into()))
+        send(self.handle, "InternalTestVector", Some(value.into()), None)
+    }
+
+    /// input_InternalTestVector_by sends InternalTestVector as
+    /// input_InternalTestVector does, caused by the entity of handle activator.
+    pub fn input_InternalTestVector_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "InternalTestVector", Some(value.into()), Some(activator))
     }
 
     /// input_InternalTestVoid sends InternalTestVoid.
     pub fn input_InternalTestVoid(self) -> bool {
-        send(self.handle, "InternalTestVoid", None)
+        send(self.handle, "InternalTestVoid", None, None)
+    }
+
+    /// input_InternalTestVoid_by sends InternalTestVoid as
+    /// input_InternalTestVoid does, caused by the entity of handle activator.
+    pub fn input_InternalTestVoid_by(self, activator: u32) -> bool {
+        send(self.handle, "InternalTestVoid", None, Some(activator))
     }
 
     /// input_VariantBool sends VariantBool.
     pub fn input_VariantBool(self, value: bool) -> bool {
-        send(self.handle, "VariantBool", Some(value.into()))
+        send(self.handle, "VariantBool", Some(value.into()), None)
+    }
+
+    /// input_VariantBool_by sends VariantBool as input_VariantBool does, caused
+    /// by the entity of handle activator.
+    pub fn input_VariantBool_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "VariantBool", Some(value.into()), Some(activator))
     }
 
     /// input_VariantColor sends VariantColor.
     pub fn input_VariantColor(self, value: u32) -> bool {
-        send(self.handle, "VariantColor", Some(value.into()))
+        send(self.handle, "VariantColor", Some(value.into()), None)
+    }
+
+    /// input_VariantColor_by sends VariantColor as input_VariantColor does,
+    /// caused by the entity of handle activator.
+    pub fn input_VariantColor_by(self, value: u32, activator: u32) -> bool {
+        send(self.handle, "VariantColor", Some(value.into()), Some(activator))
     }
 
     /// input_VariantFloat sends VariantFloat.
     pub fn input_VariantFloat(self, value: f32) -> bool {
-        send(self.handle, "VariantFloat", Some(value.into()))
+        send(self.handle, "VariantFloat", Some(value.into()), None)
+    }
+
+    /// input_VariantFloat_by sends VariantFloat as input_VariantFloat does,
+    /// caused by the entity of handle activator.
+    pub fn input_VariantFloat_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "VariantFloat", Some(value.into()), Some(activator))
     }
 
     /// input_VariantInt sends VariantInt.
     pub fn input_VariantInt(self, value: i32) -> bool {
-        send(self.handle, "VariantInt", Some(value.into()))
+        send(self.handle, "VariantInt", Some(value.into()), None)
+    }
+
+    /// input_VariantInt_by sends VariantInt as input_VariantInt does, caused by
+    /// the entity of handle activator.
+    pub fn input_VariantInt_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "VariantInt", Some(value.into()), Some(activator))
     }
 
     /// input_VariantString sends VariantString.
     pub fn input_VariantString(self, value: &str) -> bool {
-        send(self.handle, "VariantString", Some(value.into()))
+        send(self.handle, "VariantString", Some(value.into()), None)
+    }
+
+    /// input_VariantString_by sends VariantString as input_VariantString does,
+    /// caused by the entity of handle activator.
+    pub fn input_VariantString_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "VariantString", Some(value.into()), Some(activator))
     }
 
     /// input_VariantVector sends VariantVector.
     pub fn input_VariantVector(self, value: Vector) -> bool {
-        send(self.handle, "VariantVector", Some(value.into()))
+        send(self.handle, "VariantVector", Some(value.into()), None)
+    }
+
+    /// input_VariantVector_by sends VariantVector as input_VariantVector does,
+    /// caused by the entity of handle activator.
+    pub fn input_VariantVector_by(self, value: Vector, activator: u32) -> bool {
+        send(self.handle, "VariantVector", Some(value.into()), Some(activator))
     }
 
     /// input_VariantVoid sends VariantVoid.
     pub fn input_VariantVoid(self) -> bool {
-        send(self.handle, "VariantVoid", None)
+        send(self.handle, "VariantVoid", None, None)
+    }
+
+    /// input_VariantVoid_by sends VariantVoid as input_VariantVoid does, caused
+    /// by the entity of handle activator.
+    pub fn input_VariantVoid_by(self, activator: u32) -> bool {
+        send(self.handle, "VariantVoid", None, Some(activator))
     }
 }
 
 impl CTimerEntity {
     /// input_AddToTimer sends AddToTimer.
     pub fn input_AddToTimer(self, value: f32) -> bool {
-        send(self.handle, "AddToTimer", Some(value.into()))
+        send(self.handle, "AddToTimer", Some(value.into()), None)
+    }
+
+    /// input_AddToTimer_by sends AddToTimer as input_AddToTimer does, caused by
+    /// the entity of handle activator.
+    pub fn input_AddToTimer_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "AddToTimer", Some(value.into()), Some(activator))
     }
 
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_FireTimer sends FireTimer.
     pub fn input_FireTimer(self) -> bool {
-        send(self.handle, "FireTimer", None)
+        send(self.handle, "FireTimer", None, None)
+    }
+
+    /// input_FireTimer_by sends FireTimer as input_FireTimer does, caused by
+    /// the entity of handle activator.
+    pub fn input_FireTimer_by(self, activator: u32) -> bool {
+        send(self.handle, "FireTimer", None, Some(activator))
     }
 
     /// input_LowerRandomBound sends LowerRandomBound.
     pub fn input_LowerRandomBound(self, value: f32) -> bool {
-        send(self.handle, "LowerRandomBound", Some(value.into()))
+        send(self.handle, "LowerRandomBound", Some(value.into()), None)
+    }
+
+    /// input_LowerRandomBound_by sends LowerRandomBound as
+    /// input_LowerRandomBound does, caused by the entity of handle activator.
+    pub fn input_LowerRandomBound_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "LowerRandomBound", Some(value.into()), Some(activator))
     }
 
     /// input_PauseAfterFiring sends PauseAfterFiring.
     pub fn input_PauseAfterFiring(self, value: bool) -> bool {
-        send(self.handle, "PauseAfterFiring", Some(value.into()))
+        send(self.handle, "PauseAfterFiring", Some(value.into()), None)
+    }
+
+    /// input_PauseAfterFiring_by sends PauseAfterFiring as
+    /// input_PauseAfterFiring does, caused by the entity of handle activator.
+    pub fn input_PauseAfterFiring_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "PauseAfterFiring", Some(value.into()), Some(activator))
     }
 
     /// input_PauseTimer sends PauseTimer.
     pub fn input_PauseTimer(self) -> bool {
-        send(self.handle, "PauseTimer", None)
+        send(self.handle, "PauseTimer", None, None)
+    }
+
+    /// input_PauseTimer_by sends PauseTimer as input_PauseTimer does, caused by
+    /// the entity of handle activator.
+    pub fn input_PauseTimer_by(self, activator: u32) -> bool {
+        send(self.handle, "PauseTimer", None, Some(activator))
     }
 
     /// input_RefireTime sends RefireTime.
     pub fn input_RefireTime(self, value: f32) -> bool {
-        send(self.handle, "RefireTime", Some(value.into()))
+        send(self.handle, "RefireTime", Some(value.into()), None)
+    }
+
+    /// input_RefireTime_by sends RefireTime as input_RefireTime does, caused by
+    /// the entity of handle activator.
+    pub fn input_RefireTime_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "RefireTime", Some(value.into()), Some(activator))
     }
 
     /// input_ResetTimer sends ResetTimer.
     pub fn input_ResetTimer(self) -> bool {
-        send(self.handle, "ResetTimer", None)
+        send(self.handle, "ResetTimer", None, None)
+    }
+
+    /// input_ResetTimer_by sends ResetTimer as input_ResetTimer does, caused by
+    /// the entity of handle activator.
+    pub fn input_ResetTimer_by(self, activator: u32) -> bool {
+        send(self.handle, "ResetTimer", None, Some(activator))
     }
 
     /// input_SubtractFromTimer sends SubtractFromTimer.
     pub fn input_SubtractFromTimer(self, value: f32) -> bool {
-        send(self.handle, "SubtractFromTimer", Some(value.into()))
+        send(self.handle, "SubtractFromTimer", Some(value.into()), None)
+    }
+
+    /// input_SubtractFromTimer_by sends SubtractFromTimer as
+    /// input_SubtractFromTimer does, caused by the entity of handle activator.
+    pub fn input_SubtractFromTimer_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SubtractFromTimer", Some(value.into()), Some(activator))
     }
 
     /// input_Toggle sends Toggle.
     pub fn input_Toggle(self) -> bool {
-        send(self.handle, "Toggle", None)
+        send(self.handle, "Toggle", None, None)
+    }
+
+    /// input_Toggle_by sends Toggle as input_Toggle does, caused by the entity
+    /// of handle activator.
+    pub fn input_Toggle_by(self, activator: u32) -> bool {
+        send(self.handle, "Toggle", None, Some(activator))
     }
 
     /// input_UnpauseTimer sends UnpauseTimer.
     pub fn input_UnpauseTimer(self) -> bool {
-        send(self.handle, "UnpauseTimer", None)
+        send(self.handle, "UnpauseTimer", None, None)
+    }
+
+    /// input_UnpauseTimer_by sends UnpauseTimer as input_UnpauseTimer does,
+    /// caused by the entity of handle activator.
+    pub fn input_UnpauseTimer_by(self, activator: u32) -> bool {
+        send(self.handle, "UnpauseTimer", None, Some(activator))
     }
 
     /// input_UpperRandomBound sends UpperRandomBound.
     pub fn input_UpperRandomBound(self, value: f32) -> bool {
-        send(self.handle, "UpperRandomBound", Some(value.into()))
+        send(self.handle, "UpperRandomBound", Some(value.into()), None)
+    }
+
+    /// input_UpperRandomBound_by sends UpperRandomBound as
+    /// input_UpperRandomBound does, caused by the entity of handle activator.
+    pub fn input_UpperRandomBound_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "UpperRandomBound", Some(value.into()), Some(activator))
     }
 
     /// input_UseRandomTime sends UseRandomTime.
     pub fn input_UseRandomTime(self, value: i32) -> bool {
-        send(self.handle, "UseRandomTime", Some(value.into()))
+        send(self.handle, "UseRandomTime", Some(value.into()), None)
+    }
+
+    /// input_UseRandomTime_by sends UseRandomTime as input_UseRandomTime does,
+    /// caused by the entity of handle activator.
+    pub fn input_UseRandomTime_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "UseRandomTime", Some(value.into()), Some(activator))
     }
 }
 
@@ -4992,21 +10585,39 @@ impl CInfoTrooperSpawn {
     /// input_SetSpawningEnabled sends SetSpawningEnabled. Enable or disable
     /// spawning from this point.
     pub fn input_SetSpawningEnabled(self, value: bool) -> bool {
-        send(self.handle, "SetSpawningEnabled", Some(value.into()))
+        send(self.handle, "SetSpawningEnabled", Some(value.into()), None)
+    }
+
+    /// input_SetSpawningEnabled_by sends SetSpawningEnabled as
+    /// input_SetSpawningEnabled does, caused by the entity of handle activator.
+    pub fn input_SetSpawningEnabled_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "SetSpawningEnabled", Some(value.into()), Some(activator))
     }
 }
 
 impl CPointTeleport {
     /// input_Teleport sends Teleport. Teleport the target entity.
     pub fn input_Teleport(self) -> bool {
-        send(self.handle, "Teleport", None)
+        send(self.handle, "Teleport", None, None)
+    }
+
+    /// input_Teleport_by sends Teleport as input_Teleport does, caused by the
+    /// entity of handle activator.
+    pub fn input_Teleport_by(self, activator: u32) -> bool {
+        send(self.handle, "Teleport", None, Some(activator))
     }
 
     /// input_TeleportEntity sends TeleportEntity. Teleport the entity specified
     /// by the parameter override. Use this to teleport an entity other than the
     /// one specified in the Entity To Teleport field.
     pub fn input_TeleportEntity(self, value: &str) -> bool {
-        send(self.handle, "TeleportEntity", Some(value.into()))
+        send(self.handle, "TeleportEntity", Some(value.into()), None)
+    }
+
+    /// input_TeleportEntity_by sends TeleportEntity as input_TeleportEntity
+    /// does, caused by the entity of handle activator.
+    pub fn input_TeleportEntity_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "TeleportEntity", Some(value.into()), Some(activator))
     }
 
     /// input_TeleportEntityToCurrentPos sends TeleportEntityToCurrentPos.
@@ -5014,7 +10625,14 @@ impl CPointTeleport {
     /// point_teleport entity is currently. The Teleport input teleports to the
     /// current position of the point_teleport.
     pub fn input_TeleportEntityToCurrentPos(self, value: &str) -> bool {
-        send(self.handle, "TeleportEntityToCurrentPos", Some(value.into()))
+        send(self.handle, "TeleportEntityToCurrentPos", Some(value.into()), None)
+    }
+
+    /// input_TeleportEntityToCurrentPos_by sends TeleportEntityToCurrentPos as
+    /// input_TeleportEntityToCurrentPos does, caused by the entity of handle
+    /// activator.
+    pub fn input_TeleportEntityToCurrentPos_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "TeleportEntityToCurrentPos", Some(value.into()), Some(activator))
     }
 
     /// input_TeleportToCurrentPos sends TeleportToCurrentPos. Teleport the
@@ -5022,222 +10640,467 @@ impl CPointTeleport {
     /// Teleport input teleports to the initial position of the point_teleport,
     /// so this input was added to avoid breaking old content.
     pub fn input_TeleportToCurrentPos(self) -> bool {
-        send(self.handle, "TeleportToCurrentPos", None)
+        send(self.handle, "TeleportToCurrentPos", None, None)
+    }
+
+    /// input_TeleportToCurrentPos_by sends TeleportToCurrentPos as
+    /// input_TeleportToCurrentPos does, caused by the entity of handle
+    /// activator.
+    pub fn input_TeleportToCurrentPos_by(self, activator: u32) -> bool {
+        send(self.handle, "TeleportToCurrentPos", None, Some(activator))
     }
 }
 
 impl CSkyCamera {
     /// input_ActivateSkybox sends ActivateSkybox.
     pub fn input_ActivateSkybox(self) -> bool {
-        send(self.handle, "ActivateSkybox", None)
+        send(self.handle, "ActivateSkybox", None, None)
+    }
+
+    /// input_ActivateSkybox_by sends ActivateSkybox as input_ActivateSkybox
+    /// does, caused by the entity of handle activator.
+    pub fn input_ActivateSkybox_by(self, activator: u32) -> bool {
+        send(self.handle, "ActivateSkybox", None, Some(activator))
     }
 }
 
 impl CSoundAreaEntityBase {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 }
 
 impl CSoundEventEntity {
     /// input_PauseSound sends PauseSound.
     pub fn input_PauseSound(self, value: bool) -> bool {
-        send(self.handle, "PauseSound", Some(value.into()))
+        send(self.handle, "PauseSound", Some(value.into()), None)
+    }
+
+    /// input_PauseSound_by sends PauseSound as input_PauseSound does, caused by
+    /// the entity of handle activator.
+    pub fn input_PauseSound_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "PauseSound", Some(value.into()), Some(activator))
     }
 
     /// input_SetSoundEventName sends SetSoundEventName.
     pub fn input_SetSoundEventName(self, value: &str) -> bool {
-        send(self.handle, "SetSoundEventName", Some(value.into()))
+        send(self.handle, "SetSoundEventName", Some(value.into()), None)
+    }
+
+    /// input_SetSoundEventName_by sends SetSoundEventName as
+    /// input_SetSoundEventName does, caused by the entity of handle activator.
+    pub fn input_SetSoundEventName_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetSoundEventName", Some(value.into()), Some(activator))
     }
 
     /// input_SetSourceEntity sends SetSourceEntity.
     pub fn input_SetSourceEntity(self, value: &str) -> bool {
-        send(self.handle, "SetSourceEntity", Some(value.into()))
+        send(self.handle, "SetSourceEntity", Some(value.into()), None)
+    }
+
+    /// input_SetSourceEntity_by sends SetSourceEntity as input_SetSourceEntity
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetSourceEntity_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetSourceEntity", Some(value.into()), Some(activator))
     }
 
     /// input_StartSound sends StartSound.
     pub fn input_StartSound(self, value: &str) -> bool {
-        send(self.handle, "StartSound", Some(value.into()))
+        send(self.handle, "StartSound", Some(value.into()), None)
+    }
+
+    /// input_StartSound_by sends StartSound as input_StartSound does, caused by
+    /// the entity of handle activator.
+    pub fn input_StartSound_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "StartSound", Some(value.into()), Some(activator))
     }
 
     /// input_StartSoundOnSingleClient sends StartSoundOnSingleClient.
     pub fn input_StartSoundOnSingleClient(self, value: i32) -> bool {
-        send(self.handle, "StartSoundOnSingleClient", Some(value.into()))
+        send(self.handle, "StartSoundOnSingleClient", Some(value.into()), None)
+    }
+
+    /// input_StartSoundOnSingleClient_by sends StartSoundOnSingleClient as
+    /// input_StartSoundOnSingleClient does, caused by the entity of handle
+    /// activator.
+    pub fn input_StartSoundOnSingleClient_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "StartSoundOnSingleClient", Some(value.into()), Some(activator))
     }
 
     /// input_StopSound sends StopSound.
     pub fn input_StopSound(self) -> bool {
-        send(self.handle, "StopSound", None)
+        send(self.handle, "StopSound", None, None)
+    }
+
+    /// input_StopSound_by sends StopSound as input_StopSound does, caused by
+    /// the entity of handle activator.
+    pub fn input_StopSound_by(self, activator: u32) -> bool {
+        send(self.handle, "StopSound", None, Some(activator))
     }
 
     /// input_UnPauseSound sends UnPauseSound.
     pub fn input_UnPauseSound(self, value: bool) -> bool {
-        send(self.handle, "UnPauseSound", Some(value.into()))
+        send(self.handle, "UnPauseSound", Some(value.into()), None)
+    }
+
+    /// input_UnPauseSound_by sends UnPauseSound as input_UnPauseSound does,
+    /// caused by the entity of handle activator.
+    pub fn input_UnPauseSound_by(self, value: bool, activator: u32) -> bool {
+        send(self.handle, "UnPauseSound", Some(value.into()), Some(activator))
     }
 }
 
 impl CSoundEventParameter {
     /// input_SetFloatValue sends SetFloatValue.
     pub fn input_SetFloatValue(self, value: f32) -> bool {
-        send(self.handle, "SetFloatValue", Some(value.into()))
+        send(self.handle, "SetFloatValue", Some(value.into()), None)
+    }
+
+    /// input_SetFloatValue_by sends SetFloatValue as input_SetFloatValue does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetFloatValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetFloatValue", Some(value.into()), Some(activator))
     }
 
     /// input_SetParamName sends SetParamName.
     pub fn input_SetParamName(self, value: &str) -> bool {
-        send(self.handle, "SetParamName", Some(value.into()))
+        send(self.handle, "SetParamName", Some(value.into()), None)
+    }
+
+    /// input_SetParamName_by sends SetParamName as input_SetParamName does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetParamName_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetParamName", Some(value.into()), Some(activator))
     }
 }
 
 impl CSoundOpvarSetEntity {
     /// input_ChangeOpvarValue sends ChangeOpvarValue.
     pub fn input_ChangeOpvarValue(self, value: f32) -> bool {
-        send(self.handle, "ChangeOpvarValue", Some(value.into()))
+        send(self.handle, "ChangeOpvarValue", Some(value.into()), None)
+    }
+
+    /// input_ChangeOpvarValue_by sends ChangeOpvarValue as
+    /// input_ChangeOpvarValue does, caused by the entity of handle activator.
+    pub fn input_ChangeOpvarValue_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "ChangeOpvarValue", Some(value.into()), Some(activator))
     }
 
     /// input_ChangeOpvarValueAndSet sends ChangeOpvarValueAndSet.
     pub fn input_ChangeOpvarValueAndSet(self, value: f32) -> bool {
-        send(self.handle, "ChangeOpvarValueAndSet", Some(value.into()))
+        send(self.handle, "ChangeOpvarValueAndSet", Some(value.into()), None)
+    }
+
+    /// input_ChangeOpvarValueAndSet_by sends ChangeOpvarValueAndSet as
+    /// input_ChangeOpvarValueAndSet does, caused by the entity of handle
+    /// activator.
+    pub fn input_ChangeOpvarValueAndSet_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "ChangeOpvarValueAndSet", Some(value.into()), Some(activator))
     }
 
     /// input_SetOperatorName sends SetOperatorName.
     pub fn input_SetOperatorName(self, value: &str) -> bool {
-        send(self.handle, "SetOperatorName", Some(value.into()))
+        send(self.handle, "SetOperatorName", Some(value.into()), None)
+    }
+
+    /// input_SetOperatorName_by sends SetOperatorName as input_SetOperatorName
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetOperatorName_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetOperatorName", Some(value.into()), Some(activator))
     }
 
     /// input_SetOpvar sends SetOpvar.
     pub fn input_SetOpvar(self) -> bool {
-        send(self.handle, "SetOpvar", None)
+        send(self.handle, "SetOpvar", None, None)
+    }
+
+    /// input_SetOpvar_by sends SetOpvar as input_SetOpvar does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetOpvar_by(self, activator: u32) -> bool {
+        send(self.handle, "SetOpvar", None, Some(activator))
     }
 
     /// input_SetOpvarIndex sends SetOpvarIndex.
     pub fn input_SetOpvarIndex(self, value: i32) -> bool {
-        send(self.handle, "SetOpvarIndex", Some(value.into()))
+        send(self.handle, "SetOpvarIndex", Some(value.into()), None)
+    }
+
+    /// input_SetOpvarIndex_by sends SetOpvarIndex as input_SetOpvarIndex does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetOpvarIndex_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetOpvarIndex", Some(value.into()), Some(activator))
     }
 
     /// input_SetOpvarName sends SetOpvarName.
     pub fn input_SetOpvarName(self, value: &str) -> bool {
-        send(self.handle, "SetOpvarName", Some(value.into()))
+        send(self.handle, "SetOpvarName", Some(value.into()), None)
+    }
+
+    /// input_SetOpvarName_by sends SetOpvarName as input_SetOpvarName does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetOpvarName_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetOpvarName", Some(value.into()), Some(activator))
     }
 
     /// input_SetStackName sends SetStackName.
     pub fn input_SetStackName(self, value: &str) -> bool {
-        send(self.handle, "SetStackName", Some(value.into()))
+        send(self.handle, "SetStackName", Some(value.into()), None)
+    }
+
+    /// input_SetStackName_by sends SetStackName as input_SetStackName does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetStackName_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetStackName", Some(value.into()), Some(activator))
     }
 }
 
 impl CSoundOpvarSetPointBase {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetOperatorName sends SetOperatorName.
     pub fn input_SetOperatorName(self, value: &str) -> bool {
-        send(self.handle, "SetOperatorName", Some(value.into()))
+        send(self.handle, "SetOperatorName", Some(value.into()), None)
+    }
+
+    /// input_SetOperatorName_by sends SetOperatorName as input_SetOperatorName
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetOperatorName_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetOperatorName", Some(value.into()), Some(activator))
     }
 
     /// input_SetOpvarIndex sends SetOpvarIndex.
     pub fn input_SetOpvarIndex(self, value: &str) -> bool {
-        send(self.handle, "SetOpvarIndex", Some(value.into()))
+        send(self.handle, "SetOpvarIndex", Some(value.into()), None)
+    }
+
+    /// input_SetOpvarIndex_by sends SetOpvarIndex as input_SetOpvarIndex does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetOpvarIndex_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetOpvarIndex", Some(value.into()), Some(activator))
     }
 
     /// input_SetOpvarName sends SetOpvarName.
     pub fn input_SetOpvarName(self, value: &str) -> bool {
-        send(self.handle, "SetOpvarName", Some(value.into()))
+        send(self.handle, "SetOpvarName", Some(value.into()), None)
+    }
+
+    /// input_SetOpvarName_by sends SetOpvarName as input_SetOpvarName does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetOpvarName_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetOpvarName", Some(value.into()), Some(activator))
     }
 
     /// input_SetSourceEntity sends SetSourceEntity.
     pub fn input_SetSourceEntity(self, value: &str) -> bool {
-        send(self.handle, "SetSourceEntity", Some(value.into()))
+        send(self.handle, "SetSourceEntity", Some(value.into()), None)
+    }
+
+    /// input_SetSourceEntity_by sends SetSourceEntity as input_SetSourceEntity
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetSourceEntity_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetSourceEntity", Some(value.into()), Some(activator))
     }
 
     /// input_SetStackName sends SetStackName.
     pub fn input_SetStackName(self, value: &str) -> bool {
-        send(self.handle, "SetStackName", Some(value.into()))
+        send(self.handle, "SetStackName", Some(value.into()), None)
+    }
+
+    /// input_SetStackName_by sends SetStackName as input_SetStackName does,
+    /// caused by the entity of handle activator.
+    pub fn input_SetStackName_by(self, value: &str, activator: u32) -> bool {
+        send(self.handle, "SetStackName", Some(value.into()), Some(activator))
     }
 }
 
 impl CSoundOpvarSetPointEntity {
     /// input_SetDisabledValue sends SetDisabledValue.
     pub fn input_SetDisabledValue(self) -> bool {
-        send(self.handle, "SetDisabledValue", None)
+        send(self.handle, "SetDisabledValue", None, None)
+    }
+
+    /// input_SetDisabledValue_by sends SetDisabledValue as
+    /// input_SetDisabledValue does, caused by the entity of handle activator.
+    pub fn input_SetDisabledValue_by(self, activator: u32) -> bool {
+        send(self.handle, "SetDisabledValue", None, Some(activator))
     }
 
     /// input_SetDistanceMapMax sends SetDistanceMapMax.
     pub fn input_SetDistanceMapMax(self, value: f32) -> bool {
-        send(self.handle, "SetDistanceMapMax", Some(value.into()))
+        send(self.handle, "SetDistanceMapMax", Some(value.into()), None)
+    }
+
+    /// input_SetDistanceMapMax_by sends SetDistanceMapMax as
+    /// input_SetDistanceMapMax does, caused by the entity of handle activator.
+    pub fn input_SetDistanceMapMax_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDistanceMapMax", Some(value.into()), Some(activator))
     }
 
     /// input_SetDistanceMapMin sends SetDistanceMapMin.
     pub fn input_SetDistanceMapMin(self, value: f32) -> bool {
-        send(self.handle, "SetDistanceMapMin", Some(value.into()))
+        send(self.handle, "SetDistanceMapMin", Some(value.into()), None)
+    }
+
+    /// input_SetDistanceMapMin_by sends SetDistanceMapMin as
+    /// input_SetDistanceMapMin does, caused by the entity of handle activator.
+    pub fn input_SetDistanceMapMin_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetDistanceMapMin", Some(value.into()), Some(activator))
     }
 }
 
 impl CSoundOpvarSetDomeEntity {
     /// input_SetSize sends SetSize.
     pub fn input_SetSize(self, value: f32) -> bool {
-        send(self.handle, "SetSize", Some(value.into()))
+        send(self.handle, "SetSize", Some(value.into()), None)
+    }
+
+    /// input_SetSize_by sends SetSize as input_SetSize does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetSize_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetSize", Some(value.into()), Some(activator))
     }
 
     /// input_SetTotalDirections sends SetTotalDirections.
     pub fn input_SetTotalDirections(self, value: i32) -> bool {
-        send(self.handle, "SetTotalDirections", Some(value.into()))
+        send(self.handle, "SetTotalDirections", Some(value.into()), None)
+    }
+
+    /// input_SetTotalDirections_by sends SetTotalDirections as
+    /// input_SetTotalDirections does, caused by the entity of handle activator.
+    pub fn input_SetTotalDirections_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetTotalDirections", Some(value.into()), Some(activator))
     }
 
     /// input_SetTracesPerFrame sends SetTracesPerFrame.
     pub fn input_SetTracesPerFrame(self, value: i32) -> bool {
-        send(self.handle, "SetTracesPerFrame", Some(value.into()))
+        send(self.handle, "SetTracesPerFrame", Some(value.into()), None)
+    }
+
+    /// input_SetTracesPerFrame_by sends SetTracesPerFrame as
+    /// input_SetTracesPerFrame does, caused by the entity of handle activator.
+    pub fn input_SetTracesPerFrame_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetTracesPerFrame", Some(value.into()), Some(activator))
     }
 }
 
 impl CSoundOpvarSetPrecipitationEntity {
     /// input_SetMode sends SetMode.
     pub fn input_SetMode(self, value: i32) -> bool {
-        send(self.handle, "SetMode", Some(value.into()))
+        send(self.handle, "SetMode", Some(value.into()), None)
+    }
+
+    /// input_SetMode_by sends SetMode as input_SetMode does, caused by the
+    /// entity of handle activator.
+    pub fn input_SetMode_by(self, value: i32, activator: u32) -> bool {
+        send(self.handle, "SetMode", Some(value.into()), Some(activator))
     }
 }
 
 impl CTonemapController2 {
     /// input_Disable sends Disable.
     pub fn input_Disable(self) -> bool {
-        send(self.handle, "Disable", None)
+        send(self.handle, "Disable", None, None)
+    }
+
+    /// input_Disable_by sends Disable as input_Disable does, caused by the
+    /// entity of handle activator.
+    pub fn input_Disable_by(self, activator: u32) -> bool {
+        send(self.handle, "Disable", None, Some(activator))
     }
 
     /// input_Enable sends Enable.
     pub fn input_Enable(self) -> bool {
-        send(self.handle, "Enable", None)
+        send(self.handle, "Enable", None, None)
+    }
+
+    /// input_Enable_by sends Enable as input_Enable does, caused by the entity
+    /// of handle activator.
+    pub fn input_Enable_by(self, activator: u32) -> bool {
+        send(self.handle, "Enable", None, Some(activator))
     }
 
     /// input_SetExposureAdaptationSpeedDown sends
     /// SetExposureAdaptationSpeedDown.
     pub fn input_SetExposureAdaptationSpeedDown(self, value: f32) -> bool {
-        send(self.handle, "SetExposureAdaptationSpeedDown", Some(value.into()))
+        send(self.handle, "SetExposureAdaptationSpeedDown", Some(value.into()), None)
+    }
+
+    /// input_SetExposureAdaptationSpeedDown_by sends
+    /// SetExposureAdaptationSpeedDown as input_SetExposureAdaptationSpeedDown
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetExposureAdaptationSpeedDown_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetExposureAdaptationSpeedDown", Some(value.into()), Some(activator))
     }
 
     /// input_SetExposureAdaptationSpeedUp sends SetExposureAdaptationSpeedUp.
     pub fn input_SetExposureAdaptationSpeedUp(self, value: f32) -> bool {
-        send(self.handle, "SetExposureAdaptationSpeedUp", Some(value.into()))
+        send(self.handle, "SetExposureAdaptationSpeedUp", Some(value.into()), None)
+    }
+
+    /// input_SetExposureAdaptationSpeedUp_by sends SetExposureAdaptationSpeedUp
+    /// as input_SetExposureAdaptationSpeedUp does, caused by the entity of
+    /// handle activator.
+    pub fn input_SetExposureAdaptationSpeedUp_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetExposureAdaptationSpeedUp", Some(value.into()), Some(activator))
     }
 
     /// input_SetMaxExposure sends SetMaxExposure.
     pub fn input_SetMaxExposure(self, value: f32) -> bool {
-        send(self.handle, "SetMaxExposure", Some(value.into()))
+        send(self.handle, "SetMaxExposure", Some(value.into()), None)
+    }
+
+    /// input_SetMaxExposure_by sends SetMaxExposure as input_SetMaxExposure
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetMaxExposure_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMaxExposure", Some(value.into()), Some(activator))
     }
 
     /// input_SetMinExposure sends SetMinExposure.
     pub fn input_SetMinExposure(self, value: f32) -> bool {
-        send(self.handle, "SetMinExposure", Some(value.into()))
+        send(self.handle, "SetMinExposure", Some(value.into()), None)
+    }
+
+    /// input_SetMinExposure_by sends SetMinExposure as input_SetMinExposure
+    /// does, caused by the entity of handle activator.
+    pub fn input_SetMinExposure_by(self, value: f32, activator: u32) -> bool {
+        send(self.handle, "SetMinExposure", Some(value.into()), Some(activator))
     }
 }

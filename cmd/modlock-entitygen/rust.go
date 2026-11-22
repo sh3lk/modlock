@@ -86,8 +86,10 @@ var (
 // the classes' input methods, the key value structs and the designer names.
 // Each class wraps its base, which it dereferences to, so a class has its
 // bases' accessors and inputs. Each field is one method returning a value
-// that gets and sets the field. Module console holds a function per console
-// variable and command.
+// that gets and sets the field. Each input is two methods, since Rust has no
+// optional parameter: one sends it with no activator, and its pair, named
+// with _by after it, takes the handle of the entity that caused it. Module
+// console holds a function per console variable and command.
 //
 // Every name is the game's, as the other libraries have it, so a class, a
 // field, a key or a console variable is found in Rust under the name the
@@ -137,20 +139,22 @@ func writeRust(s *schema, classes []*class, e *entities, c *console) map[string]
 		files["entity/"+file+".gen.rs"] = out.Bytes()
 	}
 
-	// Write a method per input, unless a field took its name.
+	// Write two methods per input, unless a field or an input took the name
+	// of either: one that sends it with no activator, and one named with _by
+	// after it that names the activator.
 	out := bytes.NewBufferString(rustHeader)
 	for _, c := range classes[1:] {
 		var body bytes.Buffer
 		for _, in := range e.inputs[c.name] {
 			method := "input_" + in.name
-			if methods[c][method] {
+			if methods[c][method] || methods[c][method+"_by"] {
 				continue
 			}
 			methods[c][method] = true
+			methods[c][method+"_by"] = true
 			if body.Len() != 0 {
 				body.WriteString("\n")
 			}
-			body.WriteString(wrap("    /// ", rustDoc(method+" sends "+in.name+". "+sentence(in.description))))
 			parameter, argument := "", "None"
 			switch in.value {
 			case "":
@@ -159,7 +163,10 @@ func writeRust(s *schema, classes []*class, e *entities, c *console) map[string]
 			default:
 				parameter, argument = ", value: "+rustValues[in.value], "Some(value.into())"
 			}
-			fmt.Fprintf(&body, "    pub fn %s(self%s) -> bool {\n        send(self.handle, %q, %s)\n    }\n", method, parameter, in.name, argument)
+			body.WriteString(wrap("    /// ", rustDoc(method+" sends "+in.name+". "+sentence(in.description))))
+			fmt.Fprintf(&body, "    pub fn %s(self%s) -> bool {\n        send(self.handle, %q, %s, None)\n    }\n\n", method, parameter, in.name, argument)
+			body.WriteString(wrap("    /// ", rustDoc(method+"_by sends "+in.name+" as "+method+" does, caused by the entity of handle activator.")))
+			fmt.Fprintf(&body, "    pub fn %s_by(self%s, activator: u32) -> bool {\n        send(self.handle, %q, %s, Some(activator))\n    }\n", method, parameter, in.name, argument)
 		}
 		if body.Len() != 0 {
 			fmt.Fprintf(out, "\nimpl %s {\n%s}\n", c.name, body.String())

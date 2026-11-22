@@ -22,6 +22,15 @@
 //! hero.input_Kill();
 //! ```
 //!
+//! Each input has a pair named with _by after it, which takes after the
+//! input's value the activator: the handle of the entity that caused the
+//! input, such as a player's hero. An input that acts on one player, such as
+//! LocalPlayerAddCSSClass, acts on the activator's player:
+//!
+//! ```ignore
+//! panel.input_LocalPlayerAddCSSClass_by("winner", pawn.entity);
+//! ```
+//!
 //! Every name is the game's, as the other Modlock libraries have it: a class
 //! is CNPC_TrooperBoss, a field m_iHealth, an input input_Kill and a key
 //! LaneNum. A name found in the game's schema, or in an example for another
@@ -509,9 +518,10 @@ impl From<Angles> for EntityValue {
 }
 
 /// send sends the input name to the entity of handle, with value if the
-/// input takes one.
-fn send(handle: u32, name: &str, value: Option<EntityValue>) -> bool {
-    fire_input(handle, name, value.as_ref(), None)
+/// input takes one, caused by the entity of handle activator if the mod
+/// names one.
+fn send(handle: u32, name: &str, value: Option<EntityValue>, activator: Option<u32>) -> bool {
+    fire_input(handle, name, value.as_ref(), activator)
 }
 
 /// Keys is a key value struct: the spawn key values of one data description
