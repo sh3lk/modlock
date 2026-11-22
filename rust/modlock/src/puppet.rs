@@ -238,6 +238,11 @@ impl Puppet {
         self.body.borrow().player
     }
 
+    /// track is a copy of the track the puppet plays.
+    pub fn track(&self) -> Track {
+        self.body.borrow().track.clone()
+    }
+
     /// state is where playback stands.
     pub fn state(&self) -> PuppetState {
         self.body.borrow().state
