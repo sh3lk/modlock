@@ -31,14 +31,24 @@ pub enum HeroPick {
     Id(u32),
 }
 
+/// ANY_HERO is the name that stands for HeroPick::Any, as the other
+/// languages' libraries spell it.
+const ANY_HERO: &str = "any";
+
 impl From<&str> for HeroPick {
     fn from(name: &str) -> Self {
+        if name == ANY_HERO {
+            return HeroPick::Any;
+        }
         HeroPick::Named(name.to_owned())
     }
 }
 
 impl From<String> for HeroPick {
     fn from(name: String) -> Self {
+        if name == ANY_HERO {
+            return HeroPick::Any;
+        }
         HeroPick::Named(name)
     }
 }
