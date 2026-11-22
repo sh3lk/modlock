@@ -175,7 +175,8 @@ pub fn after_match<T: Clone + PartialEq>(line: &[T], fought: &[T]) -> Vec<T> {
 /// larger for an upset.
 pub fn rating_change(winners: f64, losers: f64, step: f64) -> f64 {
     let expected = 1.0 / (1.0 + 10f64.powf((losers - winners) / 400.0));
-    (step * (1.0 - expected)).round()
+    // Half rounds up, as the other languages' libraries round it.
+    (step * (1.0 - expected) + 0.5).floor()
 }
 
 /// settle records a finished match: each side's ratings move by the change

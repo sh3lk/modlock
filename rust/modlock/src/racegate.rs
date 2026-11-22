@@ -154,11 +154,12 @@ impl RaceGate {
     /// stand stands a gate across yaw at foot. A part the world refuses is
     /// left out, so the gate stands whatever the world made.
     pub fn stand(options: &RaceGateOptions) -> RaceGate {
-        // Size the opening in whole cells, and face its plane across the
-        // lane.
+        // Size the opening in whole cells, half a cell rounding up as the
+        // other languages' libraries round it, and face its plane across
+        // the lane.
         let radians = options.yaw.to_radians();
-        let half_width = (options.width / CELL / 2.0).round() * CELL;
-        let height = (options.height / CELL).round() * CELL;
+        let half_width = (options.width / CELL / 2.0 + 0.5).floor() * CELL;
+        let height = (options.height / CELL + 0.5).floor() * CELL;
         let color = options.color;
         let plane = Plane {
             foot: options.foot,

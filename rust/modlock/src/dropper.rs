@@ -170,12 +170,13 @@ impl<M: 'static> Dropper<M> {
         };
 
         // Start the builder facing the hero's yaw, snapped to a turn step.
+        // Half a step rounds up, as the other languages' libraries round it.
         let yaw = player.pawn().map_or(0.0, |pawn| pawn.eye_angles.yaw);
         let builder = Builder {
             player,
             steam_id: connection.steam_id,
             entry: 0,
-            yaw: (yaw / TURN_DEGREES).round() * TURN_DEGREES,
+            yaw: (yaw / TURN_DEGREES + 0.5).floor() * TURN_DEGREES,
             preview: None,
             preview_model: None,
             aim: None,
@@ -585,7 +586,7 @@ fn window_of<T>(rows: Vec<T>, selected: usize) -> Vec<T> {
     rows.into_iter().skip(start).take(WINDOW_SHOWN).collect()
 }
 
-/// snap rounds a coordinate to the floor grid.
+/// snap rounds a coordinate to the floor grid, half a cell upward.
 fn snap(value: f64) -> f64 {
-    (value / GRID).round() * GRID
+    (value / GRID + 0.5).floor() * GRID
 }
