@@ -619,16 +619,21 @@ pub fn row(
 
 /// roster stacks up to ROSTER_ROWS players down the top right corner, each
 /// one's hero portrait at the edge with their name and a line, such as what
-/// they are doing or their score, to its left. Its children are its rows. A
-/// mode that hides the stock scoreboard's heroes shows who else is here with
-/// it.
+/// they are doing or their score, to its left. Its children are its rows,
+/// and without one it draws nothing. A mode that hides the stock scoreboard's
+/// heroes shows who else is here with it.
 #[component]
 pub fn roster(
     /// top is the roster's top margin in pixels; under the FPS readout unless
     /// set.
     top: Option<f32>,
     children: Vec<Element>,
-) -> Element {
+) -> Option<Element> {
+    // Without a row there is nothing to draw.
+    if children.is_empty() {
+        return None;
+    }
+
     // Each row keeps its node by its place in the roster.
     let rows = children.into_iter().take(ROSTER_ROWS).enumerate();
     let rows = rows.map(|(index, row)| row.key(format!("row-{index}")));
@@ -645,7 +650,7 @@ pub fn roster(
         },
         ..Style::default()
     };
-    panel().style(own).child(rows).into()
+    Some(panel().style(own).child(rows).into())
 }
 
 /// roster_key returns what the roster of rows shows, to redraw only when it

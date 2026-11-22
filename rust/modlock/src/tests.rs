@@ -1753,6 +1753,9 @@ fn the_hud_kit_draws() {
     let picked = plain.clone().selected(true).on_press(Menu::ready);
     assert_ne!(hud::roster_key(&[picked]), hud::roster_key(&[plain]));
 
+    // Without rows the roster draws nothing.
+    assert!(elements(hud::roster()).is_empty());
+
     // The pressed action and row reach the mod; the disabled action does not.
     for id in [&ready.id, &leave.id, &bob.id] {
         let press = UiPressEvent {
