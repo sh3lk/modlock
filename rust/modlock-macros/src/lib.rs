@@ -33,7 +33,8 @@ use std::iter::Peekable;
 /// A tag that names no element of modlock::ui is a component: a function
 /// marked #[component], by its name or its path, such as <hud::banner>.
 ///
-/// The macro's value is the Element of its one tag.
+/// The macro's value is the Element of its one tag, so that tag is not a
+/// component that may draw nothing; such a component is a child.
 #[proc_macro]
 pub fn ui(input: TokenStream) -> TokenStream {
     let mut tags = Tags {
@@ -382,7 +383,8 @@ fn method(name: Ident, argument: TokenStream) -> TokenStream {
 
 /// component makes a function a component: an element built from others,
 /// which a mod writes as a tag. The function's parameters are the tag's
-/// attributes, and it returns what the tag draws:
+/// attributes, and it returns what the tag draws: an Element, or an
+/// Option<Element>, written so, to draw nothing for None:
 ///
 /// ```ignore
 /// #[component]
@@ -408,6 +410,11 @@ fn method(name: Ident, argument: TokenStream) -> TokenStream {
 /// Vec<Element>, takes what stands between the tag and its closing tag. One of
 /// type Option<Press> takes a handler as a button's on_press does. Every
 /// component takes a key, as every element does.
+///
+/// A component that returns an Option<Element> is a child of an element or
+/// what show takes. Where it draws nothing it holds its place, so the
+/// children after it keep their nodes when it draws again. It is no Element
+/// by itself: neither the one tag of a ui! nor one of a list of components.
 #[proc_macro_attribute]
 pub fn component(_arguments: TokenStream, item: TokenStream) -> TokenStream {
     match Component::read(item) {
@@ -496,7 +503,8 @@ impl Component {
             }
         };
         if returns.is_empty() {
-            let why = "a component's function returns what it draws: -> Element";
+            let why = "a component's function returns what it draws: -> Element, \
+                       or -> Option<Element>";
             return Err(Refusal {
                 at: name.span(),
                 why,
@@ -551,6 +559,46 @@ impl Component {
             methods.extend(property.notes.clone());
             methods.extend(property.method(&reach));
         }
+
+        // An element stands for a component, under the component's key. A
+        // component that may draw nothing is a list of one element or none,
+        // and so is no element itself.
+        let place = match optional(&returns) {
+            false => {
+                "impl ::core::convert::From<__P0> for ::modlock::ui::Element {
+                    fn from(component: __P0) -> Self {
+                        let key = component.__key.clone();
+                        let drawn: ::modlock::ui::Element = ::core::convert::Into::into(component.__render());
+                        match key.is_empty() {
+                            true => drawn,
+                            false => drawn.key(key),
+                        }
+                    }
+                }
+
+                impl ::modlock::ui::Children for __P0 {
+                    fn slot(self) -> ::modlock::ui::SlotOf {
+                        ::modlock::ui::slot_of(::core::convert::Into::into(self))
+                    }
+                }"
+            }
+            true => {
+                "impl ::modlock::ui::Children for __P0 {
+                    fn slot(self) -> ::modlock::ui::SlotOf {
+                        let key = self.__key.clone();
+                        let drawn: ::core::option::Option<::modlock::ui::Element> =
+                            ::core::option::Option::map(self.__render(), ::core::convert::Into::into);
+                        ::modlock::ui::Children::slot(::core::option::Option::map(drawn, |drawn| {
+                            match key.is_empty() {
+                                true => drawn,
+                                false => drawn.key(key),
+                            }
+                        }))
+                    }
+                }"
+            }
+        };
+        let place = templated(place, std::slice::from_ref(&kind));
         let mut written = notes;
         written.extend(templated(
             "__P0 fn __P1() -> __P2 {
@@ -574,26 +622,20 @@ impl Component {
                     let Self { __key: _, __P7 } = self;
                     __P8
                 }
-            }
-
-            impl ::core::convert::From<__P2> for ::modlock::ui::Element {
-                fn from(component: __P2) -> Self {
-                    let key = component.__key.clone();
-                    let drawn: ::modlock::ui::Element = ::core::convert::Into::into(component.__render());
-                    match key.is_empty() {
-                        true => drawn,
-                        false => drawn.key(key),
-                    }
-                }
-            }
-
-            impl ::modlock::ui::Children for __P2 {
-                fn slot(self) -> ::modlock::ui::SlotOf {
-                    ::modlock::ui::slot_of(::core::convert::Into::into(self))
-                }
             }",
-            &[reach, named, kind, defaults, members, methods, returns, bindings, body.into()],
+            &[
+                reach,
+                named,
+                kind,
+                defaults,
+                members,
+                methods,
+                returns,
+                bindings,
+                body.into(),
+            ],
         ));
+        written.extend(place);
         written
     }
 }
@@ -714,6 +756,14 @@ fn properties(parameters: TokenStream) -> Result<Vec<Property>, Refusal> {
         });
     }
     Ok(read)
+}
+
+/// optional reports whether returns, a function's arrow and the type after it,
+/// names an Option of something, by its name or its path.
+fn optional(returns: &TokenStream) -> bool {
+    let spelled = spelled(returns);
+    let named = spelled.split_once('<').map(|(named, _)| named);
+    named.and_then(|named| named.trim_start_matches("->").rsplit("::").next()) == Some("Option")
 }
 
 /// camel returns a function's name as its type's: top_strip is TopStrip.
