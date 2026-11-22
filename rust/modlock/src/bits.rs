@@ -31,6 +31,15 @@ impl Buttons {
     pub const ULTIMATE: u64 = 1 << 36;
     /// PARRY is the melee parry button.
     pub const PARRY: u64 = 1 << 42;
+    /// SPEC_NEXT to SPEC_TOGGLE_TEAM are the buttons a player's client sends
+    /// in place of the others while they spectate, with no hero of their own
+    /// in play: SPEC_NEXT and SPEC_PREV cycle the watched player, SPEC_MODE
+    /// changes the camera mode, and SPEC_TOGGLE_TEAM is the jump key, Space
+    /// by default.
+    pub const SPEC_NEXT: u64 = 1 << 49;
+    pub const SPEC_PREV: u64 = 1 << 50;
+    pub const SPEC_MODE: u64 = 1 << 51;
+    pub const SPEC_TOGGLE_TEAM: u64 = 1 << 52;
 }
 
 /// Layers names collision layers for a trace.

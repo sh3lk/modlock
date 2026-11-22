@@ -8645,7 +8645,8 @@ impl Player {
     }
 
     /// block_input withholds buttons from the player's hero until called
-    /// again, on top of the block on everyone. Zero releases the player.
+    /// again, and the spectator buttons from their commands while they
+    /// spectate, on top of the block on everyone. Zero releases the player.
     pub fn block_input(self, buttons: u64) -> bool {
         host::send("BlockPlayerInput", |out| {
             if self.slot() != 0 {
@@ -9638,7 +9639,8 @@ pub fn add_bot(options: &BotOptions) -> Option<Player> {
 }
 
 /// block_input withholds buttons from every player's hero until called
-/// again. Stopping the mod releases them.
+/// again, and the spectator buttons from a spectating player's commands.
+/// Stopping the mod releases them.
 pub fn block_input(buttons: u64) -> bool {
     host::send("BlockInput", |out| {
         if buttons != 0 {
