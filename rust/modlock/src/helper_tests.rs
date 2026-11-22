@@ -1118,6 +1118,12 @@ fn a_builder_drops_and_undoes() {
     ];
     let spot = LoadedSpot::new("dl_midtown");
     let mut dropper: Dropper<Idle> = Dropper::new(catalog, spot, |_| None);
+    let saved = Rc::new(RefCell::new(Vec::new()));
+    let heard = saved.clone();
+    dropper.changed(move |_: &mut Idle, spot| heard.borrow_mut().push(spot));
+    let frame = |seconds: f64| {
+        crate::tests::send(Idle::default, &events, "Frame", &crate::tests::at(seconds));
+    };
     dropper.toggle(player);
     assert!(dropper.building(player));
     assert_eq!((called("BlockPlayerInput"), called("Ui")), (1, 1));
@@ -1142,17 +1148,19 @@ fn a_builder_drops_and_undoes() {
         (dropped.resource.as_str(), dropped.solid),
         ("models/pad.vmdl", Some(true))
     );
-    let saved = dropper.take_changed().expect("the spot changed");
-    assert_eq!((saved.objects.len(), saved.objects[0].bounce), (1, 900.0));
-    assert_eq!(saved.objects[0].placed_by, 7);
-    assert!(dropper.take_changed().is_none());
+    frame(1.0);
+    frame(2.0);
+    assert_eq!(saved.borrow().len(), 1);
+    let dropped = saved.borrow()[0].objects.clone();
+    assert_eq!((dropped.len(), dropped[0].bounce), (1, 900.0));
+    assert_eq!(dropped[0].placed_by, 7);
 
     // Undo takes the drop back, and a second toggle ends the build.
     dropper.undo(player);
     assert!(dropper.spot.objects().is_empty());
-    assert!(dropper
-        .take_changed()
-        .is_some_and(|spot| spot.objects.is_empty()));
+    frame(3.0);
+    assert_eq!(saved.borrow().len(), 2);
+    assert!(saved.borrow()[1].objects.is_empty());
     dropper.toggle(player);
     assert!(!dropper.building(player));
     assert_eq!(called("BlockPlayerInput"), 2);

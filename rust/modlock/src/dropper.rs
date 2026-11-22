@@ -10,7 +10,9 @@
 //!
 //! ```ignore
 //! let arena = load_spot(&spot);
-//! self.dropper = Some(Dropper::new(catalog, arena, |mode: &mut Mode| mode.dropper.as_mut()));
+//! let mut dropper = Dropper::new(catalog, arena, |mode: &mut Mode| mode.dropper.as_mut());
+//! dropper.changed(|mode: &mut Mode, spot| mode.save(spot));
+//! self.dropper = Some(dropper);
 //! watch_input(DROPPER_BUTTONS | MODE_BUTTONS);
 //!
 //! // Each frame, each input and on the command:
@@ -22,13 +24,14 @@
 //! The keys a builder uses are withheld from their hero while they build.
 
 use std::collections::{HashMap, HashSet};
+use std::rc::Rc;
 
 use crate::bits::Buttons;
 use crate::generated::{
     create_model, trace, Align, Angles, Flow, ModelOptions, MovementSample, Style, TraceOptions,
     Vector, WorldObject,
 };
-use crate::runtime::players;
+use crate::runtime::{after, players};
 use crate::spot::{LoadedSpot, Spot, SpotObject, TRIGGERS};
 use crate::ui::{button, color, hide, label, panel, show, slider, toast, Element};
 use crate::Player;
@@ -110,6 +113,9 @@ struct Builder {
     drops: Vec<u32>,
 }
 
+/// Changed runs on the mod with the spot as one change left it.
+type Changed<M> = Rc<dyn Fn(&mut M, Spot)>;
+
 /// Dropper is in-game building for one mode's spot. M is the mode's mod.
 pub struct Dropper<M> {
     /// capacity bounds how many objects the spot holds.
@@ -118,8 +124,9 @@ pub struct Dropper<M> {
     pub spot: LoadedSpot,
     catalog: Vec<CatalogEntry>,
     builders: HashMap<i32, Builder>,
-    /// changed is whether the spot changed since the mode last took it.
-    changed: bool,
+    /// changed runs on the mod with the spot after every drop, move and
+    /// delete, once the mode gives one.
+    changed: Option<Changed<M>>,
     /// held_by returns the Dropper from the mod, for the panel's buttons.
     held_by: fn(&mut M) -> Option<&mut Dropper<M>>,
 }
@@ -138,20 +145,29 @@ impl<M: 'static> Dropper<M> {
             spot,
             catalog,
             builders: HashMap::new(),
-            changed: false,
+            changed: None,
             held_by,
+        }
+    }
+
+    /// changed runs changed on the mod with the spot after every drop, move,
+    /// delete and undo, once for each, for a mode that saves it. It runs with
+    /// the next frame, as a timer does, with the spot as that change left it.
+    pub fn changed(&mut self, changed: impl Fn(&mut M, Spot) + 'static) {
+        self.changed = Some(Rc::new(changed));
+    }
+
+    /// publish tells the mode of the spot as it stands now.
+    fn publish(&self) {
+        if let Some(changed) = self.changed.clone() {
+            let spot = self.spot.spot();
+            after(0.0, move |m: &mut M| changed(m, spot));
         }
     }
 
     /// building reports whether player is building.
     pub fn building(&self, player: Player) -> bool {
         self.builders.contains_key(&player.slot())
-    }
-
-    /// take_changed returns the spot as it stands once after each drop, move
-    /// and delete, for a mode that saves it, and None while nothing changed.
-    pub fn take_changed(&mut self) -> Option<Spot> {
-        std::mem::take(&mut self.changed).then(|| self.spot.spot())
     }
 
     /// toggle starts or stops building for player.
@@ -311,7 +327,7 @@ impl<M: 'static> Dropper<M> {
         };
         while let Some(entity) = builder.drops.pop() {
             if self.spot.remove(entity) {
-                self.changed = true;
+                self.publish();
                 return;
             }
         }
@@ -421,7 +437,7 @@ impl<M: 'static> Dropper<M> {
             builder.drops.drain(..over);
         }
         self.draw(player);
-        self.changed = true;
+        self.publish();
     }
 
     /// pick_up lifts the aimed object to move it, or puts a held one back.
@@ -452,16 +468,18 @@ impl<M: 'static> Dropper<M> {
 
         // Redraw and publish the changed spot.
         self.draw(player);
-        self.changed = true;
+        self.publish();
     }
 
-    /// delete removes the aimed object.
+    /// delete removes the aimed object. The mode hears of it whenever the
+    /// builder aimed at one, even one that was already gone.
     fn delete(&mut self, player: Player) {
         let Some(builder) = self.builders.get_mut(&player.slot()) else {
             return;
         };
         if let Some(entity) = builder.target.take() {
-            self.changed |= self.spot.remove(entity);
+            self.spot.remove(entity);
+            self.publish();
         }
     }
 
