@@ -72,4 +72,4 @@ pub use engine::{
     ignore_ability_bar, route, sheet, show, sound, sound_after, toast, toast_for,
 };
 pub use modlock_macros::{component, ui};
-pub use style::{color, percent, px, rgb, rgba, Set, FILL, FIT};
+pub use style::{color, gradient, percent, px, rgb, rgba, Set, FILL, FIT};

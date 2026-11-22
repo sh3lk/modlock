@@ -1545,6 +1545,27 @@ fn colors_read_from_text() {
     assert_eq!(color("red"), 0);
 }
 
+/// A gradient's colors arrive as stops spaced evenly along its shape.
+#[test]
+fn a_gradient_spaces_its_colors() {
+    use crate::ui::{gradient, rgb};
+
+    let stop = |at, color| GradientStop { at, color };
+    assert_eq!(
+        gradient(GradientShape::Right, &[rgb(0x000000), rgb(0xffffff)]),
+        Gradient {
+            shape: GradientShape::Right,
+            stops: vec![stop(0.0, 0x0000_00ff), stop(1.0, 0xffff_ffff)],
+        }
+    );
+    let places = |colors: &[u32]| -> Vec<f32> {
+        let stops = gradient(GradientShape::Down, colors).stops;
+        stops.iter().map(|stop| stop.at).collect()
+    };
+    assert_eq!(places(&[1, 2, 3]), [0.0, 0.5, 1.0]);
+    assert_eq!(places(&[1]), [0.0]);
+}
+
 /// A later style overrides the members it sets and leaves the rest, and a
 /// transform merges part by part.
 #[test]

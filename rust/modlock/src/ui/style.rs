@@ -1,7 +1,7 @@
 //! style holds what makes a Style short to write: lengths, edges and colors.
 //! The Style itself, and each type it holds, is generated from the schema.
 
-use crate::generated::{Edges, Length, Style, Transform};
+use crate::generated::{Edges, Gradient, GradientShape, GradientStop, Length, Style, Transform};
 
 /// FIT sizes an element to its children.
 pub const FIT: Length = Length::FitChildren(true);
@@ -28,6 +28,20 @@ pub const fn rgb(color: u32) -> u32 {
 /// itself; it marks the number as a color where one is read.
 pub const fn rgba(color: u32) -> u32 {
     color
+}
+
+/// gradient returns a gradient of colors, each as a style holds it, that run
+/// along shape, spaced evenly from 0 to 1.
+pub fn gradient(shape: GradientShape, colors: &[u32]) -> Gradient {
+    let last = colors.len().saturating_sub(1).max(1);
+    let stop = |(index, color): (usize, &u32)| GradientStop {
+        at: index as f32 / last as f32,
+        color: *color,
+    };
+    Gradient {
+        shape,
+        stops: colors.iter().enumerate().map(stop).collect(),
+    }
 }
 
 /// Edges are distances in pixels from each side. One number is every side,
