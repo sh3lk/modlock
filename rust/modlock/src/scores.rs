@@ -44,15 +44,20 @@ pub struct ScoreRefusal {
     /// message says why the host did not confirm the report.
     pub message: String,
     method: &'static str,
-    payload: Vec<u8>,
+    /// payload is the report's bytes as they were sent, or None for a
+    /// report refused before it was sent.
+    payload: Option<Vec<u8>>,
 }
 
 impl ScoreRefusal {
     /// retry sends the report again and runs done on the mod with how it
     /// ended. A report refused before it was sent, such as one too large, is
-    /// refused again.
+    /// refused again for the same reason.
     pub fn retry<M: 'static>(self, done: impl FnOnce(&mut M, Result<(), ScoreRefusal>) + 'static) {
-        submit(self.method, self.payload, done);
+        match self.payload {
+            Some(payload) => submit(self.method, payload, done),
+            None => refuse(self.method, self.message, done),
+        }
     }
 }
 
@@ -97,7 +102,10 @@ pub fn report_score<M: 'static>(
     report.player = Player::of(player.slot);
     report.connection = Some(player.clone());
     let fits = player.proof.len() <= PROOF_LIMIT;
-    submit("Report", encoded(&report, fits), done);
+    match encoded(&report, fits) {
+        Some(payload) => submit("Report", payload, done),
+        None => refuse("Report", TOO_LARGE.to_owned(), done),
+    }
 }
 
 /// report_match reports the enrolled players' places together, with shared
@@ -109,12 +117,8 @@ pub fn report_match<M: 'static>(
 ) {
     // Check the count before encoding the cohort.
     if report.places.is_empty() || report.places.len() > PLACES_LIMIT {
-        let refusal = ScoreRefusal {
-            message: "The match needs one to 64 places".to_owned(),
-            method: "Match",
-            payload: Vec::new(),
-        };
-        runtime::soon(move |m| ended(m, done, Err(refusal)));
+        let message = "The match needs one to 64 places".to_owned();
+        refuse("Match", message, done);
         return;
     }
     let proofs = report
@@ -124,7 +128,10 @@ pub fn report_match<M: 'static>(
     let fits = proofs
         .map(|held| held.proof.len())
         .all(|length| length <= PROOF_LIMIT);
-    submit("Match", encoded(&report, fits), done);
+    match encoded(&report, fits) {
+        Some(payload) => submit("Match", payload, done),
+        None => refuse("Match", TOO_LARGE.to_owned(), done),
+    }
 }
 
 /// read_board reads a fresh page of the board the query names, with viewer's
@@ -140,11 +147,10 @@ pub fn read_board<M: 'static>(
         query.player = Some(viewer.player);
         query.connection = Some(identity(viewer));
     }
-    let payload = encoded(&query, true);
-    if payload.is_empty() {
+    let Some(payload) = encoded(&query, true) else {
         runtime::soon(move |m| ended(m, done, Err(TOO_LARGE.to_owned())));
         return;
-    }
+    };
     let read = Box::new(
         move |m: &mut dyn Any, reply: Result<Vec<u8>, ServiceError>| {
             let page = reply
@@ -156,17 +162,15 @@ pub fn read_board<M: 'static>(
     services::call_later(SERVICE, "Read", &payload, Duration::ZERO, read);
 }
 
-/// encoded returns the request's bytes, or none for a request past the
-/// limit or one whose parts do not fit.
-fn encoded(request: &impl Message, fits: bool) -> Vec<u8> {
+/// encoded returns the request's bytes, or None for a request past the
+/// limit or one whose parts do not fit. A request may encode to no bytes.
+fn encoded(request: &impl Message, fits: bool) -> Option<Vec<u8>> {
+    if !fits {
+        return None;
+    }
     let mut payload = Vec::new();
-    if fits {
-        request.encode(&mut payload);
-    }
-    if payload.len() > REQUEST_LIMIT {
-        payload.clear();
-    }
-    payload
+    request.encode(&mut payload);
+    (payload.len() <= REQUEST_LIMIT).then_some(payload)
 }
 
 /// ended runs done on the mod with result.
@@ -176,30 +180,35 @@ fn ended<M: 'static, T>(m: &mut dyn Any, done: impl FnOnce(&mut M, T), result: T
     }
 }
 
+/// refuse runs done on the mod in a later frame with the refusal of a report
+/// that was never sent, for the reason message gives.
+fn refuse<M: 'static>(
+    method: &'static str,
+    message: String,
+    done: impl FnOnce(&mut M, Result<(), ScoreRefusal>) + 'static,
+) {
+    let refusal = ScoreRefusal {
+        message,
+        method,
+        payload: None,
+    };
+    runtime::soon(move |m| ended(m, done, Err(refusal)));
+}
+
 /// submit sends the report's bytes, the same on each retry, and runs done on
-/// the mod with how it ended. Empty bytes are a report too large to send.
+/// the mod with how it ended.
 fn submit<M: 'static>(
     method: &'static str,
     payload: Vec<u8>,
     done: impl FnOnce(&mut M, Result<(), ScoreRefusal>) + 'static,
 ) {
-    if payload.is_empty() {
-        let message = TOO_LARGE.to_owned();
-        let refusal = ScoreRefusal {
-            message,
-            method,
-            payload,
-        };
-        runtime::soon(move |m| ended(m, done, Err(refusal)));
-        return;
-    }
     let sent = payload.clone();
     let confirmed = Box::new(
         move |m: &mut dyn Any, reply: Result<Vec<u8>, ServiceError>| {
             let result = reply.map(|_| ()).map_err(|error| ScoreRefusal {
                 message: error.message,
                 method,
-                payload: sent,
+                payload: Some(sent),
             });
             ended(m, done, result);
         },
