@@ -39,7 +39,7 @@ fn arriving(style: Style, from: Style) -> (Style, Style, Style) {
         ..Transition::default()
     };
     let style = Style {
-        transition: motion,
+        transition: Some(motion),
         ..Style::default()
     }
     .merge(style);
@@ -56,10 +56,10 @@ fn column(top: f32) -> Style {
     Style {
         flow: Flow::Down,
         horizontal_align: Align::Center,
-        margin: Edges {
+        margin: Some(Edges {
             top,
             ..Edges::default()
-        },
+        }),
         ..Style::default()
     }
 }
@@ -115,7 +115,7 @@ pub fn plate(
         horizontal_align: Align::Center,
         background: theme::PLATE_COLOR,
         border_radius: theme::PLATE_RADIUS,
-        padding: theme::PLATE_PADDING.into(),
+        padding: Some(theme::PLATE_PADDING.into()),
         ..Style::default()
     };
     ui! { <panel style={own.merge(style)}>{children}</panel> }
@@ -138,7 +138,7 @@ pub fn pill(
         border_radius: 50.0,
         border_width: 2.0,
         border_color: theme::PILL_EDGE,
-        padding: [3, 6].into(),
+        padding: Some([3, 6].into()),
         ..Style::default()
     };
     ui! { <panel style={own.merge(style)}>{children}</panel> }
@@ -173,7 +173,7 @@ pub fn tag(
         border_width: 1.0,
         border_color: tone,
         border_radius: theme::RADIUS,
-        padding: [4, 8].into(),
+        padding: Some([4, 8].into()),
         vertical_align: Align::Center,
         ..Style::default()
     };
@@ -202,7 +202,7 @@ pub fn banner(
         ..Transform::default()
     };
     let from = Style {
-        transform: smaller,
+        transform: Some(smaller),
         ..Style::default()
     };
     let (own, enter, exit) = arriving(column(20.0).merge(style), from);
@@ -330,11 +330,11 @@ pub fn meter(
         width: Some(crate::ui::percent(100)),
         height: Some(crate::ui::percent(100)),
         background: tone.unwrap_or(theme::ACCENT),
-        transform: grown,
-        transition: Transition {
+        transform: Some(grown),
+        transition: Some(Transition {
             seconds: theme::METER_SECONDS,
             ..Transition::default()
-        },
+        }),
         ..Style::default()
     };
     let own = Style {
@@ -396,12 +396,12 @@ pub fn action(
     // A disabled action dims, and neither lights nor ticks under the pointer.
     let mut own = Style {
         height: Some(crate::ui::px(theme::CONTROL)),
-        padding: [0, 14].into(),
+        padding: Some([0, 14].into()),
         border_radius: theme::RADIUS,
-        transition: Transition {
+        transition: Some(Transition {
             seconds: theme::HOVER_SECONDS,
             ..Transition::default()
-        },
+        }),
         ..Style::default()
     }
     .merge(idle);
@@ -521,10 +521,10 @@ pub fn row(
         ..Style::default()
     };
     let under = Style {
-        margin: Edges {
+        margin: Some(Edges {
             top: 1.0,
             ..Edges::default()
-        },
+        }),
         ..right.clone()
     };
     let words = ui! {
@@ -574,10 +574,10 @@ pub fn row(
     let lying = Style {
         flow: Flow::Right,
         horizontal_align: Align::End,
-        margin: Edges {
+        margin: Some(Edges {
             bottom: 8.0,
             ..Edges::default()
-        },
+        }),
         ..Style::default()
     };
     let slid = Transform {
@@ -585,7 +585,7 @@ pub fn row(
         ..Transform::default()
     };
     let from = Style {
-        transform: slid,
+        transform: Some(slid),
         ..Style::default()
     };
     let Some(handler) = on_press else {
@@ -594,10 +594,10 @@ pub fn row(
     };
     let lifting = Style {
         border_radius: theme::RADIUS,
-        transition: Transition {
+        transition: Some(Transition {
             seconds: theme::HOVER_SECONDS,
             ..Transition::default()
-        },
+        }),
         ..lying
     };
     let (style, enter, exit) = arriving(lifting, from);
@@ -643,11 +643,11 @@ pub fn roster(
         flow: Flow::Down,
         horizontal_align: Align::End,
         vertical_align: Align::Start,
-        margin: Edges {
+        margin: Some(Edges {
             top: top.unwrap_or(theme::FPS_READOUT_BOTTOM),
             right: 24.0,
             ..Edges::default()
-        },
+        }),
         ..Style::default()
     };
     Some(panel().style(own).child(rows).into())

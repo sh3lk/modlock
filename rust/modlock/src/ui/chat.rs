@@ -305,7 +305,7 @@ fn chat_lines(m: &mut dyn Any, viewer: Player) -> Option<Element> {
         flow: Flow::Down,
         horizontal_align: Align::Center,
         vertical_align: Align::End,
-        margin: [0.0, 0.0, shown.bottom as f32, 0.0].into(),
+        margin: Some([0.0, 0.0, shown.bottom as f32, 0.0].into()),
         ..Style::default()
     };
     let subtitles: Vec<Element> = subtitles.collect();
@@ -426,7 +426,7 @@ fn subtitle(line: &Said, seen: ChatSpeaker, age: usize, size: &Sizes) -> Element
         font_size,
         line_height: size.line_height,
         color,
-        margin: [top, 0.0, 0.0, gap].into(),
+        margin: Some([top, 0.0, 0.0, gap].into()),
         max_width: Some(px(width)),
         ..Style::default()
     };
@@ -448,14 +448,14 @@ fn subtitle(line: &Said, seen: ChatSpeaker, age: usize, size: &Sizes) -> Element
         horizontal_align: Align::Center,
         background: BAND,
         border_radius: size.radius,
-        padding: size.pad.into(),
-        margin: [0.0, 0.0, size.space, 0.0].into(),
+        padding: Some(size.pad.into()),
+        margin: Some([0.0, 0.0, size.space, 0.0].into()),
         opacity: Some(FADES[age.min(FADES.len() - 1)]),
-        transition: Transition {
+        transition: Some(Transition {
             seconds: 0.25,
             easing: Easing::EaseOut,
             ..Transition::default()
-        },
+        }),
         ..Style::default()
     };
     let gone = Style {
@@ -463,10 +463,10 @@ fn subtitle(line: &Said, seen: ChatSpeaker, age: usize, size: &Sizes) -> Element
         ..Style::default()
     };
     let enter = Style {
-        transform: Transform {
+        transform: Some(Transform {
             translate_y: 8.0,
             ..Transform::default()
-        },
+        }),
         ..gone.clone()
     };
     let shown = panel()

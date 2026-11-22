@@ -564,25 +564,25 @@ fn notices(stack: &[Notice]) -> Element {
         ..Style::default()
     };
     let enter = Style {
-        transform: Transform {
+        transform: Some(Transform {
             translate_x: -16.0,
             ..Transform::default()
-        },
+        }),
         ..gone.clone()
     };
     let labels = stack.iter().map(|notice| {
         let style = Style {
             horizontal_align: Align::Start,
-            margin: Edges {
+            margin: Some(Edges {
                 top: 4.0,
                 ..Edges::default()
-            },
-            padding: [5, 10].into(),
+            }),
+            padding: Some([5, 10].into()),
             background: 0x1014_18d8,
             color: 0xf2f2_f2ff,
             font_size: 16.0,
             border_radius: 4.0,
-            transition: motion.clone(),
+            transition: Some(motion.clone()),
             ..Style::default()
         };
         label()
@@ -598,12 +598,12 @@ fn notices(stack: &[Notice]) -> Element {
         flow: Flow::Down,
         horizontal_align: Align::Start,
         vertical_align: Align::End,
-        margin: Edges {
+        margin: Some(Edges {
             bottom: 260.0,
             left: 24.0,
             ..Edges::default()
-        },
-        transition: motion.clone(),
+        }),
+        transition: Some(motion.clone()),
         ..Style::default()
     };
     panel().style(style).exit(gone.clone()).child(labels).into()

@@ -19,7 +19,7 @@
 //! show(
 //!     player,
 //!     panel()
-//!         .style(Style { flow: Flow::Down, padding: 16.into(), ..Default::default() })
+//!         .style(Style { flow: Flow::Down, padding: Some(16.into()), ..Default::default() })
 //!         .child(text("Round 2"))
 //!         .child(button().on_press(Self::ready).child(text("Ready"))),
 //! );

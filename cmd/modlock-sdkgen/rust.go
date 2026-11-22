@@ -65,7 +65,8 @@ type rustWriter struct {
 	// Rust name, which drops the underscores of a nested name.
 	names map[string]string
 	// absent holds each single message field of the services outside Modlock,
-	// which is None when a reply leaves it out, as protobuf's presence has it.
+	// which is None when a reply leaves it out, as protobuf's presence has it,
+	// and each field of rustPresent, which is None until a mod sets it.
 	absent map[*field]bool
 	// spared holds each name of rustSpare the schema has a field for.
 	spared map[string]bool
@@ -79,6 +80,18 @@ func writeRust(s *schema) ([]byte, error) {
 	}
 	w := &rustWriter{directions: s.directions(calls), s: s, calls: calls, names: map[string]string{}, absent: map[*field]bool{}, spared: map[string]bool{}}
 	s.serviceAbsent(w.absent)
+	present := 0
+	for _, m := range s.messageOrder {
+		for _, f := range m.fields {
+			if rustPresent[m.name+"."+f.name] {
+				w.absent[f] = true
+				present++
+			}
+		}
+	}
+	if present != len(rustPresent) {
+		return nil, fmt.Errorf("rustPresent names a field the schema lacks, or one two messages share")
+	}
 
 	// Reach the vector types, what the calls and events carry, what the
 	// handwritten library sends for the calls it makes itself, and the
@@ -490,6 +503,27 @@ var rustSpare = map[string]bool{
 	"Node.cycle": true,
 }
 
+// rustPresent are the single message fields whose receiver tells a message
+// that is there from one that is not, each named by its message and its
+// field: the renderer draws a label's clock, a style's margin, padding,
+// gradient, shadows and transform, and eases by its transition and the
+// transition's curve, whenever the message is there, and the game ends a
+// steered step on its position only when the steering has one. A struct holds
+// such a field as an Option, so one a mod set travels even when every part of
+// it is zero, and one it left unset does not.
+var rustPresent = map[string]bool{
+	"Node.clock":        true,
+	"Style.margin":      true,
+	"Style.padding":     true,
+	"Style.gradient":    true,
+	"Style.box_shadow":  true,
+	"Style.text_shadow": true,
+	"Style.transform":   true,
+	"Style.transition":  true,
+	"Transition.curve":  true,
+	"Steering.position": true,
+}
+
 // boxed reports whether the struct of m holds the field f behind a pointer:
 // a message that holds m again through single fields, which a struct can
 // hold no other way, or one of rustSpare.
@@ -677,9 +711,9 @@ func (w *rustWriter) present(f *field, v string) string {
 // struct, or an argument of a call when argument is true. boxed marks a
 // member the struct holds behind a pointer. It leaves out what the receiver
 // assumes: a zero, an empty list, an optional value that is not set, and a
-// message that sets nothing. A receiver may tell a message that is there from
-// one that is not, as the renderer draws the gradient a style has even when
-// it is empty, so a message a mod left as its default must not travel.
+// message that sets nothing. Where a receiver tells a message that is there
+// from one that is not, the member is one of rustPresent and optional, so it
+// travels exactly when a mod set it.
 func (w *rustWriter) encode(f *field, place string, argument, boxed bool) []string {
 	// An argument is already a reference where a member is a value.
 	ref := place

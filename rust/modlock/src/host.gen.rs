@@ -3319,7 +3319,7 @@ pub struct Steering {
     pub command: MovementCommand,
     /// position, velocity and grounded are the pose the next step ends on; the
     /// steps after it move on from there.
-    pub position: Vector,
+    pub position: Option<Vector>,
     pub velocity: Vector,
     pub grounded: bool,
     /// facing is where the command looks, which aims the hero and its animation.
@@ -3331,8 +3331,8 @@ impl Message for Steering {
         if self.command != MovementCommand::default() {
             wire::message(out, 1, &self.command);
         }
-        if self.position != Vector::default() {
-            wire::message(out, 2, &self.position);
+        if let Some(v) = &self.position {
+            wire::message(out, 2, v);
         }
         if self.velocity != Vector::default() {
             wire::message(out, 3, &self.velocity);
@@ -3351,7 +3351,7 @@ impl Message for Steering {
         while let Some((number, kind)) = r.field()? {
             match number {
                 1 => message.command = MovementCommand::decode(r.bytes(kind)?)?,
-                2 => message.position = Vector::decode(r.bytes(kind)?)?,
+                2 => message.position = Some(Vector::decode(r.bytes(kind)?)?),
                 3 => message.velocity = Vector::decode(r.bytes(kind)?)?,
                 4 => message.grounded = r.bool(kind)?,
                 5 => message.facing = Angles::decode(r.bytes(kind)?)?,
@@ -5262,7 +5262,7 @@ pub struct Node {
     /// clock runs a label's time in the player's game, so the tree stays the
     /// same while the time changes. The label shows the time in place of its
     /// text, or fills its token's {s:clock} place with it.
-    pub clock: Clock,
+    pub clock: Option<Clock>,
     /// hide_in_chat hides the node while the player has the game's chat box open,
     /// which then shows the chat history itself, so a node that repeats chat,
     /// such as a lane of chat lines, gives way to it. The renderer reads the
@@ -5389,8 +5389,8 @@ impl Message for Node {
         for v in &self.ability_display {
             wire::message(out, 38, v);
         }
-        if self.clock != Clock::default() {
-            wire::message(out, 39, &self.clock);
+        if let Some(v) = &self.clock {
+            wire::message(out, 39, v);
         }
         if self.hide_in_chat {
             wire::bool(out, 40, self.hide_in_chat);
@@ -5440,7 +5440,7 @@ impl Message for Node {
                 36 => message.cues.push(Cue::decode(r.bytes(kind)?)?),
                 37 => message.ability_bar_presses = r.bool(kind)?,
                 38 => message.ability_display.push(AbilityRow::decode(r.bytes(kind)?)?),
-                39 => message.clock = Clock::decode(r.bytes(kind)?)?,
+                39 => message.clock = Some(Clock::decode(r.bytes(kind)?)?),
                 40 => message.hide_in_chat = r.bool(kind)?,
                 _ => r.skip(kind)?,
             }
@@ -5920,9 +5920,9 @@ pub struct Style {
     /// vertical_align places the node within its parent's height.
     pub vertical_align: Align,
     /// margin is the space outside the node, in pixels.
-    pub margin: Edges,
+    pub margin: Option<Edges>,
     /// padding is the space between the node's edge and its children, in pixels.
-    pub padding: Edges,
+    pub padding: Option<Edges>,
     /// background is the fill color as 0xRRGGBBAA; zero is transparent.
     pub background: u32,
     /// color is the text color as 0xRRGGBBAA; zero keeps the default.
@@ -5968,11 +5968,11 @@ pub struct Style {
     pub overflow_x: Overflow,
     pub overflow_y: Overflow,
     /// gradient fills the node with a gradient in place of its background.
-    pub gradient: Gradient,
+    pub gradient: Option<Gradient>,
     /// box_shadow draws a shadow around or inside the node's box.
-    pub box_shadow: Shadow,
+    pub box_shadow: Option<Shadow>,
     /// text_shadow draws this shadow under the text in place of shadow's.
-    pub text_shadow: Shadow,
+    pub text_shadow: Option<Shadow>,
     /// tint washes the node and its children with a color as 0xRRGGBBAA, which
     /// recolors a white icon; zero leaves them.
     pub tint: u32,
@@ -5997,10 +5997,10 @@ pub struct Style {
     pub decoration: Decoration,
     /// transform moves, scales and rotates the node as drawn, without moving its
     /// neighbors.
-    pub transform: Transform,
+    pub transform: Option<Transform>,
     /// transition animates each change to the node's style, and the move to and
     /// from its hover style, instead of snapping to it.
-    pub transition: Transition,
+    pub transition: Option<Transition>,
     /// clip draws only the part of the node and its children inside a shape.
     /// A transition does not ease it: a new clip shows at once, so a mod that
     /// fills a ring over time draws it again as it goes. Dropping a clip makes
@@ -6030,11 +6030,11 @@ impl Message for Style {
         if self.vertical_align as i32 != 0 {
             wire::int32(out, 5, self.vertical_align as i32);
         }
-        if self.margin != Edges::default() {
-            wire::message(out, 6, &self.margin);
+        if let Some(v) = &self.margin {
+            wire::message(out, 6, v);
         }
-        if self.padding != Edges::default() {
-            wire::message(out, 7, &self.padding);
+        if let Some(v) = &self.padding {
+            wire::message(out, 7, v);
         }
         if self.background != 0 {
             wire::fixed32(out, 8, self.background);
@@ -6102,14 +6102,14 @@ impl Message for Style {
         if self.overflow_y as i32 != 0 {
             wire::int32(out, 29, self.overflow_y as i32);
         }
-        if self.gradient != Gradient::default() {
-            wire::message(out, 30, &self.gradient);
+        if let Some(v) = &self.gradient {
+            wire::message(out, 30, v);
         }
-        if self.box_shadow != Shadow::default() {
-            wire::message(out, 31, &self.box_shadow);
+        if let Some(v) = &self.box_shadow {
+            wire::message(out, 31, v);
         }
-        if self.text_shadow != Shadow::default() {
-            wire::message(out, 32, &self.text_shadow);
+        if let Some(v) = &self.text_shadow {
+            wire::message(out, 32, v);
         }
         if self.tint != 0 {
             wire::fixed32(out, 33, self.tint);
@@ -6144,11 +6144,11 @@ impl Message for Style {
         if self.decoration as i32 != 0 {
             wire::int32(out, 43, self.decoration as i32);
         }
-        if self.transform != Transform::default() {
-            wire::message(out, 44, &self.transform);
+        if let Some(v) = &self.transform {
+            wire::message(out, 44, v);
         }
-        if self.transition != Transition::default() {
-            wire::message(out, 45, &self.transition);
+        if let Some(v) = &self.transition {
+            wire::message(out, 45, v);
         }
         if let Some(v) = &self.clip {
             wire::nested(out, 46, |out| v.encode(out));
@@ -6168,8 +6168,8 @@ impl Message for Style {
                 3 => message.flow = Flow::from_i32(r.int32(kind)?),
                 4 => message.horizontal_align = Align::from_i32(r.int32(kind)?),
                 5 => message.vertical_align = Align::from_i32(r.int32(kind)?),
-                6 => message.margin = Edges::decode(r.bytes(kind)?)?,
-                7 => message.padding = Edges::decode(r.bytes(kind)?)?,
+                6 => message.margin = Some(Edges::decode(r.bytes(kind)?)?),
+                7 => message.padding = Some(Edges::decode(r.bytes(kind)?)?),
                 8 => message.background = r.fixed32(kind)?,
                 9 => message.color = r.fixed32(kind)?,
                 10 => message.font_size = r.float(kind)?,
@@ -6192,9 +6192,9 @@ impl Message for Style {
                 27 => message.z_index = r.int32(kind)?,
                 28 => message.overflow_x = Overflow::from_i32(r.int32(kind)?),
                 29 => message.overflow_y = Overflow::from_i32(r.int32(kind)?),
-                30 => message.gradient = Gradient::decode(r.bytes(kind)?)?,
-                31 => message.box_shadow = Shadow::decode(r.bytes(kind)?)?,
-                32 => message.text_shadow = Shadow::decode(r.bytes(kind)?)?,
+                30 => message.gradient = Some(Gradient::decode(r.bytes(kind)?)?),
+                31 => message.box_shadow = Some(Shadow::decode(r.bytes(kind)?)?),
+                32 => message.text_shadow = Some(Shadow::decode(r.bytes(kind)?)?),
                 33 => message.tint = r.fixed32(kind)?,
                 34 => message.saturation = Some(r.float(kind)?),
                 35 => message.brightness = Some(r.float(kind)?),
@@ -6206,8 +6206,8 @@ impl Message for Style {
                 41 => message.no_wrap = r.bool(kind)?,
                 42 => message.text_overflow = TextOverflow::from_i32(r.int32(kind)?),
                 43 => message.decoration = Decoration::from_i32(r.int32(kind)?),
-                44 => message.transform = Transform::decode(r.bytes(kind)?)?,
-                45 => message.transition = Transition::decode(r.bytes(kind)?)?,
+                44 => message.transform = Some(Transform::decode(r.bytes(kind)?)?),
+                45 => message.transition = Some(Transition::decode(r.bytes(kind)?)?),
                 46 => message.clip = Clip::decode(r.bytes(kind)?)?,
                 47 => message.turn = r.float(kind)?,
                 _ => r.skip(kind)?,
@@ -6534,7 +6534,7 @@ pub struct Transition {
     /// curve shapes the change's speed in place of easing, as a cubic Bezier
     /// curve from (0, 0) to (1, 1) through two control points: x is the share
     /// of the time and y the share of the change.
-    pub curve: Curve,
+    pub curve: Option<Curve>,
 }
 
 impl Message for Transition {
@@ -6548,8 +6548,8 @@ impl Message for Transition {
         if self.easing as i32 != 0 {
             wire::int32(out, 3, self.easing as i32);
         }
-        if self.curve != Curve::default() {
-            wire::message(out, 4, &self.curve);
+        if let Some(v) = &self.curve {
+            wire::message(out, 4, v);
         }
     }
 
@@ -6561,7 +6561,7 @@ impl Message for Transition {
                 1 => message.seconds = r.float(kind)?,
                 2 => message.delay = r.float(kind)?,
                 3 => message.easing = Easing::from_i32(r.int32(kind)?),
-                4 => message.curve = Curve::decode(r.bytes(kind)?)?,
+                4 => message.curve = Some(Curve::decode(r.bytes(kind)?)?),
                 _ => r.skip(kind)?,
             }
         }

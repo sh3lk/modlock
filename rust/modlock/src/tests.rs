@@ -1239,7 +1239,7 @@ fn a_show_sends_what_changed() {
         panel()
             .style(Style {
                 flow: Flow::Down,
-                padding: 16.into(),
+                padding: Some(16.into()),
                 background: rgba(0x0000_00cc),
                 ..Default::default()
             })
@@ -1265,12 +1265,12 @@ fn a_show_sends_what_changed() {
     assert_eq!(held.children.len(), 4);
     assert_eq!(
         held.style.padding,
-        Edges {
+        Some(Edges {
             top: 16.0,
             right: 16.0,
             bottom: 16.0,
             left: 16.0
-        }
+        })
     );
 
     // A style a mod left alone does not travel, so no node takes the pointer
@@ -1478,8 +1478,8 @@ fn tags_build_what_their_functions_build() {
     let built = panel()
         .style(Style {
             flow: Flow::Down,
-            padding: 16.into(),
-            margin: [4, 8].into(),
+            padding: Some(16.into()),
+            margin: Some([4, 8].into()),
             background: 0x0000_00cc,
             color: rgb(0xffcc00),
             width: Some(px(200)),
@@ -1575,20 +1575,20 @@ fn styles_merge() {
         font_size: 16.0,
         bold: true,
         background: 0x1122_33ff,
-        transform: Transform {
+        transform: Some(Transform {
             translate_x: 16.0,
             ..Default::default()
-        },
+        }),
         ..Default::default()
     };
     let over = Style {
         font_size: 24.0,
         opacity: Some(0.5),
-        transform: Transform {
+        transform: Some(Transform {
             scale_x: Some(0.9),
             scale_y: Some(0.9),
             ..Default::default()
-        },
+        }),
         ..Default::default()
     };
     let merged = base.merge(over);
@@ -1600,8 +1600,9 @@ fn styles_merge() {
         (merged.background, merged.opacity),
         (0x1122_33ff, Some(0.5))
     );
+    let transform = merged.transform.unwrap();
     assert_eq!(
-        (merged.transform.translate_x, merged.transform.scale_x),
+        (transform.translate_x, transform.scale_x),
         (16.0, Some(0.9))
     );
 }
@@ -1698,7 +1699,7 @@ fn the_hud_kit_draws() {
         .iter()
         .find(|node| node.style.background == theme::GOLD)
         .unwrap();
-    assert_eq!(fill.style.transform.scale_x, Some(1.0));
+    assert_eq!(fill.style.transform.as_ref().unwrap().scale_x, Some(1.0));
 
     // A filled tag reads dark on its tone.
     let live = node("Live");
@@ -1741,7 +1742,12 @@ fn the_hud_kit_draws() {
         screen
             .set
             .iter()
-            .filter(|node| node.style.background == theme::ACCENT && node.style.padding.top == 1.0)
+            .filter(|node| node.style.background == theme::ACCENT
+                && node
+                    .style
+                    .padding
+                    .as_ref()
+                    .is_some_and(|edges| edges.top == 1.0))
             .count(),
         1
     );

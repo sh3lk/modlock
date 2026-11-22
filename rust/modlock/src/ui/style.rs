@@ -166,39 +166,39 @@ impl Set<Option<Length>> for f32 {
 
 /// One number is every edge, two the vertical and the horizontal edges, and
 /// four the top, right, bottom and left.
-impl Set<Edges> for i32 {
-    fn set_as(self) -> Edges {
-        self.into()
+impl Set<Option<Edges>> for i32 {
+    fn set_as(self) -> Option<Edges> {
+        Some(self.into())
     }
 }
 
-impl Set<Edges> for f32 {
-    fn set_as(self) -> Edges {
-        self.into()
+impl Set<Option<Edges>> for f32 {
+    fn set_as(self) -> Option<Edges> {
+        Some(self.into())
     }
 }
 
-impl Set<Edges> for [i32; 2] {
-    fn set_as(self) -> Edges {
-        self.into()
+impl Set<Option<Edges>> for [i32; 2] {
+    fn set_as(self) -> Option<Edges> {
+        Some(self.into())
     }
 }
 
-impl Set<Edges> for [f32; 2] {
-    fn set_as(self) -> Edges {
-        self.into()
+impl Set<Option<Edges>> for [f32; 2] {
+    fn set_as(self) -> Option<Edges> {
+        Some(self.into())
     }
 }
 
-impl Set<Edges> for [i32; 4] {
-    fn set_as(self) -> Edges {
-        self.into()
+impl Set<Option<Edges>> for [i32; 4] {
+    fn set_as(self) -> Option<Edges> {
+        Some(self.into())
     }
 }
 
-impl Set<Edges> for [f32; 4] {
-    fn set_as(self) -> Edges {
-        self.into()
+impl Set<Option<Edges>> for [f32; 4] {
+    fn set_as(self) -> Option<Edges> {
+        Some(self.into())
     }
 }
 
@@ -235,8 +235,10 @@ macro_rules! merged {
         impl Style {
             /// merge returns the style with each member over sets in its
             /// place, as a later style overrides an earlier one. A member over
-            /// leaves as its default stays, and a transform is merged part by
-            /// part, so a style that scales keeps what another moved.
+            /// leaves as its default stays, so a member that may be unset is
+            /// replaced by any value over sets, zero too, and a transform is
+            /// merged part by part, so a style that scales keeps what another
+            /// moved.
             pub fn merge(mut self, over: Style) -> Style {
                 let Style { transform, $($member),* } = over;
                 $(
@@ -244,23 +246,34 @@ macro_rules! merged {
                         self.$member = $member;
                     }
                 )*
-                let Transform { translate_x, translate_y, scale_x, scale_y, rotate, origin_x, origin_y } = transform;
-                if translate_x != 0.0 || translate_y != 0.0 {
-                    (self.transform.translate_x, self.transform.translate_y) = (translate_x, translate_y);
-                }
-                if scale_x.is_some() || scale_y.is_some() {
-                    (self.transform.scale_x, self.transform.scale_y) = (scale_x, scale_y);
-                }
-                if rotate != 0.0 {
-                    self.transform.rotate = rotate;
-                }
-                if origin_x.is_some() || origin_y.is_some() {
-                    (self.transform.origin_x, self.transform.origin_y) = (origin_x, origin_y);
-                }
+                self.transform = transformed(self.transform, transform);
                 self
             }
         }
     };
+}
+
+/// transformed returns the transform under with each part over sets in its
+/// place: its move, its scale, its turn and its origin. Over alone is taken
+/// whole, so a transform that sets nothing still stands where under has none.
+fn transformed(under: Option<Transform>, over: Option<Transform>) -> Option<Transform> {
+    let (mut under, over) = match (under, over) {
+        (Some(under), Some(over)) => (under, over),
+        (under, over) => return over.or(under),
+    };
+    if over.translate_x != 0.0 || over.translate_y != 0.0 {
+        (under.translate_x, under.translate_y) = (over.translate_x, over.translate_y);
+    }
+    if over.scale_x.is_some() || over.scale_y.is_some() {
+        (under.scale_x, under.scale_y) = (over.scale_x, over.scale_y);
+    }
+    if over.rotate != 0.0 {
+        under.rotate = over.rotate;
+    }
+    if over.origin_x.is_some() || over.origin_y.is_some() {
+        (under.origin_x, under.origin_y) = (over.origin_x, over.origin_y);
+    }
+    Some(under)
 }
 
 merged! {

@@ -495,7 +495,7 @@ impl<M: 'static> Dropper<M> {
         // Each row of the catalog picks its entry.
         let rows = self.catalog.iter().enumerate().map(|(index, entry)| {
             let style = Style {
-                padding: [4, 10].into(),
+                padding: Some([4, 10].into()),
                 background: color(if index == builder.entry {
                     "#3c8c3cdd"
                 } else {
@@ -524,7 +524,7 @@ impl<M: 'static> Dropper<M> {
         let small = |margin: i32| Style {
             font_size: 14.0,
             color: pale,
-            margin: [margin, 0, 0, 0].into(),
+            margin: Some([margin, 0, 0, 0].into()),
             ..Style::default()
         };
         let title = Style {
@@ -537,7 +537,7 @@ impl<M: 'static> Dropper<M> {
             flow: Flow::Down,
             horizontal_align: Align::End,
             vertical_align: Align::Center,
-            margin: [0, 24, 0, 0].into(),
+            margin: Some([0, 24, 0, 0].into()),
             ..Style::default()
         };
         let facing = slider()

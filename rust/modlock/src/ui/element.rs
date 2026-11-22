@@ -471,7 +471,7 @@ impl Tag<tag::Label> {
     /// clock counts a time in the player's game, so the mod draws it once and
     /// not every second.
     pub fn clock(mut self, clock: Clock) -> Self {
-        self.element.node.clock = clock;
+        self.element.node.clock = Some(clock);
         self
     }
 }
