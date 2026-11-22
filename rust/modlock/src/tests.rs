@@ -271,7 +271,7 @@ fn events_reach_the_mod() {
         args: vec!["one".to_owned(), "two".to_owned()],
         ..Default::default()
     };
-    assert_eq!(deliver(&lines, "Start", &start), "1206080110012001");
+    assert_eq!(deliver(&lines, "Start", &start), "12080801100120012801");
 
     let chat = ChatEvent {
         player: Player::of(3),
@@ -493,15 +493,16 @@ fn wants<M: Mod + 'static>(make: impl FnOnce() -> M, events: &Events<M>) -> Star
     StartResult::decode(payload.bytes(kind).unwrap()).unwrap()
 }
 
-/// A mod that implements none of the traits asks the game for frames alone,
-/// which its timers run from.
+/// A mod that implements none of the traits asks the game for frames, which
+/// its timers run from, and for joins, which the library follows players by.
 #[test]
-fn a_mod_without_event_traits_asks_for_frames() {
-    let frames = StartResult {
+fn a_mod_without_event_traits_asks_for_frames_and_joins() {
+    let wanted = StartResult {
         frames: true,
+        joins: true,
         ..Default::default()
     };
-    assert_eq!(wants(|| Quiet, &events!(|| Quiet)), frames);
+    assert_eq!(wants(|| Quiet, &events!(|| Quiet)), wanted);
 }
 
 /// A mod asks the game for the events whose traits it implements, and those

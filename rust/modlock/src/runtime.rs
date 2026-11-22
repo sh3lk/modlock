@@ -495,12 +495,15 @@ pub(crate) fn deliver<M: Mod + 'static>(
 ) -> Result<bool, Refusal> {
     match method {
         // Ask the game for the events the mod handles. Timers run from
-        // frames, so the library always takes them.
+        // frames, so the library always takes them, and it always takes the
+        // joins too: what it keeps for each player follows who comes and
+        // goes, whatever events the mod handles.
         "Start" => {
             m.start(&StartEvent::decode(request)?);
             let mut wants = StartResult::default();
             events.ask(&mut wants);
             wants.frames = true;
+            wants.joins = true;
             wants.chat |= HOOKS.get().chat.is_some();
             wants.modifier_events =
                 STATE.with(|state| state.borrow().modifiers.keys().cloned().collect());

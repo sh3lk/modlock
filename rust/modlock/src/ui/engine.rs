@@ -166,7 +166,7 @@ fn change(player: Player, edit: impl FnOnce(&mut Library, i32)) -> bool {
         let slot = player.slot();
         library.keep(player);
         edit(&mut library, slot);
-        library.draw(slot)
+        library.draw(player)
     })
 }
 
@@ -220,8 +220,7 @@ impl Library {
     /// everyone draws every player in the game.
     fn everyone(&mut self) {
         for connection in players() {
-            self.keep(connection.player);
-            self.draw(connection.player.slot());
+            self.draw(connection.player);
         }
     }
 
@@ -230,13 +229,14 @@ impl Library {
         self.views.get_mut(&slot).expect("change made the view")
     }
 
-    /// draw sends what changed in the interface and notices of the player in
-    /// slot.
-    fn draw(&mut self, slot: i32) -> bool {
+    /// draw sends player what changed in their interface and notices. A
+    /// player the mod has shown nothing yet gets an empty view first, so what
+    /// every player sees, such as the chat lines, reaches them too.
+    fn draw(&mut self, player: Player) -> bool {
         // Render the player's view against the last screen sent.
-        let Some(view) = self.views.get_mut(&slot) else {
-            return false;
-        };
+        self.keep(player);
+        let slot = player.slot();
+        let view = self.views.get_mut(&slot).expect("keep made the view");
         let player = view.player;
         let display = display_rows(view);
         let mut lines = self.layer.and_then(|layer| (layer.lines)(player));
@@ -719,9 +719,9 @@ pub fn sheet(path: &str) -> bool {
 
         // Redraw every interface with the new sheet.
         library.sheets.push(path.to_owned());
-        let slots: Vec<i32> = library.views.keys().copied().collect();
-        for slot in slots {
-            library.draw(slot);
+        let shown: Vec<Player> = library.views.values().map(|view| view.player).collect();
+        for player in shown {
+            library.draw(player);
         }
     });
     true
@@ -907,15 +907,15 @@ pub(crate) fn tick(seconds: f64) {
 
         // Redraw only a view that lost a notice.
         let mut lost = Vec::new();
-        for (slot, view) in &mut library.views {
+        for view in library.views.values_mut() {
             let before = view.notices.len();
             view.notices.retain(|notice| notice.until > seconds);
             if view.notices.len() != before {
-                lost.push(*slot);
+                lost.push(view.player);
             }
         }
-        for slot in lost {
-            library.draw(slot);
+        for player in lost {
+            library.draw(player);
         }
     });
 }
