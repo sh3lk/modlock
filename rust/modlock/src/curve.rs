@@ -22,8 +22,8 @@ pub struct LerpShape {
 }
 
 /// Ease maps the fraction of a span played, 0 to 1, to the fraction moved.
-/// Linear, Bias and Gain are the eases the game draws itself, so a move with
-/// one plays as one lerp.
+/// Linear, Bias and Gain are the eases the game draws itself, as is a Custom
+/// one made with a lerp shape, so a move with one plays as one lerp.
 #[derive(Clone, Copy, Debug, Default)]
 pub enum Ease {
     /// Linear moves at an even pace.
@@ -47,8 +47,35 @@ pub enum Ease {
     Elastic,
     /// Bounce drops onto its end and bounces to rest.
     Bounce,
-    /// Custom moves by the function a mod gives.
-    Custom(fn(f64) -> f64),
+    /// Custom moves by the function a mod gives; shaped makes one.
+    Custom(Shaped),
+}
+
+/// Shaped is the ease a mod makes with shaped: the function it moves by and
+/// the shape the game draws it with, if it has one.
+#[derive(Clone, Copy)]
+pub struct Shaped {
+    at: &'static dyn Fn(f64) -> f64,
+    lerp: Option<LerpShape>,
+}
+
+impl std::fmt::Debug for Shaped {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Shaped")
+            .field("lerp", &self.lerp)
+            .finish_non_exhaustive()
+    }
+}
+
+/// shaped is the ease that moves by at, drawn by the game with lerp when it
+/// has one, so the game plays a span of it as one lerp from its start to its
+/// end; without one the span is sampled. The ease keeps at for as long as
+/// the mod runs, so a mod makes each ease once and uses it again.
+pub fn shaped(at: impl Fn(f64) -> f64 + 'static, lerp: Option<LerpShape>) -> Ease {
+    Ease::Custom(Shaped {
+        at: Box::leak(Box::new(at)),
+        lerp,
+    })
 }
 
 impl Ease {
@@ -69,7 +96,7 @@ impl Ease {
                 2f64.powf(-10.0 * t) * (((t * 10.0 - 0.75) * 2.0 * PI) / 3.0).sin() + 1.0
             }
             Ease::Bounce => bounce(t),
-            Ease::Custom(at) => at(t),
+            Ease::Custom(shaped) => (shaped.at)(t),
         }
     }
 
@@ -85,6 +112,7 @@ impl Ease {
                 bias: None,
                 gain: Some(gain),
             }),
+            Ease::Custom(shaped) => shaped.lerp,
             _ => None,
         }
     }
