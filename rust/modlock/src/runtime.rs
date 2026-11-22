@@ -516,14 +516,18 @@ pub(crate) fn deliver<M: Mod + 'static>(
         "Frame" => {
             let event = FrameEvent::decode(request)?;
             advance(m, event.time_seconds);
-            seating::frame(event.time_seconds);
             if let Some(interface) = INTERFACE.get() {
                 (interface.tick)(event.time_seconds);
             }
             if let Some(puppets) = HOOKS.get().puppets {
                 puppets(&event);
             }
+
+            // Tell the mod, then seat the players: seating follows the
+            // mod's frame, so it asks for what the mod wants as of this
+            // frame.
             m.frame(&event);
+            seating::frame(event.time_seconds);
         }
         // Claim a command that has a handler and run it with the next frame.
         // The server reads a client's commands under a CPU budget and drops
