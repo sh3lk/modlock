@@ -288,7 +288,7 @@ pub fn camera_pulse(player: Player, pulse: Pulse) -> Option<CameraMove> {
         CameraValue::Position(_) => CameraValue::Position(Vector::default()),
     };
     let curve = chain([
-        line(rest.clone(), by.clone(), pulse.rise, pulse.ease),
+        line(rest.clone(), by.clone(), pulse.rise, pulse.ease.clone()),
         hold(by.clone(), pulse.hold),
         line(rest, by, pulse.fall, pulse.ease).reverse(),
     ]);

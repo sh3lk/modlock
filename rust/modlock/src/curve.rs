@@ -24,7 +24,7 @@ pub struct LerpShape {
 /// Ease maps the fraction of a span played, 0 to 1, to the fraction moved.
 /// Linear, Bias and Gain are the eases the game draws itself, as is a Custom
 /// one made with a lerp shape, so a move with one plays as one lerp.
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub enum Ease {
     /// Linear moves at an even pace.
     #[default]
@@ -53,9 +53,9 @@ pub enum Ease {
 
 /// Shaped is the ease a mod makes with shaped: the function it moves by and
 /// the shape the game draws it with, if it has one.
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct Shaped {
-    at: &'static dyn Fn(f64) -> f64,
+    at: Rc<dyn Fn(f64) -> f64>,
     lerp: Option<LerpShape>,
 }
 
@@ -69,22 +69,21 @@ impl std::fmt::Debug for Shaped {
 
 /// shaped is the ease that moves by at, drawn by the game with lerp when it
 /// has one, so the game plays a span of it as one lerp from its start to its
-/// end; without one the span is sampled. The ease keeps at for as long as
-/// the mod runs, so a mod makes each ease once and uses it again.
+/// end; without one the span is sampled.
 pub fn shaped(at: impl Fn(f64) -> f64 + 'static, lerp: Option<LerpShape>) -> Ease {
     Ease::Custom(Shaped {
-        at: Box::leak(Box::new(at)),
+        at: Rc::new(at),
         lerp,
     })
 }
 
 impl Ease {
     /// at returns the fraction moved a fraction t of the way through.
-    pub fn at(self, t: f64) -> f64 {
+    pub fn at(&self, t: f64) -> f64 {
         match self {
             Ease::Linear => t,
-            Ease::Bias(b) => bias(t, b),
-            Ease::Gain(g) => gain(t, g),
+            Ease::Bias(b) => bias(t, *b),
+            Ease::Gain(g) => gain(t, *g),
             Ease::In => t * t * t,
             Ease::Out => 1.0 - (1.0 - t).powi(3),
             Ease::InOut if t < 0.5 => 4.0 * t * t * t,
@@ -101,16 +100,16 @@ impl Ease {
     }
 
     /// lerp is the shape the game draws the ease with, if it can.
-    pub fn lerp(self) -> Option<LerpShape> {
+    pub fn lerp(&self) -> Option<LerpShape> {
         match self {
             Ease::Linear => Some(LerpShape::default()),
             Ease::Bias(bias) => Some(LerpShape {
-                bias: Some(bias),
+                bias: Some(*bias),
                 gain: None,
             }),
             Ease::Gain(gain) => Some(LerpShape {
                 bias: None,
-                gain: Some(gain),
+                gain: Some(*gain),
             }),
             Ease::Custom(shaped) => shaped.lerp,
             _ => None,
@@ -314,7 +313,7 @@ pub fn keyframes(keys: &[Key], smooth: bool) -> Curve {
                 from.value.clone(),
                 to.value.clone(),
                 duration,
-                to.ease,
+                to.ease.clone(),
             ));
             continue;
         }
@@ -324,7 +323,7 @@ pub fn keyframes(keys: &[Key], smooth: bool) -> Curve {
         let before = index.checked_sub(2).map_or(from, |at| &keys[at]);
         let after = keys.get(index + 1).unwrap_or(to);
         let points = [before, from, to, after].map(|key| key.value.clone());
-        let ease = to.ease;
+        let ease = to.ease.clone();
         curve.spans.push(Span::new(duration, None, move |u| {
             spline(&points, ease.at(u))
         }));
@@ -333,7 +332,7 @@ pub fn keyframes(keys: &[Key], smooth: bool) -> Curve {
 }
 
 /// Through times a curve through points by its speed.
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct Through {
     /// speed is how far the param moves each second.
     pub speed: f64,
@@ -355,14 +354,14 @@ pub fn through(points: &[CameraValue], options: Through) -> Curve {
                 at += distance(last, value) / options.speed;
             }
             last = Some(value);
-            Key::new(at, value.clone()).ease(options.ease)
+            Key::new(at, value.clone()).ease(options.ease.clone())
         })
         .collect();
     keyframes(&keys, options.smooth)
 }
 
 /// Orbit circles a point.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub struct Orbit {
     /// center is the point the circle goes around.
     pub center: Vector,
