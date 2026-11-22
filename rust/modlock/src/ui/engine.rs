@@ -124,9 +124,8 @@ struct Library {
     /// layer draws the chat lines over every player's interface, once the
     /// mod shows them.
     layer: Option<Layer>,
-    /// lines holds what each player sees of a layer that reads the mod, by
-    /// slot, as it was last laid out on the mod; a player who sees nothing
-    /// of it has none.
+    /// lines holds what each player sees of the layer, by slot, as it was
+    /// last laid out on the mod; a player who sees nothing of it has none.
     lines: HashMap<i32, Element>,
 }
 
@@ -178,18 +177,15 @@ fn change(player: Player, edit: impl FnOnce(&mut Library, i32)) -> bool {
 
 /// Layer is a layer of every player's interface that the library draws
 /// itself, beside the mod's own tree: the chat lines. lines draws on the mod
-/// what one player sees of it, and on_mod reports whether lines reads the
-/// mod. expire drops what is past its time and forget what the player who
-/// left a slot had in it; both report whether any went.
+/// what one player sees of it, expire drops what is past its time and forget
+/// what the player who left a slot had in it; both report whether any went.
 ///
-/// A layer that reads the mod is laid out only when what it shows changes,
-/// inside the event that changed it, where the library holds the mod; every
-/// draw between shows the player what was laid out then. A layer that does
-/// not is laid out with every draw.
+/// The layer is laid out only when what it shows changes, inside the event
+/// that changed it, where the library holds the mod; every draw between
+/// shows the player what was laid out then.
 #[derive(Clone, Copy)]
 pub(crate) struct Layer {
     pub lines: fn(&mut dyn Any, Player) -> Option<Element>,
-    pub on_mod: fn() -> bool,
     pub expire: fn(f64) -> bool,
     pub forget: fn(i32) -> bool,
 }
@@ -218,11 +214,10 @@ pub(crate) fn draw_everyone(m: &mut dyn Any) {
     LIBRARY.with(|library| library.borrow_mut().everyone());
 }
 
-/// lay lays out on the mod what each of players sees of a layer that reads
-/// the mod, and keeps it for their draws.
+/// lay lays out on the mod what each of players sees of the layer, and keeps
+/// it for their draws.
 fn lay(m: &mut dyn Any, players: &[Player]) {
-    let layer = LIBRARY.with(|library| library.borrow().layer);
-    let Some(layer) = layer.filter(|layer| (layer.on_mod)()) else {
+    let Some(layer) = LIBRARY.with(|library| library.borrow().layer) else {
         return;
     };
 
@@ -283,19 +278,10 @@ impl Library {
         let player = view.player;
         let display = display_rows(view);
 
-        // A layer that reads the mod shows what was last laid out on it: a
-        // draw has no mod to lay it out on, and a player it laid nothing out
-        // for sees none of it until it changes. Another is laid out now, on
-        // no mod.
-        let mut fresh;
-        let mut lines = match self.layer {
-            Some(layer) if (layer.on_mod)() => self.lines.get_mut(&slot),
-            Some(layer) => {
-                fresh = (layer.lines)(&mut (), player);
-                fresh.as_mut()
-            }
-            None => None,
-        };
+        // The layer shows what was last laid out on the mod: a draw has no
+        // mod to lay it out on, and a player it laid nothing out for sees
+        // none of it until it changes.
+        let mut lines = self.lines.get_mut(&slot);
         let previous = self.screens.get(&slot);
         let laid = lines.as_deref_mut();
         let next = render(previous, view, &self.sheets, &display, laid);

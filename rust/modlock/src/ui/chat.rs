@@ -186,7 +186,6 @@ pub fn show_chat_lines(options: ChatLines) {
     runtime::hook(|hooks| hooks.chat = Some(heard));
     engine::layer(engine::Layer {
         lines: chat_lines,
-        on_mod: speaker_set,
         expire,
         forget,
     });
@@ -195,15 +194,6 @@ pub fn show_chat_lines(options: ChatLines) {
 /// chat_shown reports whether the mod shows chat lines.
 pub fn chat_shown() -> bool {
     CHAT.with(|chat| chat.borrow().shown.is_some())
-}
-
-/// speaker_set reports whether the mod says how a speaker is seen, so the
-/// lines read the mod.
-fn speaker_set() -> bool {
-    CHAT.with(|chat| {
-        let shown = &chat.borrow().shown;
-        shown.as_ref().is_some_and(|shown| shown.speaker.is_some())
-    })
 }
 
 /// heard shows a chat line to every player who may read it. It runs on the
