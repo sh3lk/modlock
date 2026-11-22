@@ -324,7 +324,7 @@ fn events_reach_the_mod() {
                 ..Default::default()
             }
         ),
-        "12020800"
+        ""
     );
 
     // An event the mod does not implement does nothing and answers nothing.

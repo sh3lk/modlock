@@ -10,9 +10,10 @@ use std::collections::HashMap;
 use std::rc::Rc;
 
 use crate::generated::{
-    serve_mod, ChatEvent, CommandEvent, CommandResult, Connection, Events, FrameEvent, Mod,
-    ModifierFiredEvent, Pawn, PlayersChangedEvent, PlayersResponse, RestoredEvent, ServiceCall,
-    ServiceRepliedEvent, StartEvent, StartResult, UiInputEvent, UiPressEvent,
+    serve_mod, ChatEvent, CommandEvent, CommandResult, Connection, DamageEvent, DamageResult,
+    Events, FrameEvent, Mod, ModifierFiredEvent, Pawn, PlayersChangedEvent, PlayersResponse,
+    RestoredEvent, ServiceCall, ServiceRepliedEvent, StartEvent, StartResult, UiInputEvent,
+    UiPressEvent,
 };
 use crate::wire::{Error, Message};
 use crate::{host, seating, services, Player};
@@ -596,6 +597,24 @@ pub(crate) fn deliver<M: Mod + 'static>(
             let handlers = STATE.with(|state| state.borrow().modifiers.get(&event.name).cloned());
             for handler in handlers.unwrap_or_default() {
                 handler(m, &event);
+            }
+        }
+        // Answer a hit the mod lets land with its new amount alone, and with
+        // nothing when the amount stands. A block goes as the mod gave it.
+        "Damage" => {
+            if let Some(handle) = events.damage {
+                let event = DamageEvent::decode(request)?;
+                let change = handle(m, &event);
+                if change.block == Some(true) {
+                    change.encode(out);
+                } else {
+                    let amount = change.amount.filter(|amount| *amount != event.amount);
+                    DamageResult {
+                        amount,
+                        ..DamageResult::default()
+                    }
+                    .encode(out);
+                }
             }
         }
         "Restored" => {
