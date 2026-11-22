@@ -9,7 +9,7 @@ use std::collections::HashMap;
 use std::fmt::Write;
 use std::rc::Rc;
 
-use super::element::{label, panel, Element, Handlers, Slot};
+use super::element::{label, panel, Children, Element, Handlers, Slot};
 use super::style::FIT;
 use crate::generated::{
     read_field, AbilityRow, Align, Change, Connection, Cue, Easing, Edges, FieldType, FieldValue,
@@ -45,8 +45,9 @@ struct Notice {
 /// View is what the mod shows one player: its interface and its notices.
 struct View {
     player: Player,
-    /// root is the mod's interface.
-    root: Option<Element>,
+    /// root is the mod's interface: one element, or a list of them, which
+    /// is empty while the mod shows none.
+    root: Slot,
     /// hud lists the parts of the game's HUD to hide.
     hud: Vec<HudPart>,
     /// cursor is true while the mod frees the player's mouse cursor, and asks
@@ -205,7 +206,7 @@ impl Library {
     fn keep(&mut self, player: Player) {
         self.views.entry(player.slot()).or_insert_with(|| View {
             player,
-            root: None,
+            root: Slot::Many(Vec::new()),
             hud: Vec::new(),
             cursor: false,
             asks: 0,
@@ -322,25 +323,9 @@ impl Layout<'_> {
         // moves no child after it.
         let own = self.at.len();
         self.at.push('/');
-        let inside = self.at.len();
         let mut children = Vec::with_capacity(element.children.len());
         for (index, slot) in element.children.iter_mut().enumerate() {
-            match slot {
-                Slot::One(child) => {
-                    spot(&mut self.at, index, &child.key);
-                    children.push(self.place(child));
-                }
-                Slot::Many(list) => {
-                    spot(&mut self.at, index, "");
-                    let listed = self.at.len();
-                    for (index, child) in list.iter_mut().enumerate() {
-                        spot(&mut self.at, index, &child.key);
-                        children.push(self.place(child));
-                        self.at.truncate(listed);
-                    }
-                }
-            }
-            self.at.truncate(inside);
+            self.fill(index, slot, &mut children);
         }
         self.at.truncate(own);
 
@@ -356,6 +341,28 @@ impl Layout<'_> {
         }
         self.add(id.clone(), &element.node, children);
         id
+    }
+
+    /// fill lays out what slot holds as the child at index of the place, and
+    /// adds its nodes' ids to children.
+    fn fill(&mut self, index: usize, slot: &mut Slot, children: &mut Vec<Rc<str>>) {
+        let inside = self.at.len();
+        match slot {
+            Slot::One(child) => {
+                spot(&mut self.at, index, &child.key);
+                children.push(self.place(child));
+            }
+            Slot::Many(list) => {
+                spot(&mut self.at, index, "");
+                let listed = self.at.len();
+                for (index, child) in list.iter_mut().enumerate() {
+                    spot(&mut self.at, index, &child.key);
+                    children.push(self.place(child));
+                    self.at.truncate(listed);
+                }
+            }
+        }
+        self.at.truncate(inside);
     }
 }
 
@@ -415,11 +422,9 @@ fn render(
 
     // The elements, the chat lines and the notices hang from the root.
     let mut children = Vec::new();
-    if let Some(root) = &mut view.root {
-        layout.at.push_str("/,0");
-        children.push(layout.place(root));
-        layout.at.clear();
-    }
+    layout.at.push('/');
+    layout.fill(0, &mut view.root, &mut children);
+    layout.at.clear();
     if let Some(lines) = lines {
         layout.at.push_str("/,2");
         children.push(layout.place(lines));
@@ -600,11 +605,14 @@ fn display_rows(view: &View) -> Vec<AbilityRow> {
         .collect()
 }
 
-/// show replaces the interface the mod shows player with root. A player who
-/// left and a mod that restarted show nothing until the next call.
-pub fn show(player: Player, root: impl Into<Element>) -> bool {
-    let root = root.into();
-    change(player, |library, slot| library.view(slot).root = Some(root))
+/// show replaces the interface the mod shows player with root: an element,
+/// or a list of them, such as an Option, which holds one or none. An empty
+/// root clears the mod's elements alone, and leaves the routes, the notices
+/// and what the mod asked of the player's screen. A player who left and a
+/// mod that restarted show nothing until the next call.
+pub fn show(player: Player, root: impl Children) -> bool {
+    let root = root.slot().0;
+    change(player, |library, slot| library.view(slot).root = root)
 }
 
 /// hide removes the interface, the routes and the notices the mod shows
