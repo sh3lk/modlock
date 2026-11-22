@@ -163,6 +163,16 @@ impl Element {
         self.key = key.to_string();
         self
     }
+
+    /// panels returns how many panels the game draws for the element: itself
+    /// and every element it holds.
+    pub fn panels(&self) -> usize {
+        let held = |slot: &Slot| match slot {
+            Slot::One(element) => element.panels(),
+            Slot::Many(elements) => elements.iter().map(Element::panels).sum(),
+        };
+        1 + self.children.iter().map(held).sum::<usize>()
+    }
 }
 
 impl Children for Element {
