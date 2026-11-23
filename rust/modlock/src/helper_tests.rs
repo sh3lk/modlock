@@ -509,18 +509,26 @@ fn request(data: &[u8]) -> (u32, std::collections::HashMap<u32, String>) {
 /// Disconnected controllers do not keep abandoned heroes, while the heroes
 /// of players still joining stay protected.
 #[test]
-fn strays_lay_down_abandoned_heroes() {
+fn strays_kill_abandoned_heroes() {
     use crate::wire::{self, Message};
-    use crate::{FieldValue, HitOptions, Strays};
+    use crate::{FieldValue, KillOptions, Strays};
     use std::cell::RefCell;
     use std::rc::Rc;
 
     // Six controllers keep their hero handle across their connection states.
-    let states = [Some(0.0), Some(1.0), Some(2.0), Some(3.0), Some(4.0), None];
+    let states = Rc::new(RefCell::new([
+        Some(0.0),
+        Some(1.0),
+        Some(2.0),
+        Some(3.0),
+        Some(4.0),
+        None,
+    ]));
     let hits = Rc::new(RefCell::new(Vec::new()));
     let released = Rc::new(RefCell::new(Vec::new()));
     let respawns = Rc::new(RefCell::new(Vec::new()));
     let (hit, release, respawn) = (hits.clone(), released.clone(), respawns.clone());
+    let seen = states.clone();
     crate::host::fake::answer(move |method, data| {
         let mut out = Vec::new();
         let (entity, texts) = request(data);
@@ -533,7 +541,7 @@ fn strays_lay_down_abandoned_heroes() {
                 let value = match texts[&3].as_str() {
                     "m_hController" => Some(f64::from(entity + 100)),
                     "m_hHeroPawn" => Some(f64::from(entity - 100)),
-                    "m_iConnected" => states[entity as usize - 101],
+                    "m_iConnected" => seen.borrow()[entity as usize - 101],
                     "m_iHealth" => Some(100.0),
                     _ => None,
                 };
@@ -541,9 +549,9 @@ fn strays_lay_down_abandoned_heroes() {
                     wire::nested(&mut out, 1, |out| FieldValue::Number(value).encode(out));
                 }
             }
-            "Damage" => hit
+            "KillEntity" => hit
                 .borrow_mut()
-                .push(HitOptions::decode(data).unwrap().victim),
+                .push(KillOptions::decode(data).unwrap().victim),
             "HoldModifierState" if texts[&2] == "MODIFIER_STATE_MELEE_DISABLED" => {
                 release.borrow_mut().push(entity);
             }
@@ -563,6 +571,80 @@ fn strays_lay_down_abandoned_heroes() {
     assert_eq!(*hits.borrow(), [4, 5]);
     assert_eq!(*respawns.borrow(), [4, 5]);
     assert_eq!(*released.borrow(), [4, 5]);
+
+    // A controller that reconnects retains its hero, and a stray the kill
+    // left standing is not hit again: only its respawn is held.
+    hits.borrow_mut().clear();
+    respawns.borrow_mut().clear();
+    states.borrow_mut()[3] = Some(2.0);
+    strays.sweep(4.0);
+    assert!(hits.borrow().is_empty());
+    assert_eq!(*respawns.borrow(), [5]);
+}
+
+/// An away seat keeps its hero until the seat ends.
+#[test]
+fn an_away_seat_keeps_its_hero_until_the_seat_ends() {
+    use crate::wire::{self, Message};
+    use crate::{Connection, FieldValue, KillOptions, Player, PlayersChangedEvent, Strays};
+    use std::cell::RefCell;
+    use std::rc::Rc;
+
+    // One disconnected controller, entity 101, whose slot 100 is away.
+    let hits = Rc::new(RefCell::new(Vec::new()));
+    let record = hits.clone();
+    crate::host::fake::answer(move |method, data| {
+        let mut out = Vec::new();
+        if method == "FindEntities" {
+            let entities: Vec<u32> = vec![1];
+            wire::packed(&mut out, 1, &entities, |out, v| wire::raw::uint32(out, *v));
+            return Ok(out);
+        }
+        if method == "KillEntity" {
+            record
+                .borrow_mut()
+                .push(KillOptions::decode(data).unwrap().victim);
+            return Ok(out);
+        }
+        if method == "ReadField" {
+            let (_, texts) = request(data);
+            let value = match texts.get(&3).map(String::as_str) {
+                Some("m_hController") => Some(101.0),
+                Some("m_hHeroPawn") => Some(1.0),
+                Some("m_iConnected") => Some(4.0),
+                Some("m_iHealth") => Some(100.0),
+                _ => None,
+            };
+            if let Some(value) = value {
+                wire::nested(&mut out, 1, |out| FieldValue::Number(value).encode(out));
+            }
+        }
+        Ok(out)
+    });
+
+    // The one connection is away.
+    let events = events!(Idle::default);
+    let report = PlayersChangedEvent {
+        players: vec![Connection {
+            player: Player::of(100),
+            name: "away".to_owned(),
+            away: true,
+            generation: 1,
+            ..Connection::default()
+        }],
+    };
+    crate::tests::send(Idle::default, &events, "PlayersChanged", &report);
+
+    // Held while away, a stray once the seat is gone.
+    let mut strays = Strays::new();
+    strays.sweep(0.0);
+    strays.sweep(5.0);
+    assert!(hits.borrow().is_empty());
+    let report = PlayersChangedEvent::default();
+    crate::tests::send(Idle::default, &events, "PlayersChanged", &report);
+    strays.sweep(6.0);
+    strays.sweep(9.0);
+    assert_eq!(*hits.borrow(), [1]);
 }
 
 /// A human still connecting past the deadline is kicked once, by name.
@@ -1590,6 +1672,19 @@ fn chat_lines_show_and_expire() {
                     ..Pawn::default()
                 };
                 wire::message(&mut out, 1, &pawn);
+            }
+            "Pawns" => {
+                for slot in 1..=2 {
+                    let pawn = Pawn {
+                        hero: 13,
+                        team: 1 + slot,
+                        ..Pawn::default()
+                    };
+                    wire::nested(&mut out, 1, |out| {
+                        wire::int32(out, 1, slot);
+                        wire::message(out, 2, &pawn);
+                    });
+                }
             }
             "Ui" => {
                 let (mut slot, mut change) = (0, Change::default());

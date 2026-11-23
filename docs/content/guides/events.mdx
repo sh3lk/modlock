@@ -139,8 +139,9 @@ Python spells each as a `snake_case` decorator, such as
 `mod.OnPlayerJoin`. A call that takes a name takes it in the decorator, as
 `@modlock.on_modifier_event("PRE_UNIT_HEALED")` does. In Rust each is a method
 of `Mod`, such as `start`, `world` and `frame`, or of a trait of its own, such
-as `OnJoin`'s `player_joined` and `OnKill`'s `killed`, and `command` and
-`modifier_event` are calls the mod makes in `start`.
+as `OnJoin`'s `player_joined`, `player_away` and `player_returned`, `OnKill`'s
+`killed` and `OnPing`'s `ping`, and `command` and `modifier_event` are calls
+the mod makes in `start`.
 
 | Call                                                | Runs the handler                                                                           |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -191,7 +192,8 @@ hero and team for five minutes, and a player who reconnects in that time returns
 to them as the same Player. Interfaces sent while a player is away are dropped,
 and Modlock draws each one again when they return. A mod that pauses on an
 absence, such as a ready check, can listen with `onPlayerAway` and
-`onPlayerReturn`.
+`onPlayerReturn`, or in Rust with `OnJoin`'s `player_away` and
+`player_returned`.
 
 Each joined player leaves exactly once, when their seat ends: they leave from
 the game, the mod stops serving them, a stranger takes the held slot, or the
@@ -589,6 +591,44 @@ mod.OnPing(func(ping *mod.PingEvent) *mod.PingResult {
 })
 ```
 
+```rust
+use std::collections::HashSet;
+
+use modlock::prelude::*;
+
+#[derive(Default)]
+struct Quiet {
+    /// quiet holds the players who typed /quiet.
+    quiet: HashSet<i32>,
+}
+
+impl Quiet {
+    fn quiet(&mut self, player: Player) {
+        self.quiet.insert(player.slot());
+    }
+}
+
+impl Mod for Quiet {
+    fn start(&mut self, _event: &StartEvent) {
+        command("quiet", Self::quiet);
+    }
+}
+
+impl OnPing for Quiet {
+    fn ping(&mut self, event: &PingEvent) -> PingResult {
+        if event.kind == PingKind::Wheel && self.quiet.contains(&event.player.slot()) {
+            return PingResult {
+                block: true,
+                ..PingResult::default()
+            };
+        }
+        PingResult::default()
+    }
+}
+
+modlock::run!(Quiet::default());
+```
+
 </Samples>
 
 A handler can instead mute the ping's voice line for some players and leave
@@ -672,12 +712,61 @@ mod.OnPing(func(ping *mod.PingEvent) *mod.PingResult {
 })
 ```
 
+```rust
+use std::collections::HashMap;
+
+use modlock::prelude::*;
+
+#[derive(Default)]
+struct MutePings {
+    /// muted maps each player to the players whose ping voices they muted.
+    muted: HashMap<i32, Vec<i32>>,
+}
+
+impl MutePings {
+    fn mute(&mut self, player: Player, arguments: &str) {
+        let target = players()
+            .into_iter()
+            .find(|other| other.name == arguments.trim())
+            .map(|other| other.player.slot());
+        if let Some(target) = target {
+            self.muted.entry(target).or_default().push(player.slot());
+        }
+    }
+}
+
+impl Mod for MutePings {
+    fn start(&mut self, _event: &StartEvent) {
+        command("mutepings", Self::mute);
+    }
+}
+
+impl OnPing for MutePings {
+    fn ping(&mut self, event: &PingEvent) -> PingResult {
+        PingResult {
+            block: false,
+            mute_voice: self
+                .muted
+                .get(&event.player.slot())
+                .cloned()
+                .unwrap_or_default(),
+        }
+    }
+}
+
+modlock::run!(MutePings::default());
+```
+
 </Samples>
 
 The handler runs inside the server's ping, so it answers at once; put other
 work, such as a message to the player, in a timer. When several handlers
 answer, the first that blocks the ping decides, and otherwise each player any
 handler mutes gets the ping without its voice.
+
+In Rust, `OnPing`'s `ping` takes a `PingEvent` and returns a `PingResult`,
+whose `mute_voice` lists the slots; the kind is `PingKind::Map`,
+`PingKind::Wheel`, `PingKind::QuickResponse` or `PingKind::Ability`.
 
 | Field     | Meaning                                                                     |
 | --------- | --------------------------------------------------------------------------- |

@@ -11,9 +11,9 @@ use std::rc::Rc;
 
 use crate::generated::{
     serve_mod, ChatEvent, CommandEvent, CommandResult, Connection, DamageEvent, DamageResult,
-    Events, FrameEvent, Mod, ModifierFiredEvent, Pawn, PlayersChangedEvent, PlayersResponse,
-    RestoredEvent, ServiceCall, ServiceRepliedEvent, StartEvent, StartResult, UiInputEvent,
-    UiPressEvent,
+    Events, FrameEvent, Mod, ModifierFiredEvent, Pawn, PlayerAwayEvent, PlayerReturnedEvent,
+    PlayersChangedEvent, PlayersResponse, RestoredEvent, ServiceCall, ServiceRepliedEvent,
+    StartEvent, StartResult, UiInputEvent, UiPressEvent,
 };
 use crate::wire::{Error, Message};
 use crate::{host, seating, services, Player};
@@ -118,6 +118,7 @@ pub(crate) struct Interface {
     pub press: fn(&mut dyn Any, &UiPressEvent),
     pub changed: fn(&mut dyn Any, &UiInputEvent),
     pub forget: fn(&mut dyn Any, &[Connection]),
+    pub returned: fn(&mut dyn Any, Player),
 }
 
 /// join gives the interface library its part in the events, and returns
@@ -367,7 +368,7 @@ pub fn players() -> Vec<Connection> {
     if let Some(roster) = STATE.with(|state| state.borrow().roster.clone()) {
         return roster;
     }
-    host::call("Players", |_| {}, |r| PlayersResponse::decode(r.rest()))
+    host::read("Players", |_| {}, |r| PlayersResponse::decode(r.rest()))
         .map(|response| response.players)
         .unwrap_or_default()
 }
@@ -636,6 +637,24 @@ pub(crate) fn deliver<M: Mod + 'static>(
                 (interface.forget)(m, &event.players);
             }
             m.players_changed(&event);
+        }
+        // The library always takes the joins, so these arrive even to a mod
+        // that implements no trait. An away player's screen was lost, and a
+        // returning one gets it whole before the mod hears them back.
+        "PlayerAway" => {
+            let event = PlayerAwayEvent::decode(request)?;
+            if let Some(handle) = events.player_away {
+                handle(m, &event);
+            }
+        }
+        "PlayerReturned" => {
+            let event = PlayerReturnedEvent::decode(request)?;
+            if let Some(interface) = INTERFACE.get() {
+                (interface.returned)(m, event.connection.player);
+            }
+            if let Some(handle) = events.player_returned {
+                handle(m, &event);
+            }
         }
         _ => {
             return Ok(events.serve(m, method, request, out)? || serve_mod(m, method, request, out)?)

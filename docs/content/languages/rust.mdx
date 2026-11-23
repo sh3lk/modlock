@@ -61,6 +61,11 @@ at a time.
 | A trait of its own, such as `OnDamage`, `OnKill`, `OnChat` | The events the game sends only to a mod that asks. Implementing the trait asks.                     |
 | `command`, `after`, `every`, a button's `on_press`, the chat lines' `speaker` | A method of the mod, such as `Self::hello`, or a closure that takes the mod: `\|hello: &mut Hello\| …` |
 
+`OnJoin`'s `player_away` and `player_returned` hear a seat's client drop while
+the game holds it, and its player come back. `OnPing`'s `ping` sees each ping
+before anyone does, and its `PingResult` blocks it or lists the slots whose
+voice line it mutes.
+
 A player the game may leave out, such as the victim of a kill that was a unit,
 is an `Option<Player>`. A `Player` is equal to another only while both name the
 same connection, so a map keyed by `Player` never hands a newcomer the entry of
@@ -166,9 +171,11 @@ in `snake_case`: vectors add and scale with `+` and `*`, and `format`,
 `rotation`, `curve`, `camera`, `persist`, `dropper`, `racegate` and
 `frame_clock` are modules. `Cast`, `Puppet`, `Strays`, `Stragglers`, `Hook` and
 `ProbeRun` are types, and `ground`, `load_spot`, `restore_hero`,
-`replay_damage`, `report_score` and `show_chat_lines` functions.
-The crate has no `hideHudForAll`, `sweepStragglers`, `findTitled` or
-`rosterBottom`, and its roster takes rows alone, without groups.
+`replay_damage`, `report_score`, `show_chat_lines` and `pawns` functions.
+`set_pawn_cache(false)` turns off the per-event pawn read.
+The crate has no `hideHudForAll`, `sweepStragglers`, `findTitled`,
+`rosterBottom` or `useDenseUiRecords`, and its roster takes rows alone,
+without groups.
 
 The [`hello-rust`](https://github.com/paralin/modlock/tree/master/examples/hello-rust),
 [`hero-build-rust`](https://github.com/paralin/modlock/tree/master/examples/hero-build-rust),

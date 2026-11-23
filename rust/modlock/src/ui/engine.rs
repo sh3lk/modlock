@@ -153,6 +153,7 @@ fn join() {
         press,
         changed,
         forget,
+        returned,
     };
     if runtime::join(interface) {
         LIBRARY.with(|library| library.borrow_mut().now = runtime::now());
@@ -255,10 +256,13 @@ impl Library {
         });
     }
 
-    /// everyone draws every player in the game.
+    /// everyone draws every player in the game, except one who is away,
+    /// whose client holds no screen to change.
     fn everyone(&mut self) {
         for connection in players() {
-            self.draw(connection.player);
+            if !connection.away {
+                self.draw(connection.player);
+            }
         }
     }
 
@@ -968,6 +972,18 @@ pub(crate) fn tick(m: &mut dyn Any, seconds: f64) {
             }
         }
         for player in lost {
+            library.draw(player);
+        }
+    });
+}
+
+/// returned sends a returning player their whole interface, which their
+/// client lost while they were away.
+pub(crate) fn returned(_m: &mut dyn Any, player: Player) {
+    LIBRARY.with(|library| {
+        let mut library = library.borrow_mut();
+        if library.views.contains_key(&player.slot()) {
+            library.screens.remove(&player.slot());
             library.draw(player);
         }
     });

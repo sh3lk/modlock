@@ -196,6 +196,163 @@ fn calls_read_their_results() {
     assert!(!modifier_state(9, "silenced"));
 }
 
+/// A pawn read keeps what its event read until the game may change.
+#[test]
+fn a_pawn_read_keeps_what_its_event_read_until_the_game_may_change() {
+    use std::collections::HashMap;
+
+    /// Driver runs the body the event test gave it.
+    #[derive(Default)]
+    struct Driver;
+
+    impl Mod for Driver {
+        fn frame(&mut self, _event: &FrameEvent) {
+            BODY.with(|body| {
+                if let Some(mut body) = body.borrow_mut().take() {
+                    body();
+                }
+            });
+        }
+    }
+
+    thread_local! {
+        static BODY: RefCell<Option<Box<dyn FnMut()>>> = RefCell::new(None);
+    }
+
+    // The stand-in game holds each slot's hero health and answers Pawn and
+    // Pawns from it; SetStamina stands for any call that may write.
+    let health = Rc::new(RefCell::new(HashMap::from([(1, 100), (2, 200)])));
+    let fails = Rc::new(RefCell::new(false));
+    let methods = Rc::new(RefCell::new(Vec::new()));
+    let (held, failed, sent) = (health.clone(), fails.clone(), methods.clone());
+    crate::host::fake::answer(move |method, data| {
+        sent.borrow_mut().push(method.to_owned());
+        let mut out = Vec::new();
+        let pawn = |slot: i32| -> Option<Pawn> {
+            held.borrow().get(&slot).map(|health| Pawn {
+                entity: 10 + slot as u32,
+                health: *health,
+                ..Pawn::default()
+            })
+        };
+        match method {
+            "Pawn" => {
+                let mut slot = 0;
+                let mut r = wire::Reader::new(data);
+                while let Some((number, kind)) = r.field().unwrap() {
+                    if number == 1 {
+                        slot = r.int32(kind).unwrap();
+                    } else {
+                        r.skip(kind).unwrap();
+                    }
+                }
+                if let Some(pawn) = pawn(slot) {
+                    wire::message(&mut out, 1, &pawn);
+                }
+            }
+            "Pawns" => {
+                if *failed.borrow() {
+                    return Err("busy".to_owned());
+                }
+                for slot in held.borrow().keys().copied() {
+                    let pawn = pawn(slot).unwrap();
+                    wire::nested(&mut out, 1, |out| {
+                        wire::int32(out, 1, slot);
+                        wire::message(out, 2, &pawn);
+                    });
+                }
+            }
+            _ => {}
+        }
+        Ok(out)
+    });
+    let events = events!(Driver::default);
+    let event = |body: Box<dyn FnMut()>| {
+        BODY.with(|held| *held.borrow_mut() = Some(body));
+        send(Driver::default, &events, "Frame", &at(0.0));
+    };
+    let one = Player::of(1);
+    let two = Player::of(2);
+    let three = Player::of(3);
+    methods.borrow_mut().clear();
+
+    // Outside an event every read reaches the host.
+    one.pawn();
+    one.pawn();
+    assert_eq!(take_methods(&methods), ["Pawn", "Pawn"]);
+
+    let calls = methods.clone();
+    let seen = health.clone();
+    event(Box::new(move || {
+        // The first slot takes its own call and is answered again after it.
+        let first = one.pawn();
+        assert_eq!(one.pawn(), first);
+        assert_eq!(take_methods(&calls), ["Pawn"]);
+
+        // A second slot reads every slot at once, and the batch answers the
+        // rest, a slot with no pawn included.
+        assert_eq!(two.pawn().map(|pawn| pawn.health), Some(200));
+        assert!(three.pawn().is_none());
+        assert_eq!(one.pawn(), first);
+        assert_eq!(take_methods(&calls), ["Pawns"]);
+
+        // A call that may write drops the reads; unchanged bytes keep their
+        // Pawn, and changed ones decode anew.
+        seen.borrow_mut().insert(2, 150);
+        one.set_stamina(50.0);
+        assert_eq!(one.pawn(), first);
+        assert_eq!(two.pawn().map(|pawn| pawn.health), Some(150));
+        assert_eq!(take_methods(&calls), ["SetStamina", "Pawn", "Pawns"]);
+    }));
+
+    // The next event reads again, since the game ran between them, and the
+    // bytes changed, so it decodes a new Pawn.
+    health.borrow_mut().insert(1, 90);
+    let calls = methods.clone();
+    event(Box::new(move || {
+        assert_eq!(one.pawn().map(|pawn| pawn.health), Some(90));
+        assert_eq!(take_methods(&calls), ["Pawn"]);
+    }));
+
+    // A failed Pawns leaves the rest of its event to single reads, and the
+    // next event batches again.
+    *fails.borrow_mut() = true;
+    let calls = methods.clone();
+    event(Box::new(move || {
+        one.pawn();
+        two.pawn();
+        one.set_stamina(50.0);
+        one.pawn();
+        two.pawn();
+        assert_eq!(
+            take_methods(&calls),
+            ["Pawn", "Pawns", "Pawn", "SetStamina", "Pawn", "Pawn"]
+        );
+    }));
+    *fails.borrow_mut() = false;
+    let calls = methods.clone();
+    event(Box::new(move || {
+        one.pawn();
+        two.pawn();
+        assert_eq!(take_methods(&calls), ["Pawn", "Pawns"]);
+    }));
+
+    // With the cache off, every read in an event reaches the host.
+    crate::set_pawn_cache(false);
+    let calls = methods.clone();
+    event(Box::new(move || {
+        one.pawn();
+        one.pawn();
+        assert_eq!(take_methods(&calls), ["Pawn", "Pawn"]);
+    }));
+    crate::set_pawn_cache(true);
+}
+
+/// take_methods drains the methods the mod called since the last drain.
+fn take_methods(calls: &Rc<RefCell<Vec<String>>>) -> Vec<String> {
+    calls.borrow_mut().drain(..).collect()
+}
+
 /// Heard is a mod that keeps the chat lines it heard and blocks every hit.
 struct Heard {
     lines: Rc<RefCell<Vec<String>>>,

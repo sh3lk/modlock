@@ -894,6 +894,16 @@ func (w *rustWriter) writeCall(c *call, depth int) error {
 	}
 	request := c.method.request
 
+	// Player.pawn reads through the pawn cache, which answers an event's
+	// repeated reads from one Pawns call and keeps an unchanged pawn.
+	if c.method.name == "Pawn" && c.class != nil {
+		w.doc(depth, rename(c.method.doc, c.method.name, name))
+		w.line(depth, "pub fn %s(self) -> Option<Pawn> {", name)
+		w.line(depth+1, "crate::pawns::pawn_of(self.slot())")
+		w.line(depth, "}")
+		return nil
+	}
+
 	// Declare the call. A class is a Copy value, so its method takes it whole.
 	var params []string
 	if c.class != nil {
@@ -972,8 +982,12 @@ func (w *rustWriter) writeCall(c *call, depth int) error {
 	case f.optional, f.message != nil:
 		start, after, arm = "None", ".flatten()", "result = Some("+value+")"
 	}
+	reader := "host::call"
+	if c.method.readOnly {
+		reader = "host::read"
+	}
 	w.line(depth, "pub fn %s(%s) -> %s {", name, strings.Join(params, ", "), result)
-	w.line(depth+1, "host::call(")
+	w.line(depth+1, "%s(", reader)
 	w.line(depth+2, "%q,", c.method.name)
 	if len(encode) == 0 {
 		w.line(depth+2, "%s,", write)
@@ -1024,17 +1038,20 @@ type rustEvent struct {
 // Implementing the trait is the request, so a mod never asks for an event it
 // ignores, and never forgets to ask for one it handles.
 var rustEvents = map[string]rustEvent{
-	"Damage":       {"OnDamage", "damage"},
-	"Damaged":      {"OnDamaged", "damaged"},
-	"Chat":         {"OnChat", "chat"},
-	"PlayerJoined": {"OnJoin", "joins"},
-	"PlayerLeft":   {"OnJoin", "joins"},
-	"AbilityCast":  {"OnCast", "casts"},
-	"Killed":       {"OnKill", "kills"},
-	"Healed":       {"OnHeal", "heals"},
-	"LevelChanged": {"OnLevel", "levels"},
-	"Melee":        {"OnMelee", "melees"},
-	"Parried":      {"OnParry", "parries"},
+	"Damage":         {"OnDamage", "damage"},
+	"Damaged":        {"OnDamaged", "damaged"},
+	"Chat":           {"OnChat", "chat"},
+	"PlayerJoined":   {"OnJoin", "joins"},
+	"PlayerAway":     {"OnJoin", "joins"},
+	"PlayerReturned": {"OnJoin", "joins"},
+	"PlayerLeft":     {"OnJoin", "joins"},
+	"Ping":           {"OnPing", "pings"},
+	"AbilityCast":    {"OnCast", "casts"},
+	"Killed":         {"OnKill", "kills"},
+	"Healed":         {"OnHeal", "heals"},
+	"LevelChanged":   {"OnLevel", "levels"},
+	"Melee":          {"OnMelee", "melees"},
+	"Parried":        {"OnParry", "parries"},
 }
 
 // rustRuntime are the boolean members of StartResult no event of rustEvents

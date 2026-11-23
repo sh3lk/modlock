@@ -33,6 +33,15 @@ thread_local! {
     /// The event being served and the reply to the last one, which the host
     /// reads after modlock_event returns.
     static EVENT: Cell<(Vec<u8>, Vec<u8>)> = const { Cell::new((Vec::new(), Vec::new())) };
+
+    /// The revision counts the moments the game may have changed under the
+    /// mod, and depth is how many events are running. Two reads at one
+    /// revision inside an event see the same game.
+    static REVISION: Cell<(u64, u32)> = const { Cell::new((0, 0)) };
+
+    /// The events counts the events the host delivered, the running one
+    /// included, so a reader can keep a finding for one event alone.
+    static DELIVERED: Cell<u64> = const { Cell::new(0) };
 }
 
 /// exchange hands the host an encoded Call and reads its encoded Reply into
@@ -67,6 +76,33 @@ pub fn call<R>(
     request: impl FnOnce(&mut Vec<u8>),
     response: impl FnOnce(&mut Reader) -> Result<R, Error>,
 ) -> Option<R> {
+    let result = ask(method, request, response);
+    // The call may have changed the game, so what a reader kept before it is
+    // no longer known to stand.
+    REVISION.with(|revision| {
+        let (count, depth) = revision.get();
+        revision.set((count + 1, depth));
+    });
+    result
+}
+
+/// read calls one Host method the schema marks NO_SIDE_EFFECTS, as call
+/// does, but leaves the revision where it is: the game is the same after it.
+pub(crate) fn read<R>(
+    method: &str,
+    request: impl FnOnce(&mut Vec<u8>),
+    response: impl FnOnce(&mut Reader) -> Result<R, Error>,
+) -> Option<R> {
+    ask(method, request, response)
+}
+
+/// ask hands the host one call and reads its reply, without moving the
+/// revision.
+fn ask<R>(
+    method: &str,
+    request: impl FnOnce(&mut Vec<u8>),
+    response: impl FnOnce(&mut Reader) -> Result<R, Error>,
+) -> Option<R> {
     let (mut out, mut reply) = BUFFERS.take();
     out.clear();
     wire::string(&mut out, 1, method);
@@ -84,6 +120,40 @@ pub fn call<R>(
 /// succeeded.
 pub fn send(method: &str, request: impl FnOnce(&mut Vec<u8>)) -> bool {
     call(method, request, |_| Ok(())).is_some()
+}
+
+/// enter_event starts a delivery: it counts the event and moves the
+/// revision, since the game ran since the last one.
+fn enter_event() {
+    REVISION.with(|revision| {
+        let (count, depth) = revision.get();
+        revision.set((count + 1, depth + 1));
+    });
+    DELIVERED.with(|delivered| delivered.set(delivered.get() + 1));
+}
+
+/// leave_event ends a delivery and moves the revision again, since the game
+/// runs after it.
+fn leave_event() {
+    REVISION.with(|revision| {
+        let (count, depth) = revision.get();
+        revision.set((count + 1, depth.saturating_sub(1)));
+    });
+}
+
+/// revision returns the current revision while an event runs, or None
+/// outside one, where the game may change between any two calls.
+pub(crate) fn revision() -> Option<u64> {
+    REVISION.with(|revision| {
+        let (count, depth) = revision.get();
+        (depth > 0).then_some(count)
+    })
+}
+
+/// delivered returns how many events the host has delivered so far,
+/// counting the one running.
+pub(crate) fn delivered() -> u64 {
+    DELIVERED.with(Cell::get)
 }
 
 /// payload returns the response an encoded Reply carries, or None for a
@@ -149,8 +219,11 @@ pub fn serve<M: Mod + 'static>(
             return;
         }
     };
+    // The game ran since the last event and runs again after this one.
+    enter_event();
     let mut response = Vec::new();
     let served = crate::runtime::deliver(&mut *held, events, method, request, &mut response);
+    leave_event();
     MOD.set(Some(held));
 
     // Answer with the response, or with why there is none.

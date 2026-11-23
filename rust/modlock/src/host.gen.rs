@@ -1092,6 +1092,35 @@ impl Align {
     }
 }
 
+/// PingKind is how a player pinged.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+#[repr(i32)]
+pub enum PingKind {
+    /// Map is a ping on a place, a unit or the minimap.
+    #[default]
+    Map = 0,
+    /// Wheel is a line from the comms wheel or a quick ping key.
+    Wheel = 1,
+    /// QuickResponse answers another player's ping.
+    QuickResponse = 2,
+    /// Ability pings one of the player's abilities or items.
+    Ability = 3,
+}
+
+impl PingKind {
+    /// from_i32 returns the PingKind numbered number, or Map for a number the library
+    /// has no name for.
+    pub fn from_i32(number: i32) -> Self {
+        match number {
+            0 => Self::Map,
+            1 => Self::Wheel,
+            2 => Self::QuickResponse,
+            3 => Self::Ability,
+            _ => Self::Map,
+        }
+    }
+}
+
 /// ServiceFailure says why a service call ended without an answer.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 #[repr(i32)]
@@ -4032,7 +4061,8 @@ impl Message for RestoredEvent {
     }
 }
 
-/// PlayersChangedEvent holds every occupied player slot, as Players lists them.
+/// PlayersChangedEvent holds every player slot with a seat, connected or
+/// away, as Players lists them.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct PlayersChangedEvent {
     pub players: Vec<Connection>,
@@ -4068,6 +4098,64 @@ pub struct PlayerJoinedEvent {
 }
 
 impl Message for PlayerJoinedEvent {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.connection != Connection::default() {
+            wire::message(out, 1, &self.connection);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.connection = Connection::decode(r.bytes(kind)?)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// PlayerAwayEvent reports a joined player whose client disconnected while the
+/// server holds their seat. Their controller and hero stay in the game, and the
+/// player may return to them.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct PlayerAwayEvent {
+    /// connection is the player as Players lists them, away.
+    pub connection: Connection,
+}
+
+impl Message for PlayerAwayEvent {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.connection != Connection::default() {
+            wire::message(out, 1, &self.connection);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.connection = Connection::decode(r.bytes(kind)?)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// PlayerReturnedEvent reports an away player who reconnected to their seat
+/// and finished joining again. The seat, its generation and its hero are the
+/// ones they left.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct PlayerReturnedEvent {
+    /// connection is the player as Players lists them, ready again.
+    pub connection: Connection,
+}
+
+impl Message for PlayerReturnedEvent {
     fn encode(&self, out: &mut Vec<u8>) {
         if self.connection != Connection::default() {
             wire::message(out, 1, &self.connection);
@@ -4168,14 +4256,19 @@ pub struct Connection {
     /// bot is true for a bot player.
     pub bot: bool,
     /// ready is true once a human has finished joining; bots are always ready.
+    /// An away player is not ready.
     pub ready: bool,
-    /// generation changes each time a new connection takes the slot.
+    /// generation identifies the seat: it changes when a new player or bot takes
+    /// the slot, and stays the same when an away player returns.
     pub generation: u32,
     /// roles are what the player is to the running mods, as the program that
     /// runs the host grants them. A role decides what a mod shows, such as an
     /// unfinished feature for its testers; the platform that keeps a mod's
     /// shared data checks its own writers.
     pub roles: Vec<ModRole>,
+    /// away is true while the player's client is disconnected and the server
+    /// holds their seat for them to return.
+    pub away: bool,
 }
 
 impl Message for Connection {
@@ -4199,6 +4292,9 @@ impl Message for Connection {
             wire::uint32(out, 6, self.generation);
         }
         wire::packed(out, 7, &self.roles, |out, v| wire::raw::int32(out, *v as i32));
+        if self.away {
+            wire::bool(out, 8, self.away);
+        }
     }
 
     fn decode(data: &[u8]) -> Result<Self, wire::Error> {
@@ -4213,6 +4309,39 @@ impl Message for Connection {
                 5 => message.ready = r.bool(kind)?,
                 6 => message.generation = r.uint32(kind)?,
                 7 => r.repeated(kind, wire::VARINT, &mut message.roles, |r, kind| Ok(ModRole::from_i32(r.int32(kind)?)))?,
+                8 => message.away = r.bool(kind)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// PlayerPawn is one player's pawn.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct PlayerPawn {
+    /// player is the player's server slot.
+    pub player: Player,
+    pub pawn: Pawn,
+}
+
+impl Message for PlayerPawn {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.player.slot() != 0 {
+            wire::int32(out, 1, self.player.slot());
+        }
+        if self.pawn != Pawn::default() {
+            wire::message(out, 2, &self.pawn);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.player = Player::of(r.int32(kind)?),
+                2 => message.pawn = Pawn::decode(r.bytes(kind)?)?,
                 _ => r.skip(kind)?,
             }
         }
@@ -6949,6 +7078,7 @@ pub struct StartResult {
     /// chat asks for a chat event for each chat line.
     pub chat: bool,
     /// joins asks for a PlayerJoined event as each player the mod serves joins,
+    /// PlayerAway and PlayerReturned events as they disconnect and come back,
     /// and a PlayerLeft event as each leaves.
     pub joins: bool,
     /// casts asks for an AbilityCast event after each ability the game
@@ -6970,6 +7100,8 @@ pub struct StartResult {
     pub melees: bool,
     /// parries asks for a Parried event after each parry that catches a swing.
     pub parries: bool,
+    /// pings asks for a Ping event before each ping a player sends.
+    pub pings: bool,
 }
 
 impl Message for StartResult {
@@ -7010,6 +7142,9 @@ impl Message for StartResult {
         if self.parries {
             wire::bool(out, 12, self.parries);
         }
+        if self.pings {
+            wire::bool(out, 13, self.pings);
+        }
     }
 
     fn decode(data: &[u8]) -> Result<Self, wire::Error> {
@@ -7029,6 +7164,7 @@ impl Message for StartResult {
                 10 => message.levels = r.bool(kind)?,
                 11 => message.melees = r.bool(kind)?,
                 12 => message.parries = r.bool(kind)?,
+                13 => message.pings = r.bool(kind)?,
                 _ => r.skip(kind)?,
             }
         }
@@ -7158,6 +7294,88 @@ impl Message for ChatEvent {
                 2 => message.text = r.string(kind)?,
                 3 => message.all = r.bool(kind)?,
                 4 => message.lane = r.int32(kind)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// PingEvent carries one ping a player sent, before anyone sees it.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct PingEvent {
+    /// player is the player who pinged.
+    pub player: Player,
+    /// kind is how they pinged.
+    pub kind: PingKind,
+    /// option is the comms wheel line for a wheel ping, the
+    /// m_unPingWheelOptionID of the game's scripts/ping_wheel_messages.vdata,
+    /// and zero for another kind.
+    pub option: u32,
+    /// concept is the voice line the ping speaks, a CitadelConcept_t value, or
+    /// zero for none.
+    pub concept: i32,
+}
+
+impl Message for PingEvent {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.player.slot() != 0 {
+            wire::int32(out, 1, self.player.slot());
+        }
+        if self.kind as i32 != 0 {
+            wire::int32(out, 2, self.kind as i32);
+        }
+        if self.option != 0 {
+            wire::uint32(out, 3, self.option);
+        }
+        if self.concept != 0 {
+            wire::int32(out, 4, self.concept);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.player = Player::of(r.int32(kind)?),
+                2 => message.kind = PingKind::from_i32(r.int32(kind)?),
+                3 => message.option = r.uint32(kind)?,
+                4 => message.concept = r.int32(kind)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// PingResult answers a Ping event.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct PingResult {
+    /// block drops the ping for every player, the sender included: its marker,
+    /// sound, voice line and chat line.
+    pub block: bool,
+    /// mute_voice lists the players, by slot, who get a ping that is not blocked
+    /// without its voice line: they still see its marker and hear its sound.
+    /// The other recipients get it whole.
+    pub mute_voice: Vec<i32>,
+}
+
+impl Message for PingResult {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.block {
+            wire::bool(out, 1, self.block);
+        }
+        wire::packed(out, 2, &self.mute_voice, |out, v| wire::raw::int32(out, *v));
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.block = r.bool(kind)?,
+                2 => r.repeated(kind, wire::VARINT, &mut message.mute_voice, |r, kind| Ok(r.int32(kind)?))?,
                 _ => r.skip(kind)?,
             }
         }
@@ -7900,31 +8118,14 @@ impl Player {
     /// is selected. It returns nothing for a spectator and before the game has
     /// made a pawn. The pawn's entity changes whenever the game replaces it.
     pub fn pawn(self) -> Option<Pawn> {
-        host::call(
-            "Pawn",
-            |out| {
-                if self.slot() != 0 {
-                    wire::int32(out, 1, self.slot());
-                }
-            },
-            |r| {
-                let mut result: Option<Pawn> = None;
-                while let Some((number, kind)) = r.field()? {
-                    match number {
-                        1 => result = Some(Pawn::decode(r.bytes(kind)?)?),
-                        _ => r.skip(kind)?,
-                    }
-                }
-                Ok(result)
-            },
-        ).flatten()
+        crate::pawns::pawn_of(self.slot())
     }
 
     /// setting returns the player's value of a setting the manifest
     /// declares: the value they chose, or the setting's default. A bot has the
     /// defaults.
     pub fn setting(self, key: impl AsRef<str>) -> Option<String> {
-        host::call(
+        host::read(
             "PlayerSetting",
             |out| {
                 if self.slot() != 0 {
@@ -8001,7 +8202,7 @@ impl Player {
 
     /// handed_off returns the player's handoff state, or empty.
     pub fn handed_off(self) -> Option<String> {
-        host::call(
+        host::read(
             "PlayerHandedOff",
             |out| {
                 if self.slot() != 0 {
@@ -8224,7 +8425,7 @@ impl Player {
     /// abilities lists the abilities of the player's hero in the hero's order,
     /// or none without a live hero.
     pub fn abilities(self) -> Vec<Ability> {
-        host::call(
+        host::read(
             "Abilities",
             |out| {
                 if self.slot() != 0 {
@@ -8695,7 +8896,7 @@ impl Player {
     /// buttons returns the buttons a player holds, as Buttons bits, while the
     /// player is alive or dead.
     pub fn buttons(self) -> Option<u64> {
-        host::call(
+        host::read(
             "Buttons",
             |out| {
                 if self.slot() != 0 {
@@ -8822,7 +9023,7 @@ impl WorldObject {
     /// entity returns the entity handle of a model or particle, as traces
     /// report it and particle anchors take it.
     pub fn entity(self) -> Option<u32> {
-        host::call(
+        host::read(
             "ObjectEntity",
             |out| {
                 if self.id != 0 {
@@ -8853,7 +9054,7 @@ pub struct Npc {
 impl Npc {
     /// read returns the unit's state, or nothing once it is gone.
     pub fn read(self) -> Option<NpcState> {
-        host::call(
+        host::read(
             "ReadNpc",
             |out| {
                 if self.entity != 0 {
@@ -8971,7 +9172,7 @@ impl Pickup {
     /// present reports whether the pickup still lies in the world,
     /// uncollected.
     pub fn present(self) -> bool {
-        host::call(
+        host::read(
             "PickupPresent",
             |out| {
                 if self.entity != 0 {
@@ -9047,12 +9248,33 @@ pub fn precache(options: &PrecacheOptions) -> bool {
     })
 }
 
+/// pawns returns every player's pawn this frame in one reply, in slot order,
+/// each as Pawn returns it: a mode that reads every hero each frame makes
+/// one call instead of one per player. A slot Pawn answers nothing for is
+/// left out.
+pub fn pawns() -> Vec<PlayerPawn> {
+    host::read(
+        "Pawns",
+        |_| {},
+        |r| {
+            let mut result: Vec<PlayerPawn> = Vec::new();
+            while let Some((number, kind)) = r.field()? {
+                match number {
+                    1 => result.push(PlayerPawn::decode(r.bytes(kind)?)?),
+                    _ => r.skip(kind)?,
+                }
+            }
+            Ok(result)
+        },
+    ).unwrap_or_default()
+}
+
 /// read_file reads one of the mod's files: the host's copy, which the mod
 /// wrote or the server's operator placed, else the one the mod ships under
 /// data/. A file in neither reads as unset. Names that leave the mod's
 /// directories are refused.
 pub fn read_file(path: impl AsRef<str>) -> Option<String> {
-    host::call(
+    host::read(
         "ReadFile",
         |out| {
             if !path.as_ref().is_empty() {
@@ -9077,7 +9299,7 @@ pub fn read_file(path: impl AsRef<str>) -> Option<String> {
 /// views in place. A file in neither reads as unset. The host reads the
 /// whole file during the call.
 pub fn read_file_bytes(path: impl AsRef<str>) -> Option<Vec<u8>> {
-    host::call(
+    host::read(
         "ReadFileBytes",
         |out| {
             if !path.as_ref().is_empty() {
@@ -9142,7 +9364,7 @@ pub fn handoff(text: impl AsRef<str>) -> bool {
 
 /// handed_off returns the game's handoff state, or empty.
 pub fn handed_off() -> Option<String> {
-    host::call(
+    host::read(
         "HandedOff",
         |_| {},
         |r| {
@@ -9164,7 +9386,7 @@ pub fn handed_off() -> Option<String> {
 /// without a build answers with no categories. The call needs a loaded
 /// world.
 pub fn hero_build(hero: impl AsRef<str>) -> Vec<BuildCategory> {
-    host::call(
+    host::read(
         "HeroBuild",
         |out| {
             if !hero.as_ref().is_empty() {
@@ -9206,7 +9428,7 @@ pub fn silence_voice(concepts: &[&str]) -> bool {
 /// a model entity CSkeletonInstance and CModelState, such as the uint64
 /// m_MeshGroupMask of CModelState that chooses which mesh groups draw.
 pub fn read_field(entity: u32, class_name: impl AsRef<str>, field: impl AsRef<str>, r#type: FieldType) -> Option<FieldValue> {
-    host::call(
+    host::read(
         "ReadField",
         |out| {
             if entity != 0 {
@@ -9242,7 +9464,7 @@ pub fn read_field(entity: u32, class_name: impl AsRef<str>, field: impl AsRef<st
 /// class, so a wrong class reads the wrong bytes, though never past readable
 /// memory.
 pub fn read_modifier_field(entity: u32, modifier: impl AsRef<str>, class_name: impl AsRef<str>, field: impl AsRef<str>, r#type: FieldType) -> Option<FieldValue> {
-    host::call(
+    host::read(
         "ReadModifierField",
         |out| {
             if entity != 0 {
@@ -9310,7 +9532,7 @@ pub fn write_field(entity: u32, class_name: impl AsRef<str>, field: impl AsRef<s
 /// of CCitadelGameRules. The type is the type of one element: a number, a
 /// handle, a boolean or a vector. A list of structures cannot be read.
 pub fn read_field_list(entity: u32, class_name: impl AsRef<str>, field: impl AsRef<str>, r#type: FieldType) -> Vec<FieldValue> {
-    host::call(
+    host::read(
         "ReadFieldList",
         |out| {
             if entity != 0 {
@@ -9365,7 +9587,7 @@ pub fn write_field_list(entity: u32, class_name: impl AsRef<str>, field: impl As
 /// entity_class returns a live entity's schema class, such as
 /// CCitadelPlayerPawn, whose fields ReadField reads, and its designer name.
 pub fn entity_class(entity: u32) -> Option<EntityClassName> {
-    host::call(
+    host::read(
         "EntityClass",
         |out| {
             if entity != 0 {
@@ -9388,7 +9610,7 @@ pub fn entity_class(entity: u32) -> Option<EntityClassName> {
 /// entity_name returns a live entity's name, the targetname a map or a spawn
 /// key value gave it, or an empty name for an unnamed entity.
 pub fn entity_name(entity: u32) -> Option<String> {
-    host::call(
+    host::read(
         "EntityName",
         |out| {
             if entity != 0 {
@@ -9412,7 +9634,7 @@ pub fn entity_name(entity: u32) -> Option<String> {
 /// and angles, as MoveEntity places it, and its velocity. Any entity with a
 /// place in the world has one, such as one of the map's boxes.
 pub fn entity_position(entity: u32) -> Option<EntityPlacement> {
-    host::call(
+    host::read(
         "EntityPosition",
         |out| {
             if entity != 0 {
@@ -9435,7 +9657,7 @@ pub fn entity_position(entity: u32) -> Option<EntityPlacement> {
 /// modifier_state reports whether an entity has a modifier state, such as
 /// MODIFIER_STATE_PARRY_ACTIVE.
 pub fn modifier_state(entity: u32, state: impl AsRef<str>) -> bool {
-    host::call(
+    host::read(
         "ModifierState",
         |out| {
             if entity != 0 {
@@ -9463,7 +9685,7 @@ pub fn modifier_state(entity: u32, state: impl AsRef<str>) -> bool {
 /// ability, age, time left and stacks. An entity that holds none answers an
 /// empty list.
 pub fn modifiers(entity: u32) -> Vec<Modifier> {
-    host::call(
+    host::read(
         "Modifiers",
         |out| {
             if entity != 0 {
@@ -9912,7 +10134,7 @@ pub fn create_pickup(kind: PickupKind, position: &Vector) -> Option<Pickup> {
 /// find_entities returns the handle of every live entity of a class, such as
 /// zip_line_node.
 pub fn find_entities(class_name: impl AsRef<str>) -> Vec<u32> {
-    host::call(
+    host::read(
         "FindEntities",
         |out| {
             if !class_name.as_ref().is_empty() {
@@ -9935,7 +10157,7 @@ pub fn find_entities(class_name: impl AsRef<str>) -> Vec<u32> {
 /// find_entities_by_name returns the handle of every live entity with a name,
 /// the targetname a map or the targetname key value of CreateEntity gave it.
 pub fn find_entities_by_name(name: impl AsRef<str>) -> Vec<u32> {
-    host::call(
+    host::read(
         "FindEntitiesByName",
         |out| {
             if !name.as_ref().is_empty() {
@@ -10003,7 +10225,7 @@ pub fn kill_entity(options: &KillOptions) -> bool {
 /// trace returns where a line first hits something, or nothing when it hits
 /// nothing or the world's collision is not ready.
 pub fn trace(options: &TraceOptions) -> Option<TraceHit> {
-    host::call(
+    host::read(
         "Trace",
         |out| {
             options.encode(out);
@@ -10046,7 +10268,7 @@ pub fn pause(paused: bool) -> bool {
 
 /// match_clock returns the match time in seconds that the scoreboard shows.
 pub fn match_clock() -> Option<f32> {
-    host::call(
+    host::read(
         "MatchClock",
         |_| {},
         |r| {
@@ -10074,7 +10296,7 @@ pub fn hold_match_clock(seconds: Option<f32>) -> bool {
 
 /// rift reads the Rift objective's state.
 pub fn rift() -> Option<RiftState> {
-    host::call(
+    host::read(
         "Rift",
         |_| {},
         |r| {
@@ -10285,9 +10507,10 @@ pub trait Mod {
     /// nothing.
     fn setting_changed(&mut self, event: &SettingChangedEvent) {}
 
-    /// players_changed reports the occupied player slots before the first event
-    /// after Start, and again before the next event whenever a player joins,
-    /// finishes joining or leaves, so a mod lists players without a call.
+    /// players_changed reports the player slots with a seat, connected or away,
+    /// before the first event after Start, and again before the next event
+    /// whenever a player joins, finishes joining, goes away, returns or leaves,
+    /// so a mod lists players without a call.
     fn players_changed(&mut self, event: &PlayersChangedEvent) {}
 }
 
@@ -10298,6 +10521,16 @@ pub trait OnChat: Mod {
     /// chat reports each chat line the server accepted from a player the mod
     /// serves, while the mod asked for chat, before the line's command.
     fn chat(&mut self, event: &ChatEvent);
+}
+
+/// OnPing asks for a Ping event before each ping a player sends.
+/// The game sends it only to a mod that implements OnPing.
+#[allow(unused_variables)]
+pub trait OnPing: Mod {
+    /// ping offers each ping a player the mod serves sends, before the server
+    /// shows it to anyone, while the mod asked for pings. The mod's answer may
+    /// drop it for every recipient or mute its voice line for some.
+    fn ping(&mut self, event: &PingEvent) -> PingResult;
 }
 
 /// OnDamage asks for a Damage event before each hit.
@@ -10374,6 +10607,7 @@ pub trait OnParry: Mod {
 }
 
 /// OnJoin asks for a PlayerJoined event as each player the mod serves joins,
+/// PlayerAway and PlayerReturned events as they disconnect and come back,
 /// and a PlayerLeft event as each leaves.
 /// The game sends it only to a mod that implements OnJoin.
 #[allow(unused_variables)]
@@ -10383,9 +10617,24 @@ pub trait OnJoin: Mod {
     /// already in the game. It follows the PlayersChanged that lists them.
     fn player_joined(&mut self, event: &PlayerJoinedEvent) {}
 
-    /// player_left reports each joined player leaving the mod, once. A player who
-    /// disconnects is reported before the engine removes them, so their slot
-    /// and hero still read, and before the PlayersChanged that drops them. A
+    /// player_away reports a joined human whose client disconnected while the
+    /// server holds their seat. The player is not gone: their controller and
+    /// hero stay, and they may return to them, so a mod keeps their seat as it
+    /// stands. It follows the PlayersChanged that lists them away.
+    fn player_away(&mut self, event: &PlayerAwayEvent) {}
+
+    /// player_returned reports an away player who reconnected to their seat and
+    /// finished joining again. It follows the PlayersChanged that lists them
+    /// ready.
+    fn player_returned(&mut self, event: &PlayerReturnedEvent) {}
+
+    /// player_left reports each joined player leaving the mod, once, when their
+    /// seat ends: a bot removed, a human kicked or released by the program that
+    /// runs the host, or a human away past the game's limit. A human whose
+    /// client merely disconnects is away first. The leave arrives before the
+    /// engine frees the slot, so the slot and hero still read, and before the
+    /// PlayersChanged that drops them. Modlock then clears what the seat left:
+    /// its hero is killed and kept down, and its controller leaves its team. A
     /// disconnect the mod causes during its own event, such as removing a bot,
     /// arrives after that event returns.
     fn player_left(&mut self, event: &PlayerLeftEvent) {}
@@ -10405,6 +10654,7 @@ pub trait OnSpawn: Mod {
 /// the mod implements.
 pub struct Events<M> {
     pub chat: Option<fn(&mut M, &ChatEvent)>,
+    pub ping: Option<fn(&mut M, &PingEvent) -> PingResult>,
     pub damage: Option<fn(&mut M, &DamageEvent) -> DamageResult>,
     pub damaged: Option<fn(&mut M, &DamagedEvent)>,
     pub killed: Option<fn(&mut M, &KillEvent)>,
@@ -10414,6 +10664,8 @@ pub struct Events<M> {
     pub melee: Option<fn(&mut M, &MeleeEvent)>,
     pub parried: Option<fn(&mut M, &ParryEvent)>,
     pub player_joined: Option<fn(&mut M, &PlayerJoinedEvent)>,
+    pub player_away: Option<fn(&mut M, &PlayerAwayEvent)>,
+    pub player_returned: Option<fn(&mut M, &PlayerReturnedEvent)>,
     pub player_left: Option<fn(&mut M, &PlayerLeftEvent)>,
     pub spawned: Option<fn(&mut M, Player, &Pawn)>,
 }
@@ -10422,6 +10674,7 @@ impl<M> Events<M> {
     /// ask sets in wants the request for each event the mod handles.
     pub fn ask(&self, wants: &mut StartResult) {
         wants.chat = self.chat.is_some();
+        wants.pings = self.ping.is_some();
         wants.damage = self.damage.is_some();
         wants.damaged = self.damaged.is_some();
         wants.kills = self.killed.is_some();
@@ -10430,7 +10683,7 @@ impl<M> Events<M> {
         wants.levels = self.level_changed.is_some();
         wants.melees = self.melee.is_some();
         wants.parries = self.parried.is_some();
-        wants.joins = self.player_joined.is_some() || self.player_left.is_some();
+        wants.joins = self.player_joined.is_some() || self.player_away.is_some() || self.player_returned.is_some() || self.player_left.is_some();
     }
 
     /// serve runs the event method on the mod m with its encoded request and
@@ -10439,6 +10692,7 @@ impl<M> Events<M> {
     pub fn serve(&self, m: &mut M, method: &str, request: &[u8], out: &mut Vec<u8>) -> Result<bool, wire::Error> {
         match method {
             "Chat" => if let Some(handle) = self.chat { handle(m, &ChatEvent::decode(request)?) },
+            "Ping" => if let Some(handle) = self.ping { handle(m, &PingEvent::decode(request)?).encode(out) },
             "Damage" => if let Some(handle) = self.damage { handle(m, &DamageEvent::decode(request)?).encode(out) },
             "Damaged" => if let Some(handle) = self.damaged { handle(m, &DamagedEvent::decode(request)?) },
             "Killed" => if let Some(handle) = self.killed { handle(m, &KillEvent::decode(request)?) },
@@ -10448,6 +10702,8 @@ impl<M> Events<M> {
             "Melee" => if let Some(handle) = self.melee { handle(m, &MeleeEvent::decode(request)?) },
             "Parried" => if let Some(handle) = self.parried { handle(m, &ParryEvent::decode(request)?) },
             "PlayerJoined" => if let Some(handle) = self.player_joined { handle(m, &PlayerJoinedEvent::decode(request)?) },
+            "PlayerAway" => if let Some(handle) = self.player_away { handle(m, &PlayerAwayEvent::decode(request)?) },
+            "PlayerReturned" => if let Some(handle) = self.player_returned { handle(m, &PlayerReturnedEvent::decode(request)?) },
             "PlayerLeft" => if let Some(handle) = self.player_left { handle(m, &PlayerLeftEvent::decode(request)?) },
             _ => return Ok(false),
         }
@@ -10509,6 +10765,26 @@ pub mod probe {
 
     impl<M> ChatIgnored<M> for &Probe<M> {
         fn chat(&self) -> Option<fn(&mut M, &ChatEvent)> {
+            None
+        }
+    }
+
+    pub trait PingHandled<M> {
+        fn ping(&self) -> Option<fn(&mut M, &PingEvent) -> PingResult>;
+    }
+
+    impl<M: OnPing> PingHandled<M> for Probe<M> {
+        fn ping(&self) -> Option<fn(&mut M, &PingEvent) -> PingResult> {
+            Some(<M as OnPing>::ping)
+        }
+    }
+
+    pub trait PingIgnored<M> {
+        fn ping(&self) -> Option<fn(&mut M, &PingEvent) -> PingResult>;
+    }
+
+    impl<M> PingIgnored<M> for &Probe<M> {
+        fn ping(&self) -> Option<fn(&mut M, &PingEvent) -> PingResult> {
             None
         }
     }
@@ -10693,6 +10969,46 @@ pub mod probe {
         }
     }
 
+    pub trait PlayerAwayHandled<M> {
+        fn player_away(&self) -> Option<fn(&mut M, &PlayerAwayEvent)>;
+    }
+
+    impl<M: OnJoin> PlayerAwayHandled<M> for Probe<M> {
+        fn player_away(&self) -> Option<fn(&mut M, &PlayerAwayEvent)> {
+            Some(<M as OnJoin>::player_away)
+        }
+    }
+
+    pub trait PlayerAwayIgnored<M> {
+        fn player_away(&self) -> Option<fn(&mut M, &PlayerAwayEvent)>;
+    }
+
+    impl<M> PlayerAwayIgnored<M> for &Probe<M> {
+        fn player_away(&self) -> Option<fn(&mut M, &PlayerAwayEvent)> {
+            None
+        }
+    }
+
+    pub trait PlayerReturnedHandled<M> {
+        fn player_returned(&self) -> Option<fn(&mut M, &PlayerReturnedEvent)>;
+    }
+
+    impl<M: OnJoin> PlayerReturnedHandled<M> for Probe<M> {
+        fn player_returned(&self) -> Option<fn(&mut M, &PlayerReturnedEvent)> {
+            Some(<M as OnJoin>::player_returned)
+        }
+    }
+
+    pub trait PlayerReturnedIgnored<M> {
+        fn player_returned(&self) -> Option<fn(&mut M, &PlayerReturnedEvent)>;
+    }
+
+    impl<M> PlayerReturnedIgnored<M> for &Probe<M> {
+        fn player_returned(&self) -> Option<fn(&mut M, &PlayerReturnedEvent)> {
+            None
+        }
+    }
+
     pub trait PlayerLeftHandled<M> {
         fn player_left(&self) -> Option<fn(&mut M, &PlayerLeftEvent)>;
     }
@@ -10746,6 +11062,7 @@ macro_rules! events {
         #[allow(clippy::needless_borrow)]
         $crate::Events {
             chat: (&probe).chat(),
+            ping: (&probe).ping(),
             damage: (&probe).damage(),
             damaged: (&probe).damaged(),
             killed: (&probe).killed(),
@@ -10755,6 +11072,8 @@ macro_rules! events {
             melee: (&probe).melee(),
             parried: (&probe).parried(),
             player_joined: (&probe).player_joined(),
+            player_away: (&probe).player_away(),
+            player_returned: (&probe).player_returned(),
             player_left: (&probe).player_left(),
             spawned: (&probe).spawned(),
         }
@@ -10820,9 +11139,12 @@ pub(crate) fn round_trip(name: &str, data: &[u8]) -> Option<Result<Vec<u8>, wire
         "RestoredEvent" => RestoredEvent::decode(data).map(|m| m.encode(&mut out)),
         "PlayersChangedEvent" => PlayersChangedEvent::decode(data).map(|m| m.encode(&mut out)),
         "PlayerJoinedEvent" => PlayerJoinedEvent::decode(data).map(|m| m.encode(&mut out)),
+        "PlayerAwayEvent" => PlayerAwayEvent::decode(data).map(|m| m.encode(&mut out)),
+        "PlayerReturnedEvent" => PlayerReturnedEvent::decode(data).map(|m| m.encode(&mut out)),
         "PlayerLeftEvent" => PlayerLeftEvent::decode(data).map(|m| m.encode(&mut out)),
         "PlayersResponse" => PlayersResponse::decode(data).map(|m| m.encode(&mut out)),
         "Connection" => Connection::decode(data).map(|m| m.encode(&mut out)),
+        "PlayerPawn" => PlayerPawn::decode(data).map(|m| m.encode(&mut out)),
         "Pawn" => Pawn::decode(data).map(|m| m.encode(&mut out)),
         "Score" => Score::decode(data).map(|m| m.encode(&mut out)),
         "CameraValue" => CameraValue::decode(data).map(|m| if let Some(m) = m { m.encode(&mut out) }),
@@ -10870,6 +11192,8 @@ pub(crate) fn round_trip(name: &str, data: &[u8]) -> Option<Result<Vec<u8>, wire
         "FrameEvent" => FrameEvent::decode(data).map(|m| m.encode(&mut out)),
         "CommandEvent" => CommandEvent::decode(data).map(|m| m.encode(&mut out)),
         "ChatEvent" => ChatEvent::decode(data).map(|m| m.encode(&mut out)),
+        "PingEvent" => PingEvent::decode(data).map(|m| m.encode(&mut out)),
+        "PingResult" => PingResult::decode(data).map(|m| m.encode(&mut out)),
         "CommandResult" => CommandResult::decode(data).map(|m| m.encode(&mut out)),
         "WorldEvent" => WorldEvent::decode(data).map(|m| m.encode(&mut out)),
         "ServiceCall" => ServiceCall::decode(data).map(|m| m.encode(&mut out)),

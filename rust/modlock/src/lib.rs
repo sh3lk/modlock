@@ -54,6 +54,7 @@ mod ground;
 mod heroes;
 mod hook;
 mod items;
+mod pawns;
 mod player;
 mod probe_run;
 mod puppet;
@@ -89,6 +90,7 @@ pub use ground::{ground, Ground};
 pub use heroes::{find_hero, hero_named, Hero, HEROES};
 pub use hook::{Hook, HookRead, HOOK_ABILITY, HOOK_UPGRADES};
 pub use items::{item, item_id, Item, Slot, ITEMS};
+pub use pawns::set_pawn_cache;
 pub use player::Player;
 pub use probe_run::{Check, ProbeRun};
 pub use puppet::{Pose, Puppet, PuppetOptions, PuppetState, Track, GHOST_STATES, TICKS_PER_SECOND};
@@ -121,6 +123,7 @@ pub mod prelude {
     pub use crate::hook::{Hook, HookRead};
     pub use crate::items::{item, item_id, Item, Slot, ITEMS};
     pub use crate::log;
+    pub use crate::pawns::set_pawn_cache;
     pub use crate::persist::{
         self, PersistChange, PersistOptions, PersistRead, PersistRecord, PersistValue,
     };
