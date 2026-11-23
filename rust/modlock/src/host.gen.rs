@@ -115,6 +115,118 @@ impl PickupKind {
     }
 }
 
+/// ControllerStream is the state of the stream that brings one player's
+/// controllers to the host, as a mod reads it.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+#[repr(i32)]
+pub enum ControllerStream {
+    /// Unknown is never sent.
+    #[default]
+    Unknown = 0,
+    /// None means no client streams the player's controllers
+    /// yet: none is linked, the link dropped, or the client has not answered
+    /// the watch. A mod sees no controllers.
+    None = 1,
+    /// Live means frames arrive and the game has focus.
+    Live = 2,
+    /// Unfocused means frames arrive while the player's game
+    /// window does not have focus. The controllers are listed with nothing held
+    /// and every axis at rest.
+    Unfocused = 3,
+    /// Stale means the stream is linked but no frame arrived
+    /// within its deadline. The controllers keep their last state, so a short
+    /// gap does not cut a held throttle; the mod decides what a long one means.
+    Stale = 4,
+}
+
+impl ControllerStream {
+    /// from_i32 returns the ControllerStream numbered number, or Unknown for a number the library
+    /// has no name for.
+    pub fn from_i32(number: i32) -> Self {
+        match number {
+            0 => Self::Unknown,
+            1 => Self::None,
+            2 => Self::Live,
+            3 => Self::Unfocused,
+            4 => Self::Stale,
+            _ => Self::Unknown,
+        }
+    }
+}
+
+/// GamepadButton names one button of the gamepad layout, by position as SDL
+/// names them: South is A on an Xbox controller and Cross on a PlayStation one.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+#[repr(i32)]
+pub enum GamepadButton {
+    /// Unknown is a button the layout does not name.
+    #[default]
+    Unknown = 0,
+    /// South is the bottom face button.
+    South = 1,
+    /// East is the right face button.
+    East = 2,
+    /// West is the left face button.
+    West = 3,
+    /// North is the top face button.
+    North = 4,
+    /// Back is the View, Select or Share button.
+    Back = 5,
+    /// Guide is the Xbox, PS or Home button.
+    Guide = 6,
+    /// Start is the Menu, Start or Options button.
+    Start = 7,
+    /// LeftStick is the left stick pressed in.
+    LeftStick = 8,
+    /// RightStick is the right stick pressed in.
+    RightStick = 9,
+    /// LeftShoulder is the left bumper.
+    LeftShoulder = 10,
+    /// RightShoulder is the right bumper.
+    RightShoulder = 11,
+    /// DpadUp is the directional pad's up.
+    DpadUp = 12,
+    /// DpadDown is the directional pad's down.
+    DpadDown = 13,
+    /// DpadLeft is the directional pad's left.
+    DpadLeft = 14,
+    /// DpadRight is the directional pad's right.
+    DpadRight = 15,
+    /// Misc is the extra button some pads have, such as the
+    /// Xbox Share button or the PlayStation microphone button.
+    Misc = 16,
+    /// Touchpad is the PlayStation touchpad pressed.
+    Touchpad = 17,
+}
+
+impl GamepadButton {
+    /// from_i32 returns the GamepadButton numbered number, or Unknown for a number the library
+    /// has no name for.
+    pub fn from_i32(number: i32) -> Self {
+        match number {
+            0 => Self::Unknown,
+            1 => Self::South,
+            2 => Self::East,
+            3 => Self::West,
+            4 => Self::North,
+            5 => Self::Back,
+            6 => Self::Guide,
+            7 => Self::Start,
+            8 => Self::LeftStick,
+            9 => Self::RightStick,
+            10 => Self::LeftShoulder,
+            11 => Self::RightShoulder,
+            12 => Self::DpadUp,
+            13 => Self::DpadDown,
+            14 => Self::DpadLeft,
+            15 => Self::DpadRight,
+            16 => Self::Misc,
+            17 => Self::Touchpad,
+            _ => Self::Unknown,
+        }
+    }
+}
+
 /// MovementAction is a movement fact the game announced for a hero.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 #[repr(i32)]
@@ -3009,6 +3121,280 @@ impl Message for RiftState {
                 4 => message.give_up_time = r.float(kind)?,
                 5 => message.next_spawn = r.float(kind)?,
                 6 => message.spawn_window = r.float(kind)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// ControllerInfo describes one device a client reads.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct ControllerInfo {
+    /// id identifies the device within its stream for as long as it stays
+    /// attached. A device plugged in again gets a new id.
+    pub id: u32,
+    /// name is the device's name, such as "Xbox Series X Controller".
+    pub name: String,
+    /// guid is SDL's joystick GUID in hexadecimal, which identifies the model
+    /// and the way it is attached.
+    pub guid: String,
+    /// vendor and product are the USB vendor and product IDs, or zero when the
+    /// device does not report them.
+    pub vendor: u32,
+    pub product: u32,
+    /// axes, buttons and hats count the device's raw inputs, which State's
+    /// lists follow.
+    pub axes: u32,
+    pub buttons: u32,
+    pub hats: u32,
+    /// gamepad is true when SDL knows the device's gamepad layout, so State
+    /// carries the gamepad layer.
+    pub gamepad: bool,
+}
+
+impl Message for ControllerInfo {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.id != 0 {
+            wire::uint32(out, 1, self.id);
+        }
+        if !self.name.is_empty() {
+            wire::string(out, 2, &self.name);
+        }
+        if !self.guid.is_empty() {
+            wire::string(out, 3, &self.guid);
+        }
+        if self.vendor != 0 {
+            wire::uint32(out, 4, self.vendor);
+        }
+        if self.product != 0 {
+            wire::uint32(out, 5, self.product);
+        }
+        if self.axes != 0 {
+            wire::uint32(out, 6, self.axes);
+        }
+        if self.buttons != 0 {
+            wire::uint32(out, 7, self.buttons);
+        }
+        if self.hats != 0 {
+            wire::uint32(out, 8, self.hats);
+        }
+        if self.gamepad {
+            wire::bool(out, 9, self.gamepad);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.id = r.uint32(kind)?,
+                2 => message.name = r.string(kind)?,
+                3 => message.guid = r.string(kind)?,
+                4 => message.vendor = r.uint32(kind)?,
+                5 => message.product = r.uint32(kind)?,
+                6 => message.axes = r.uint32(kind)?,
+                7 => message.buttons = r.uint32(kind)?,
+                8 => message.hats = r.uint32(kind)?,
+                9 => message.gamepad = r.bool(kind)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// Gamepad is a device's gamepad layer, with named sticks, triggers and
+/// buttons, for a device whose layout SDL knows.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Gamepad {
+    /// left_x, left_y, right_x and right_y are the sticks, from -1 to 1, with x
+    /// positive to the right and y positive down, as SDL reports them.
+    pub left_x: f32,
+    pub left_y: f32,
+    pub right_x: f32,
+    pub right_y: f32,
+    /// left_trigger and right_trigger run from 0 at rest to 1 fully pulled.
+    pub left_trigger: f32,
+    pub right_trigger: f32,
+    /// held lists the buttons held now.
+    pub held: Vec<GamepadButton>,
+    /// pressed and released list the buttons pressed and released since the
+    /// previous state, once for each press, so a tap shorter than a server frame
+    /// is listed in both.
+    pub pressed: Vec<GamepadButton>,
+    pub released: Vec<GamepadButton>,
+}
+
+impl Message for Gamepad {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.left_x != 0.0 {
+            wire::float(out, 1, self.left_x);
+        }
+        if self.left_y != 0.0 {
+            wire::float(out, 2, self.left_y);
+        }
+        if self.right_x != 0.0 {
+            wire::float(out, 3, self.right_x);
+        }
+        if self.right_y != 0.0 {
+            wire::float(out, 4, self.right_y);
+        }
+        if self.left_trigger != 0.0 {
+            wire::float(out, 5, self.left_trigger);
+        }
+        if self.right_trigger != 0.0 {
+            wire::float(out, 6, self.right_trigger);
+        }
+        wire::packed(out, 7, &self.held, |out, v| wire::raw::int32(out, *v as i32));
+        wire::packed(out, 8, &self.pressed, |out, v| wire::raw::int32(out, *v as i32));
+        wire::packed(out, 9, &self.released, |out, v| wire::raw::int32(out, *v as i32));
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.left_x = r.float(kind)?,
+                2 => message.left_y = r.float(kind)?,
+                3 => message.right_x = r.float(kind)?,
+                4 => message.right_y = r.float(kind)?,
+                5 => message.left_trigger = r.float(kind)?,
+                6 => message.right_trigger = r.float(kind)?,
+                7 => r.repeated(kind, wire::VARINT, &mut message.held, |r, kind| Ok(GamepadButton::from_i32(r.int32(kind)?)))?,
+                8 => r.repeated(kind, wire::VARINT, &mut message.pressed, |r, kind| Ok(GamepadButton::from_i32(r.int32(kind)?)))?,
+                9 => r.repeated(kind, wire::VARINT, &mut message.released, |r, kind| Ok(GamepadButton::from_i32(r.int32(kind)?)))?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// ControllerState is one device's inputs, the raw joystick layer always and
+/// the gamepad layer when SDL knows the device.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct ControllerState {
+    /// id is the device's id in ControllerInfo.
+    pub id: u32,
+    /// axes holds each raw axis from -1 to 1, in the device's order. A radio
+    /// transmitter's channels are its axes.
+    pub axes: Vec<f32>,
+    /// buttons holds whether each raw button is held, in the device's order.
+    pub buttons: Vec<bool>,
+    /// hats holds each hat's position as SDL's mask: 1 up, 2 right, 4 down and
+    /// 8 left, combined on a diagonal, and 0 centered.
+    pub hats: Vec<u32>,
+    /// pressed and released list the raw buttons, by index, pressed and
+    /// released since the previous state, once for each press.
+    pub pressed: Vec<u32>,
+    pub released: Vec<u32>,
+    /// gamepad is the gamepad layer, when the device has one.
+    pub gamepad: Gamepad,
+}
+
+impl Message for ControllerState {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.id != 0 {
+            wire::uint32(out, 1, self.id);
+        }
+        wire::packed(out, 2, &self.axes, |out, v| wire::raw::float(out, *v));
+        wire::packed(out, 3, &self.buttons, |out, v| wire::raw::bool(out, *v));
+        wire::packed(out, 4, &self.hats, |out, v| wire::raw::uint32(out, *v));
+        wire::packed(out, 5, &self.pressed, |out, v| wire::raw::uint32(out, *v));
+        wire::packed(out, 6, &self.released, |out, v| wire::raw::uint32(out, *v));
+        if self.gamepad != Gamepad::default() {
+            wire::message(out, 7, &self.gamepad);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.id = r.uint32(kind)?,
+                2 => r.repeated(kind, wire::FIXED32, &mut message.axes, |r, kind| Ok(r.float(kind)?))?,
+                3 => r.repeated(kind, wire::VARINT, &mut message.buttons, |r, kind| Ok(r.bool(kind)?))?,
+                4 => r.repeated(kind, wire::VARINT, &mut message.hats, |r, kind| Ok(r.uint32(kind)?))?,
+                5 => r.repeated(kind, wire::VARINT, &mut message.pressed, |r, kind| Ok(r.uint32(kind)?))?,
+                6 => r.repeated(kind, wire::VARINT, &mut message.released, |r, kind| Ok(r.uint32(kind)?))?,
+                7 => message.gamepad = Gamepad::decode(r.bytes(kind)?)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// Controller is one device as a mod reads it.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Controller {
+    /// info describes the device.
+    pub info: ControllerInfo,
+    /// state is its inputs now, with the presses and releases since the mod's
+    /// previous frame.
+    pub state: ControllerState,
+}
+
+impl Message for Controller {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.info != ControllerInfo::default() {
+            wire::message(out, 1, &self.info);
+        }
+        if self.state != ControllerState::default() {
+            wire::message(out, 2, &self.state);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.info = ControllerInfo::decode(r.bytes(kind)?)?,
+                2 => message.state = ControllerState::decode(r.bytes(kind)?)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// PlayerControllers is one watched player's controllers in a frame.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct PlayerControllers {
+    /// player is the player's slot.
+    pub player: Player,
+    /// stream is the state of the stream that brings them.
+    pub stream: ControllerStream,
+    /// controllers lists the player's devices, empty while stream is none.
+    pub controllers: Vec<Controller>,
+}
+
+impl Message for PlayerControllers {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.player.slot() != 0 {
+            wire::int32(out, 1, self.player.slot());
+        }
+        if self.stream as i32 != 0 {
+            wire::int32(out, 2, self.stream as i32);
+        }
+        for v in &self.controllers {
+            wire::message(out, 3, v);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.player = Player::of(r.int32(kind)?),
+                2 => message.stream = ControllerStream::from_i32(r.int32(kind)?),
+                3 => message.controllers.push(Controller::decode(r.bytes(kind)?)?),
                 _ => r.skip(kind)?,
             }
         }
@@ -7186,6 +7572,9 @@ pub struct FrameEvent {
     /// movement. A kind it lacks, such as on a game build whose completion it
     /// cannot find, is unknown rather than absent from the samples.
     pub interactions: Vec<InteractionKind>,
+    /// controllers holds each watched player's controllers in every frame, with
+    /// the presses and releases since the mod's previous frame.
+    pub controllers: Vec<PlayerControllers>,
 }
 
 impl Message for FrameEvent {
@@ -7200,6 +7589,9 @@ impl Message for FrameEvent {
             wire::message(out, 3, v);
         }
         wire::packed(out, 4, &self.interactions, |out, v| wire::raw::int32(out, *v as i32));
+        for v in &self.controllers {
+            wire::message(out, 5, v);
+        }
     }
 
     fn decode(data: &[u8]) -> Result<Self, wire::Error> {
@@ -7211,6 +7603,7 @@ impl Message for FrameEvent {
                 2 => message.time_seconds = r.double(kind)?,
                 3 => message.movement.push(MovementSample::decode(r.bytes(kind)?)?),
                 4 => r.repeated(kind, wire::VARINT, &mut message.interactions, |r, kind| Ok(InteractionKind::from_i32(r.int32(kind)?)))?,
+                5 => message.controllers.push(PlayerControllers::decode(r.bytes(kind)?)?),
                 _ => r.skip(kind)?,
             }
         }
@@ -8920,6 +9313,21 @@ impl Player {
     /// event on a new tick, or removes it.
     pub fn watch_movement(self, watch: bool) -> bool {
         host::send("WatchMovement", |out| {
+            if self.slot() != 0 {
+                wire::int32(out, 1, self.slot());
+            }
+            if watch {
+                wire::bool(out, 2, watch);
+            }
+        })
+    }
+
+    /// watch_controllers adds a player's controllers to the controller lists of
+    /// each Frame event, or removes them. The player's client reads the devices
+    /// only while some mod watches them, and until it answers the player is
+    /// listed with no stream.
+    pub fn watch_controllers(self, watch: bool) -> bool {
+        host::send("WatchControllers", |out| {
             if self.slot() != 0 {
                 wire::int32(out, 1, self.slot());
             }
@@ -11120,6 +11528,11 @@ pub(crate) fn round_trip(name: &str, data: &[u8]) -> Option<Result<Vec<u8>, wire
         "EntityValue" => EntityValue::decode(data).map(|m| if let Some(m) = m { m.encode(&mut out) }),
         "InputEvent" => InputEvent::decode(data).map(|m| m.encode(&mut out)),
         "RiftState" => RiftState::decode(data).map(|m| m.encode(&mut out)),
+        "ControllerInfo" => ControllerInfo::decode(data).map(|m| m.encode(&mut out)),
+        "Gamepad" => Gamepad::decode(data).map(|m| m.encode(&mut out)),
+        "ControllerState" => ControllerState::decode(data).map(|m| m.encode(&mut out)),
+        "Controller" => Controller::decode(data).map(|m| m.encode(&mut out)),
+        "PlayerControllers" => PlayerControllers::decode(data).map(|m| m.encode(&mut out)),
         "MovementSample" => MovementSample::decode(data).map(|m| m.encode(&mut out)),
         "Interaction" => Interaction::decode(data).map(|m| m.encode(&mut out)),
         "MovementCommand" => MovementCommand::decode(data).map(|m| m.encode(&mut out)),
