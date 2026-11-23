@@ -397,7 +397,7 @@ func New(ctx context.Context, dir, name string, language wasm.Manifest_Language,
 			"Cargo.toml":         rust.Replace(rustManifest),
 			"src/lib.rs":         rust.Replace(rustMain),
 			".cargo/config.toml": rustConfig,
-			".gitignore":         "/" + BuildDir + "/\n/" + cargoDir + "/\n",
+			".gitignore":         "/" + BuildDir + "/\n/" + cargoDir + "/\n/.modlock/\n",
 		}
 	default:
 		return nil, errors.Errorf("modlock cannot create %s mods yet", language)

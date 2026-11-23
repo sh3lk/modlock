@@ -29,6 +29,11 @@ impl Buttons {
     pub const ABILITY3: u64 = 1 << 35;
     /// ULTIMATE is the hero's ultimate ability key, the fourth.
     pub const ULTIMATE: u64 = 1 << 36;
+    /// ITEM1 to ITEM4 are the hero's four active item keys.
+    pub const ITEM1: u64 = 1 << 37;
+    pub const ITEM2: u64 = 1 << 38;
+    pub const ITEM3: u64 = 1 << 39;
+    pub const ITEM4: u64 = 1 << 40;
     /// PARRY is the melee parry button.
     pub const PARRY: u64 = 1 << 42;
     /// SPEC_NEXT to SPEC_TOGGLE_TEAM are the buttons a player's client sends
