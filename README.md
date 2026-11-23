@@ -14,15 +14,16 @@
 <img alt="Luau" src="https://img.shields.io/badge/Luau-00A2FF?style=flat-square&logo=lua&logoColor=white">
 <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white">
 <img alt="Go" src="https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go&logoColor=white">
+<img alt="Rust" src="https://img.shields.io/badge/Rust-000000?style=flat-square&logo=rust&logoColor=white">
 <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green?style=flat-square">
 </p>
 
 </div>
 
 **Modlock** lets you write the logic of a [Deadlock] custom game mode by hand,
-in TypeScript, JavaScript, Luau, Python or Go, and the game server runs your
-mod in a WebAssembly sandbox. Every language's library makes its calls to the
-game as messages from one protobuf schema, so each language gets the same
+in TypeScript, JavaScript, Luau, Python, Go or Rust, and the game server runs
+your mod in a WebAssembly sandbox. Every language's library makes its calls to
+the game as messages from one protobuf schema, so each language gets the same
 events and calls. `modlock publish` uploads mods to [hyperline.gg], the default
 platform for custom games.
 
@@ -39,9 +40,9 @@ command('hello', (player) => {
 
 > **Early development.** APIs may change without notice between any two
 > releases. [TypeScript, JavaScript](https://paralin.github.io/modlock/languages/typescript),
-> [Luau](https://paralin.github.io/modlock/languages/luau), [Python](https://paralin.github.io/modlock/languages/python) and
-> [Go](https://paralin.github.io/modlock/languages/go) mods, the `modlock` command line and
-> `modlock publish` all work today.
+> [Luau](https://paralin.github.io/modlock/languages/luau), [Python](https://paralin.github.io/modlock/languages/python),
+> [Go](https://paralin.github.io/modlock/languages/go) and [Rust](https://paralin.github.io/modlock/languages/rust)
+> mods, the `modlock` command line and `modlock publish` all work today.
 
 ## Getting started
 
@@ -67,8 +68,9 @@ npm install --save-dev @modlock/modlock
 npx modlock new my-mod
 ```
 
-You need nothing else for a TypeScript, JavaScript, Luau or Python mod, and a
-Go mod also needs [Go](https://go.dev/dl/). The
+You need nothing else for a TypeScript, JavaScript, Luau or Python mod. A Go
+mod also needs [Go](https://go.dev/dl/), and a Rust mod
+[Rust](https://paralin.github.io/modlock/languages/rust#the-build). The
 [install page](https://paralin.github.io/modlock/start/install) explains how to
 download `modlock` by hand and what to do when your terminal cannot find it.
 
@@ -89,18 +91,20 @@ through the rest.
 
 Complete game modes to start from include [`arena`](examples/arena) in
 TypeScript, [`bounty`](examples/bounty) in Luau and [`race`](examples/race) in
-Go, all in the [`examples`](examples) directory.
+Go, all in the [`examples`](examples) directory. The Rust mods there are
+[`hello-rust`](examples/hello-rust), [`hero-build-rust`](examples/hero-build-rust),
+[`hud-rust`](examples/hud-rust) and [`puppet-rust`](examples/puppet-rust).
 
 ## Documentation
 
 The documentation is at [paralin.github.io/modlock](https://paralin.github.io/modlock/).
-Every sample there comes in TypeScript, Luau, Python and Go, and once you
-choose your language, every page shows its samples in it.
+Every sample there comes in TypeScript, Luau, Python and Go, and most of them
+in Rust too. Once you choose your language, every page shows its samples in it.
 
 | Section                                                             | Holds                                                                     |
 | ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | [Start](https://paralin.github.io/modlock/start/install)            | Install, your first mod, a tutorial and the examples.                     |
-| [Languages](https://paralin.github.io/modlock/languages/typescript) | What is particular to TypeScript, Luau, Python and Go.                    |
+| [Languages](https://paralin.github.io/modlock/languages/typescript) | What is particular to TypeScript, Luau, Python, Go and Rust.              |
 | [Guides](https://paralin.github.io/modlock/guides/events)           | One page for each thing a mod does: events, players, timers, the world.   |
 | [Mechanics](https://paralin.github.io/modlock/mechanics/ready-up)   | Whole mechanics to start from: a countdown, kill scoring, a hill, a race. |
 | [Reference](https://paralin.github.io/modlock/reference/cli)        | The command line, the manifest and publishing.                            |
