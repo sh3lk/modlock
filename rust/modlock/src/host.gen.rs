@@ -8026,6 +8026,41 @@ impl Message for ScoreConnection {
     }
 }
 
+/// Teammate is one more player a team's score or a team's read names, with
+/// the connection that shows the player is in the game.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Teammate {
+    /// player is the teammate's server slot.
+    pub player: Player,
+    /// connection is the teammate's enrollment proof from Bind in a report, or
+    /// their live connection in a read.
+    pub connection: Option<ScoreConnection>,
+}
+
+impl Message for Teammate {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.player.slot() != 0 {
+            wire::int32(out, 1, self.player.slot());
+        }
+        if let Some(v) = &self.connection {
+            wire::message(out, 2, v);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.player = Player::of(r.int32(kind)?),
+                2 => message.connection = Some(ScoreConnection::decode(r.bytes(kind)?)?),
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
 /// ScoreReport reports one score for one player, the request of the scores
 /// service's asynchronous Report method, returning ScoreAccepted.
 #[derive(Clone, Debug, Default, PartialEq)]
@@ -8054,6 +8089,9 @@ pub struct ScoreReport {
     pub evidence: String,
     /// connection is the enrollment proof from Bind.
     pub connection: Option<ScoreConnection>,
+    /// teammates are the scoring player's teammates on a team board, the
+    /// board's team size less one; a board of single players takes none.
+    pub teammates: Vec<Teammate>,
 }
 
 impl Message for ScoreReport {
@@ -8085,6 +8123,9 @@ impl Message for ScoreReport {
         if let Some(v) = &self.connection {
             wire::message(out, 9, v);
         }
+        for v in &self.teammates {
+            wire::message(out, 10, v);
+        }
     }
 
     fn decode(data: &[u8]) -> Result<Self, wire::Error> {
@@ -8101,6 +8142,7 @@ impl Message for ScoreReport {
                 7 => message.earned_at_unix_millis = r.int64(kind)?,
                 8 => message.evidence = r.string(kind)?,
                 9 => message.connection = Some(ScoreConnection::decode(r.bytes(kind)?)?),
+                10 => message.teammates.push(Teammate::decode(r.bytes(kind)?)?),
                 _ => r.skip(kind)?,
             }
         }
@@ -8292,6 +8334,9 @@ pub struct BoardQuery {
     pub player: Option<Player>,
     /// connection identifies the current viewer when player is set.
     pub connection: Option<ScoreConnection>,
+    /// teammates name the viewer's teammates on a team board, so player's row
+    /// is their team's; each is a player in the game now.
+    pub teammates: Vec<Teammate>,
 }
 
 impl Message for BoardQuery {
@@ -8317,6 +8362,9 @@ impl Message for BoardQuery {
         if let Some(v) = &self.connection {
             wire::message(out, 7, v);
         }
+        for v in &self.teammates {
+            wire::message(out, 8, v);
+        }
     }
 
     fn decode(data: &[u8]) -> Result<Self, wire::Error> {
@@ -8331,6 +8379,7 @@ impl Message for BoardQuery {
                 5 => message.limit = r.uint32(kind)?,
                 6 => message.player = Some(Player::of(r.int32(kind)?)),
                 7 => message.connection = Some(ScoreConnection::decode(r.bytes(kind)?)?),
+                8 => message.teammates.push(Teammate::decode(r.bytes(kind)?)?),
                 _ => r.skip(kind)?,
             }
         }
@@ -8416,6 +8465,10 @@ pub struct Standing {
     pub tiebreak: i64,
     /// count is how many scores the standing kept.
     pub count: u32,
+    /// members are a team's players on a team board, ordered by SteamID64;
+    /// steam_id and name then belong to the first. A board of single players
+    /// lists none.
+    pub members: Vec<Member>,
 }
 
 impl Message for Standing {
@@ -8438,6 +8491,9 @@ impl Message for Standing {
         if self.count != 0 {
             wire::uint32(out, 6, self.count);
         }
+        for v in &self.members {
+            wire::message(out, 7, v);
+        }
     }
 
     fn decode(data: &[u8]) -> Result<Self, wire::Error> {
@@ -8451,6 +8507,40 @@ impl Message for Standing {
                 4 => message.value = r.int64(kind)?,
                 5 => message.tiebreak = r.int64(kind)?,
                 6 => message.count = r.uint32(kind)?,
+                7 => message.members.push(Member::decode(r.bytes(kind)?)?),
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// Member is one player of a team's standing.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Member {
+    /// steam_id is the player's SteamID64.
+    pub steam_id: u64,
+    /// name is the player's name as the host shows it.
+    pub name: String,
+}
+
+impl Message for Member {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.steam_id != 0 {
+            wire::uint64(out, 1, self.steam_id);
+        }
+        if !self.name.is_empty() {
+            wire::string(out, 2, &self.name);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.steam_id = r.uint64(kind)?,
+                2 => message.name = r.string(kind)?,
                 _ => r.skip(kind)?,
             }
         }
@@ -8941,7 +9031,7 @@ impl Player {
     /// hero with no expiry, giving it back whenever the game removes it or the
     /// hero returns. Every hero that gains the modifier from the same ability
     /// keeps it until the hold ends. Releasing leaves the hero's current
-    /// modifier until it dies.
+    /// modifier until it dies; the mod stopping removes it.
     pub fn hold_modifier(self, modifier: impl AsRef<str>, active: Option<bool>) -> bool {
         host::send("HoldModifier", |out| {
             if self.slot() != 0 {
@@ -10835,7 +10925,8 @@ pub fn watch_projectiles(options: &ProjectileOptions) -> bool {
 /// hold_entity_modifier keeps a modifier, named as GiveModifier names it, on a
 /// live entity with no expiry, giving it back whenever the game removes it
 /// while the entity lives. The hold ends with the entity or when active is
-/// false.
+/// false. Releasing leaves the entity's current modifier; the mod stopping
+/// removes it.
 pub fn hold_entity_modifier(entity: u32, modifier: impl AsRef<str>, active: Option<bool>) -> bool {
     host::send("HoldEntityModifier", |out| {
         if entity != 0 {
@@ -11614,6 +11705,7 @@ pub(crate) fn round_trip(name: &str, data: &[u8]) -> Option<Result<Vec<u8>, wire
         "ServiceRepliedEvent" => ServiceRepliedEvent::decode(data).map(|m| m.encode(&mut out)),
         "PrecacheOptions" => PrecacheOptions::decode(data).map(|m| m.encode(&mut out)),
         "ScoreConnection" => ScoreConnection::decode(data).map(|m| m.encode(&mut out)),
+        "Teammate" => Teammate::decode(data).map(|m| m.encode(&mut out)),
         "ScoreReport" => ScoreReport::decode(data).map(|m| m.encode(&mut out)),
         "ScoreReport_PartitionEntry" => ScoreReportPartitionEntry::decode(data).map(|m| m.encode(&mut out)),
         "MatchReport" => MatchReport::decode(data).map(|m| m.encode(&mut out)),
@@ -11623,6 +11715,7 @@ pub(crate) fn round_trip(name: &str, data: &[u8]) -> Option<Result<Vec<u8>, wire
         "BoardQuery_PartitionEntry" => BoardQueryPartitionEntry::decode(data).map(|m| m.encode(&mut out)),
         "BoardPage" => BoardPage::decode(data).map(|m| m.encode(&mut out)),
         "Standing" => Standing::decode(data).map(|m| m.encode(&mut out)),
+        "Member" => Member::decode(data).map(|m| m.encode(&mut out)),
         _ => return None,
     };
     Some(decoded.map(|()| out))

@@ -1876,6 +1876,26 @@ impl CCitadelRankedBadgeProp {
     }
 }
 
+class!(CCitadelRankedSeasonRewardProp: CDynamicProp);
+
+impl CCitadelRankedSeasonRewardProp {
+    pub fn m_unAccountID(self) -> Field<u32> {
+        self.field("m_unAccountID")
+    }
+
+    pub fn m_eRankedType(self) -> Field<u32> {
+        self.field("m_eRankedType")
+    }
+
+    pub fn m_unRankInterval(self) -> Field<u8> {
+        self.field("m_unRankInterval")
+    }
+
+    pub fn m_unPackedRank(self) -> Field<u8> {
+        self.field("m_unPackedRank")
+    }
+}
+
 class!(CCitadel_DynamicProp: CDynamicProp);
 
 impl CCitadel_DynamicProp {

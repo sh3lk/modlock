@@ -2686,6 +2686,10 @@ pub const fn citadel_hideout_npc_debug() -> Variable<bool> {
     Variable::new("citadel_hideout_npc_debug")
 }
 
+pub const fn citadel_hideout_owner_ranked_season_reward_override() -> Variable<u8> {
+    Variable::new("citadel_hideout_owner_ranked_season_reward_override")
+}
+
 pub const fn citadel_hideout_teleport_trigger_delay() -> Variable<f32> {
     Variable::new("citadel_hideout_teleport_trigger_delay")
 }
@@ -3007,6 +3011,10 @@ pub const fn citadel_melee_heavymelee_toss_force_vs_tiny_min() -> Variable<f32> 
 
 pub const fn citadel_melee_hit_delay_max_time() -> Variable<f32> {
     Variable::new("citadel_melee_hit_delay_max_time")
+}
+
+pub const fn citadel_melee_lagcomp_debug() -> Variable<bool> {
+    Variable::new("citadel_melee_lagcomp_debug")
 }
 
 pub const fn citadel_melee_shake_amplitude() -> Variable<f32> {

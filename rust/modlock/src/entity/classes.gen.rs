@@ -942,6 +942,18 @@ impl CCitadelHeroLoader {
     }
 }
 
+class!(CCitadelHideoutOwnerRankedSeasonRewardProp: CBaseEntity);
+
+impl CCitadelHideoutOwnerRankedSeasonRewardProp {
+    pub fn m_eRankedType(self) -> Field<u32> {
+        self.field("m_eRankedType")
+    }
+
+    pub fn m_unRankInterval(self) -> Field<u8> {
+        self.field("m_unRankInterval")
+    }
+}
+
 class!(CCitadelHideoutPropSlot: CBaseEntity);
 
 impl CCitadelHideoutPropSlot {
