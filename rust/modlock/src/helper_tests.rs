@@ -380,6 +380,345 @@ fn curves_compose_and_play_as_queued_lerps() {
     );
 }
 
+/// Game is the stand-in game of the entity camera's test.
+struct Game {
+    /// sent holds each call the host received: its method and request.
+    sent: std::cell::RefCell<Vec<(String, Vec<u8>)>>,
+    /// fail names the calls, comma separated, the host answers with an error.
+    fail: std::cell::Cell<&'static str>,
+    /// next_entity issues distinct handles for the CreateEntity calls.
+    next_entity: std::cell::Cell<u32>,
+    /// pawn_entity is the hero pawn handle Pawn returns; 0 is no hero.
+    pawn_entity: std::cell::Cell<u32>,
+    /// pawn_flags is the CBaseEntity.m_fFlags that ReadField returns.
+    pawn_flags: std::cell::Cell<u32>,
+}
+
+impl Game {
+    /// requests returns the request of each call of method the host
+    /// received, in order.
+    fn requests(&self, method: &str) -> Vec<Vec<u8>> {
+        let sent = self.sent.borrow();
+        let calls = sent.iter().filter(|(called, _)| called == method);
+        calls.map(|(_, request)| request.clone()).collect()
+    }
+
+    /// clear forgets the calls the host received.
+    fn clear(&self) {
+        self.sent.borrow_mut().clear();
+    }
+}
+
+/// entity_host makes the host answer the calls of an entity camera as the
+/// game does.
+fn entity_host() -> std::rc::Rc<Game> {
+    use crate::wire;
+    use std::cell::{Cell, RefCell};
+
+    let game = std::rc::Rc::new(Game {
+        sent: RefCell::default(),
+        fail: Cell::new(""),
+        next_entity: Cell::new(100),
+        pawn_entity: Cell::new(42),
+        pawn_flags: Cell::new(0x41),
+    });
+    let host = game.clone();
+    crate::host::fake::answer(move |method, request| {
+        let call = (method.to_owned(), request.to_vec());
+        host.sent.borrow_mut().push(call);
+        if host.fail.get().split(',').any(|refused| refused == method) {
+            return Err("refused".to_owned());
+        }
+        let mut out = Vec::new();
+        match method {
+            "Pawn" if host.pawn_entity.get() != 0 => {
+                let pawn = crate::Pawn {
+                    entity: host.pawn_entity.get(),
+                    ..crate::Pawn::default()
+                };
+                wire::message(&mut out, 1, &pawn);
+            }
+            "CreateEntity" => {
+                let entity = host.next_entity.get();
+                host.next_entity.set(entity + 1);
+                wire::uint32(&mut out, 1, entity);
+            }
+            "ReadField" => {
+                let flags = crate::FieldValue::Number(f64::from(host.pawn_flags.get()));
+                wire::nested(&mut out, 1, |out| flags.encode(out));
+            }
+            "FireInput" | "RemoveEntity" => wire::bool(&mut out, 1, true),
+            _ => {}
+        }
+        Ok(out)
+    });
+    game
+}
+
+/// An entity camera spawns a point_camera only its player receives, turns it
+/// with full roll and cleans up.
+#[test]
+fn entity_camera_spawns_isolated_point_camera_with_roll_and_cleans_up() {
+    use crate::camera::EntityCameraOptions;
+    use crate::wire::{self, Message};
+    use crate::{entity_camera, EntityOptions, EntityValue, FieldType, FieldValue, Player};
+
+    /// INTRO is the modifier that routes the camera through the entity.
+    const INTRO: &str = "modifier_citadel_hideout_intro";
+
+    // Each request is compared with the bytes the game would read.
+    let hold = |active: bool| {
+        let mut out = Vec::new();
+        wire::int32(&mut out, 1, 5);
+        wire::string(&mut out, 2, INTRO);
+        wire::bool(&mut out, 3, active);
+        out
+    };
+    let pawn_hold = |entity: u32, active: bool| {
+        let mut out = Vec::new();
+        wire::uint32(&mut out, 1, entity);
+        wire::string(&mut out, 2, INTRO);
+        wire::bool(&mut out, 3, active);
+        out
+    };
+    let field = |entity: u32, class: &str, name: &str, kind: FieldType, value: Option<f64>| {
+        let mut out = Vec::new();
+        wire::uint32(&mut out, 1, entity);
+        wire::string(&mut out, 2, class);
+        wire::string(&mut out, 3, name);
+        wire::int32(&mut out, 4, kind as i32);
+        if let Some(value) = value {
+            wire::nested(&mut out, 5, |out| FieldValue::Number(value).encode(out));
+        }
+        out
+    };
+    let flags = |entity: u32, value: Option<f64>| {
+        field(entity, "CBaseEntity", "m_fFlags", FieldType::Uint32, value)
+    };
+    let removal = |entity: u32, modifier: &str| {
+        let mut out = Vec::new();
+        wire::uint32(&mut out, 1, entity);
+        wire::string(&mut out, 2, "RemoveModifier");
+        wire::nested(&mut out, 3, |out| {
+            EntityValue::Text(modifier.to_owned()).encode(out);
+        });
+        out
+    };
+    let audience = |entity: u32| {
+        let mut out = Vec::new();
+        wire::uint32(&mut out, 1, entity);
+        wire::packed(&mut out, 2, &[5], |out, slot| wire::raw::int32(out, *slot));
+        out
+    };
+
+    // A request names its entity first, and a move its facing third.
+    let entity_of = |request: &Vec<u8>| {
+        let mut r = wire::Reader::new(request);
+        let mut entity = 0;
+        while let Some((number, kind)) = r.field().unwrap() {
+            match number {
+                1 => entity = r.uint32(kind).unwrap(),
+                _ => r.skip(kind).unwrap(),
+            }
+        }
+        entity
+    };
+    let facing_of = |request: &Vec<u8>| {
+        let mut r = wire::Reader::new(request);
+        let mut facing = Angles::default();
+        while let Some((number, kind)) = r.field().unwrap() {
+            match number {
+                3 => facing = Angles::decode(r.bytes(kind).unwrap()).unwrap(),
+                _ => r.skip(kind).unwrap(),
+            }
+        }
+        facing
+    };
+    let turned = |pitch: f64, yaw: f64, roll: f64| Angles { pitch, yaw, roll };
+    let level = EntityCameraOptions::default();
+
+    let game = entity_host();
+    let player = Player::of(5);
+    game.pawn_entity.set(77);
+    game.next_entity.set(200);
+    let events = events!(Idle::default);
+    let frame = |seconds: f64| {
+        crate::tests::send(Idle::default, &events, "Frame", &crate::tests::at(seconds));
+    };
+    frame(0.0);
+    game.clear();
+
+    let options = EntityCameraOptions {
+        position: Vector::new(10.0, 20.0, 30.0),
+        facing: turned(-15.0, 90.0, 45.0),
+        fov: Some(105.0),
+        z_near: Some(4.0),
+        z_far: Some(16000.0),
+        ..EntityCameraOptions::default()
+    };
+    let cam = entity_camera(player, options).expect("the camera opened");
+    assert_eq!(cam.entity(), 200);
+
+    // It spawns intro_camera and pre_intro_camera, shows both to slot 5
+    // alone, and holds modifier_citadel_hideout_intro on the living hero.
+    let created: Vec<EntityOptions> = game
+        .requests("CreateEntity")
+        .iter()
+        .map(|request| EntityOptions::decode(request).unwrap())
+        .collect();
+    assert_eq!(created.len(), 2);
+    assert!(created
+        .iter()
+        .all(|made| made.designer_name == "point_camera"));
+    assert!(created
+        .iter()
+        .all(|made| made.transmit_always == Some(true)));
+    let key = |made: &EntityOptions, key: &str| {
+        let mut keys = made.key_values.iter();
+        keys.find(|held| held.key == key)
+            .and_then(|held| held.value.clone())
+    };
+    let named = |name: &str| Some(EntityValue::Text(name.to_owned()));
+    assert_eq!(
+        [&created[0], &created[1]].map(|made| key(made, "targetname")),
+        [named("intro_camera"), named("pre_intro_camera")]
+    );
+    assert_eq!(key(&created[0], "FOV"), Some(EntityValue::Number(105.0)));
+    assert_eq!(
+        game.requests("ShowEntityOnlyTo"),
+        [audience(200), audience(201)]
+    );
+    assert_eq!(game.requests("HoldModifier"), [hold(true)]);
+
+    // Without keep_controls it leaves CBaseEntity.m_fFlags untouched, so a
+    // cinematic camera keeps FL_ATCONTROLS.
+    assert!(game.requests("ReadField").is_empty());
+    assert!(game.requests("WriteField").is_empty());
+
+    // A move sends full three-axis roll and over-the-top pitch to both
+    // cameras while pre_intro_camera is alive, and set_fov writes
+    // CPointCamera.m_FOV.
+    game.clear();
+    assert!(cam.r#move(
+        Vector::new(100.0, 200.0, 300.0),
+        turned(120.0, -45.0, 180.0)
+    ));
+    let moves = game.requests("MoveEntity");
+    assert_eq!(moves.len(), 2);
+    assert_eq!(facing_of(&moves[0]), turned(120.0, -45.0, 180.0));
+
+    game.clear();
+    assert!(cam.set_fov(115.0));
+    let fov = |entity: u32| {
+        let kind = FieldType::Float32;
+        field(entity, "CPointCamera", "m_FOV", kind, Some(115.0))
+    };
+    assert_eq!(game.requests("WriteField"), [fov(200), fov(201)]);
+
+    // pre_intro_camera stays alive and keeps following intro_camera, since
+    // the game blends between the two for seconds after the camera opens.
+    // The camera reports settled once the game's opening blend has run out.
+    assert!(!cam.settled());
+    game.clear();
+    frame(10.0);
+    assert!(cam.settled());
+    assert!(game.requests("RemoveEntity").is_empty());
+    assert!(cam.r#move(Vector::new(1.0, 2.0, 3.0), turned(0.0, 0.0, -90.0)));
+    let moved: Vec<u32> = game.requests("MoveEntity").iter().map(entity_of).collect();
+    assert_eq!(moved, [200, 201]);
+
+    // stop releases the hold, fires RemoveModifier for both intro
+    // modifiers, removes both cameras, and stops once.
+    game.clear();
+    assert!(cam.stop());
+    assert_eq!(game.requests("HoldModifier"), [hold(false)]);
+    assert_eq!(
+        game.requests("FireInput"),
+        [
+            removal(77, INTRO),
+            removal(77, "modifier_citadel_hideout_intro_exit")
+        ]
+    );
+    let removed: Vec<u32> = game
+        .requests("RemoveEntity")
+        .iter()
+        .map(entity_of)
+        .collect();
+    assert_eq!(removed, [201, 200]);
+
+    game.clear();
+    assert!(cam.stop());
+    assert!(!cam.r#move(Vector::default(), Angles::default()));
+    assert!(!cam.set_fov(90.0));
+    assert!(game.sent.borrow().is_empty());
+
+    // A smooth opening spawns only intro_camera.
+    game.clear();
+    let options = EntityCameraOptions {
+        smooth: true,
+        ..level
+    };
+    let smooth = entity_camera(player, options).expect("the camera opened");
+    assert_eq!(game.requests("CreateEntity").len(), 1);
+    smooth.stop();
+
+    // A refused HoldModifier, as on a hero that owns no ability yet, falls
+    // back to holding the modifier on the pawn itself, and stop releases
+    // that hold.
+    game.fail.set("HoldModifier");
+    game.clear();
+    let fallback = entity_camera(player, level).expect("the camera opened");
+    assert_eq!(game.requests("HoldEntityModifier"), [pawn_hold(77, true)]);
+    game.clear();
+    assert!(fallback.stop());
+    assert_eq!(game.requests("HoldEntityModifier"), [pawn_hold(77, false)]);
+
+    // Refused both ways, it cleans up both spawned cameras.
+    game.fail.set("HoldModifier,HoldEntityModifier");
+    game.clear();
+    assert!(entity_camera(player, level).is_none());
+    assert_eq!(game.requests("RemoveEntity").len(), 2);
+    game.fail.set("");
+
+    // keep_controls clears FL_ATCONTROLS, 0x40, on CBaseEntity.m_fFlags
+    // while preserving the other bits.
+    game.pawn_entity.set(77);
+    game.pawn_flags.set(0x41);
+    game.clear();
+    let options = EntityCameraOptions {
+        keep_controls: true,
+        ..level
+    };
+    let controlled = entity_camera(player, options).expect("the camera opened");
+    assert_eq!(game.requests("ReadField"), [flags(77, None)]);
+    assert_eq!(game.requests("WriteField"), [flags(77, Some(1.0))]);
+
+    // A move on the same pawn that finds FL_ATCONTROLS clear writes nothing.
+    game.pawn_flags.set(0x01);
+    game.clear();
+    controlled.r#move(Vector::new(1.0, 2.0, 3.0), Angles::default());
+    assert!(game.requests("WriteField").is_empty());
+
+    // The modifier attaching again to the same pawn, as after a respawn,
+    // sets FL_ATCONTROLS again, and the next move clears it.
+    game.pawn_flags.set(0x41);
+    game.clear();
+    controlled.r#move(Vector::new(1.0, 2.0, 3.0), Angles::default());
+    assert_eq!(game.requests("WriteField"), [flags(77, Some(1.0))]);
+
+    // A respawn to a new pawn handle clears FL_ATCONTROLS on the new pawn.
+    game.pawn_entity.set(88);
+    game.pawn_flags.set(0x45);
+    game.clear();
+    controlled.r#move(Vector::new(4.0, 5.0, 6.0), Angles::default());
+    assert_eq!(game.requests("WriteField"), [flags(88, Some(5.0))]);
+    controlled.stop();
+
+    // It opens no camera for a player with no hero.
+    game.pawn_entity.set(0);
+    assert!(entity_camera(player, level).is_none());
+}
+
 /// A mode's Cast makes a member for each human who finished joining, ends it
 /// when they leave, and seats each on the hero and team it wants.
 #[test]
@@ -1538,6 +1877,50 @@ fn a_score_is_reported_and_retried() {
         SEEN.with(|seen| seen.borrow().last().cloned()),
         Some("rows: Ok(1)".to_owned())
     );
+}
+
+/// A team score carries each teammate with their enrollment.
+#[test]
+fn a_team_score_carries_each_teammate_with_their_enrollment() {
+    use crate::wire::Message;
+    use crate::{bind_score_player, report_score, Connection, Player, ScoreReport, Teammate};
+
+    // Enroll a teammate in slot four, then report the pair's score.
+    let started = service_host();
+    let enroll = |slot: i32, steam_id: u64| {
+        let connection = Connection {
+            player: Player::of(slot),
+            steam_id,
+            ..Connection::default()
+        };
+        bind_score_player(&connection).expect("the host enrolled the player")
+    };
+    let scorer = enroll(0, 76_561_198_000_000_001);
+    let teammate = enroll(4, 76_561_198_000_000_004);
+    let report = ScoreReport {
+        board: "coop.waves".to_owned(),
+        value: 12,
+        teammates: vec![Teammate {
+            player: Player::of(teammate.slot),
+            connection: Some(teammate),
+        }],
+        ..ScoreReport::default()
+    };
+    report_score(&scorer, report, |_: &mut Idle, _| {});
+
+    // The report names the teammate's slot and enrollment beside the
+    // player's.
+    let sent = ScoreReport::decode(&started.borrow()[0].1).unwrap();
+    assert_eq!(sent.player.slot(), 0);
+    let named: Vec<(i32, u64, &str)> = sent
+        .teammates
+        .iter()
+        .map(|teammate| {
+            let held = teammate.connection.as_ref().expect("an enrollment");
+            (teammate.player.slot(), held.steam_id, held.proof.as_str())
+        })
+        .collect();
+    assert_eq!(named, [(4, 76_561_198_000_000_004, "proof")]);
 }
 
 /// A probe waits on its step, then reports its verdict once and quits the

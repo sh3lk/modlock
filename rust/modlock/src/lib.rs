@@ -83,7 +83,10 @@ pub use bits::{Buttons, Layers};
 pub use bystander::{
     hold_bystander, spectate_from, Spectating, BYSTANDER_STATES, PARKED_STATES, PARK_HEIGHT,
 };
-pub use camera::{camera_pulse, camera_shake, play_camera, set_orbit_camera, CameraMove};
+pub use camera::{
+    camera_pulse, camera_shake, entity_camera, play_camera, set_orbit_camera, CameraMove,
+    EntityCamera, EntityCameraOptions, ENTITY_CAMERA_SETTLE_SECONDS,
+};
 pub use cast::{Bots, Cast, HeroPick, Want};
 pub use generated::*;
 pub use ground::{ground, Ground};
@@ -114,7 +117,8 @@ pub mod prelude {
     pub use crate::bits::{Buttons, Layers};
     pub use crate::bystander::{hold_bystander, spectate_from, Spectating};
     pub use crate::camera::{
-        camera_pulse, camera_shake, play_camera, set_orbit_camera, CameraMove,
+        camera_pulse, camera_shake, entity_camera, play_camera, set_orbit_camera, CameraMove,
+        EntityCamera, EntityCameraOptions,
     };
     pub use crate::cast::{Bots, Cast, HeroPick, Want};
     pub use crate::generated::*;

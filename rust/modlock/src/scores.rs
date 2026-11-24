@@ -101,7 +101,14 @@ pub fn report_score<M: 'static>(
     // Use the enrolled connection even if its original slot has been reused.
     report.player = Player::of(player.slot);
     report.connection = Some(player.clone());
-    let fits = player.proof.len() <= PROOF_LIMIT;
+
+    // Refuse a proof too long before encoding, the player's or a teammate's.
+    // The host checks the team against the board.
+    let teammates = report.teammates.iter();
+    let mut proofs = teammates
+        .filter_map(|teammate| teammate.connection.as_ref())
+        .chain([player]);
+    let fits = proofs.all(|held| held.proof.len() <= PROOF_LIMIT);
     match encoded(&report, fits) {
         Some(payload) => submit("Report", payload, done),
         None => refuse("Report", TOO_LARGE.to_owned(), done),
