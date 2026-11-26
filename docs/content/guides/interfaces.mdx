@@ -129,7 +129,7 @@ capitalizes it. In Go, `toast` with seconds is `ToastFor`, and `uiSound` is
 | `hideHud(player, parts)`                       | Hide parts of the game's HUD, such as `'topBar'`, `'minimap'`, `'minimapPlayers'`, `'inventory'`, `'crosshair'`, `'castFailed'`, `'eventIndicators'`, `'statusIndicators'` or `'all'`; `[]` shows them again. |
 | `hideHudForAll(parts)`                         | Hide parts of the game's HUD from every player, those who join later too. TypeScript only.                                                                                                                    |
 | `showChatLines(options?)`                      | Show chat lines as subtitles above the ability bar, with the speaker's portrait and name. TypeScript and Rust only.                                                                                           |
-| `showSpeakers(options?)`                       | Show who each player hears on voice chat, as portraits and names at the left edge. TypeScript only.                                                                                                           |
+| `showSpeakers(options?)`                       | Show who each player hears on voice chat, as portraits and names at the left edge. TypeScript and Rust only.                                                                                                  |
 | `freeCursor(player, free)`                     | Show the mouse cursor without Tab, so the player can click; `false` gives the mouse back to aiming.                                                                                                           |
 | `abilityBarPresses(player, onPress?)`          | Take clicks on the game's ability bar by slot; see [Abilities](/guides/abilities).                                                                                                                            |
 | `followAction(player, action, onPhase?)`       | Follow a game action, such as `'scoreboard'`, on whichever key the player bound it to: `'pressed'`, then `'released'` or `'cancelled'`; see [Follow a game action](#follow-a-game-action).                    |
@@ -256,6 +256,7 @@ showSpeakers()
 impl Mod for Hello {
     fn start(&mut self, _event: &StartEvent) {
         show_chat_lines(ChatLines::default());
+        show_speakers(Speakers::default());
     }
 }
 
@@ -288,13 +289,15 @@ keeps on the hidden top bar, so voices starting and stopping cost the mod
 nothing. `{ scale }` sizes the rows, and `{ speaker }` takes the same function
 as `showChatLines`, so a player looks the same in both.
 
-In Rust the options are the fields of `ChatLines`, and its `speaker` method
-takes a method of the mod, or a closure that takes the mod, so the mod's own
-state decides how each speaker shows:
-`show_chat_lines(ChatLines::default().speaker(Self::seen))`, with
-`fn seen(&mut self, speaker: Player, viewer: Player) -> ChatSpeaker`. It runs
-when the lines change: when a line is heard, when one expires, when a speaker
-leaves and for a player who joins.
+In Rust the options are the fields of `ChatLines` and `Speakers`, and each's
+`speaker` method takes a method of the mod, or a closure that takes the mod,
+so the mod's own state decides how each speaker shows:
+`show_chat_lines(ChatLines::default().speaker(Self::seen))` and
+`show_speakers(Speakers::default().speaker(Self::seen))`, with
+`fn seen(&mut self, speaker: Player, viewer: Player) -> ChatSpeaker`. For
+chat lines it runs when the lines change: when a line is heard, when one
+expires, when a speaker leaves and for a player who joins. For speakers it
+runs once a second to check whether any row changed.
 
 The library draws the lines and the stack as layers of their own over whatever interface the
 mod shows each player, as it draws toasts: a line arriving or leaving redraws

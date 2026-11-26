@@ -83,6 +83,31 @@ mod.OnFrame(func(frame *mod.FrameEvent) {
 })
 ```
 
+```rust
+impl Mod for Hello {
+    fn start(&mut self, _event: &StartEvent) {
+        command("pad", Self::pad);
+    }
+
+    fn frame(&mut self, event: &FrameEvent) {
+        for entry in &event.controllers {
+            let pad = entry.controllers.iter().find(|c| c.info.gamepad);
+            if let (ControllerStream::Live, Some(pad)) = (entry.stream, pad) {
+                entry
+                    .player
+                    .center_text(format!("Right stick {:.2}", pad.state.gamepad.right_x));
+            }
+        }
+    }
+}
+
+impl Hello {
+    fn pad(&mut self, player: Player) {
+        player.watch_controllers(true);
+    }
+}
+```
+
 </Samples>
 
 The client opens the devices only while a watch holds, and closes them when

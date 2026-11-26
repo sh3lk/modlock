@@ -127,6 +127,12 @@ struct Library {
     /// lines holds what each player sees of the layer, by slot, as it was
     /// last laid out on the mod; a player who sees nothing of it has none.
     lines: HashMap<i32, Element>,
+    /// voice draws the speaking stack over every player's interface, once the
+    /// mod shows it.
+    voice: Option<VoiceLayer>,
+    /// voices holds each player's speaking stack, by slot, as it was last
+    /// laid out on the mod; a player who sees nothing of it has none.
+    voices: HashMap<i32, Element>,
 }
 
 thread_local! {
@@ -140,6 +146,8 @@ thread_local! {
         sheets: Vec::new(),
         layer: None,
         lines: HashMap::new(),
+        voice: None,
+        voices: HashMap::new(),
     });
 }
 
@@ -195,6 +203,22 @@ pub(crate) struct Layer {
 pub(crate) fn layer(layer: Layer) {
     join();
     LIBRARY.with(|library| library.borrow_mut().layer = Some(layer));
+}
+
+/// VoiceLayer is the speaking stack drawn beside each player's interface.
+/// refresh runs on the mod once a second per viewer, returning Some with the
+/// viewer's new stack element (or None when nobody is shown) only when their
+/// stack changed; forget drops the last look drawn for a slot that left.
+#[derive(Clone, Copy)]
+pub(crate) struct VoiceLayer {
+    pub refresh: fn(&mut dyn Any, Player) -> Option<Option<Element>>,
+    pub forget: fn(i32),
+}
+
+/// voice_layer gives every player's interface the speaking stack layer.
+pub(crate) fn voice_layer(layer: VoiceLayer) {
+    join();
+    LIBRARY.with(|library| library.borrow_mut().voice = Some(layer));
 }
 
 /// now returns the game clock at the last frame, in seconds.
@@ -282,19 +306,26 @@ impl Library {
         let player = view.player;
         let display = display_rows(view);
 
-        // The layer shows what was last laid out on the mod: a draw has no
-        // mod to lay it out on, and a player it laid nothing out for sees
-        // none of it until it changes.
+        // The layers show what was last laid out on the mod: a draw has no
+        // mod to lay them out on, and a player they laid nothing out for sees
+        // none of them until they change.
         let mut lines = self.lines.get_mut(&slot);
+        let mut voice = self.voices.get_mut(&slot);
         let previous = self.screens.get(&slot);
-        let laid = lines.as_deref_mut();
-        let next = render(previous, view, &self.sheets, &display, laid);
+        let next = render(
+            previous,
+            view,
+            &self.sheets,
+            &display,
+            lines.as_deref_mut(),
+            voice.as_deref_mut(),
+        );
 
         // Send the change; a failed send means the player may have left, so
         // send the screen whole.
         let sent = match diff(previous, &next) {
             Some(change) if !send(player, &change) => {
-                let whole = render(None, view, &self.sheets, &display, lines);
+                let whole = render(None, view, &self.sheets, &display, lines, voice);
                 let sent = diff(None, &whole).is_some_and(|change| send(player, &change));
                 sent.then_some(whole)
             }
@@ -448,6 +479,7 @@ fn render(
     sheets: &[String],
     display: &[AbilityRow],
     lines: Option<&mut Element>,
+    voice: Option<&mut Element>,
 ) -> Screen {
     // The screen is about as large as the one before it.
     let (nodes, handlers, next) = previous.map_or((0, 0, 0), |previous| {
@@ -466,7 +498,8 @@ fn render(
         at: String::new(),
     };
 
-    // The elements, the chat lines and the notices hang from the root.
+    // The elements, the chat lines, the speakers and the notices hang from
+    // the root.
     let mut children = Vec::new();
     layout.at.push('/');
     layout.fill(0, &mut view.root, &mut children);
@@ -474,6 +507,11 @@ fn render(
     if let Some(lines) = lines {
         layout.at.push_str("/,2");
         children.push(layout.place(lines));
+        layout.at.clear();
+    }
+    if let Some(voice) = voice {
+        layout.at.push_str("/,3");
+        children.push(layout.place(voice));
         layout.at.clear();
     }
     if !view.notices.is_empty() {
@@ -948,17 +986,45 @@ pub(crate) fn changed(m: &mut dyn Any, event: &UiInputEvent) {
     }
 }
 
-/// tick advances the clock to the frame at seconds and fades expiring
-/// notices. It runs on the mod, which the chat lines may read.
+/// tick advances the clock to the frame at seconds, fades expiring notices,
+/// and checks once a second whether any player's speaking stack changed. It
+/// runs on the mod, which the chat lines and speakers may read.
 pub(crate) fn tick(m: &mut dyn Any, seconds: f64) {
-    // A chat line past its time redraws everyone.
-    let expired = LIBRARY.with(|library| {
+    // Advance the clock, noting a new second; a chat line past its time
+    // redraws everyone.
+    let (second, expired, voice) = LIBRARY.with(|library| {
         let mut library = library.borrow_mut();
+        let second = seconds.floor() != library.now.floor();
         library.now = seconds;
-        library.layer.is_some_and(|layer| (layer.expire)(seconds))
+        let expired = library.layer.is_some_and(|layer| (layer.expire)(seconds));
+        (second, expired, library.voice)
     });
     if expired {
         draw_everyone(m);
+    }
+
+    // Once a second, draw the speaking stack again for each viewer whose
+    // rows look different: a player joined, left, picked a hero or changed
+    // side.
+    if second {
+        if let Some(voice) = voice {
+            for connection in players() {
+                if connection.away {
+                    continue;
+                }
+                if let Some(stack) = (voice.refresh)(m, connection.player) {
+                    LIBRARY.with(|library| {
+                        let mut library = library.borrow_mut();
+                        let slot = connection.player.slot();
+                        match stack {
+                            Some(stack) => library.voices.insert(slot, stack),
+                            None => library.voices.remove(&slot),
+                        };
+                        library.draw(connection.player);
+                    });
+                }
+            }
+        }
     }
     LIBRARY.with(|library| {
         // Redraw only a view that lost a notice.
@@ -1026,7 +1092,11 @@ fn note(players: &[Connection]) -> (bool, Vec<Player>) {
             library.views.remove(&slot);
             library.screens.remove(&slot);
             library.lines.remove(&slot);
+            library.voices.remove(&slot);
             lost |= library.layer.is_some_and(|layer| (layer.forget)(slot));
+            if let Some(voice) = library.voice {
+                (voice.forget)(slot);
+            }
         }
         let held = |connection: &&Connection| {
             let slot = connection.player.slot();

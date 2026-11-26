@@ -67,7 +67,7 @@ const AMBER: u32 = 0xf0a7_3aff;
 const SAPPHIRE: u32 = 0x8fb1_f0ff;
 
 /// BAND is the color of the band a line sits on.
-const BAND: u32 = 0x1013_0d9e;
+pub(crate) const BAND: u32 = 0x1013_0d9e;
 
 /// ChatLines shape the lines show_chat_lines draws.
 #[derive(Clone, Debug)]
@@ -105,12 +105,7 @@ impl ChatLines {
         mut self,
         look: impl Fn(&mut M, Player, Player) -> ChatSpeaker + 'static,
     ) -> Self {
-        self.speaker = Some(SpeakerLook(Rc::new(move |m, speaker, viewer| {
-            match m.downcast_mut::<M>() {
-                Some(m) => look(m, speaker, viewer),
-                None => ChatSpeaker::default(),
-            }
-        })));
+        self.speaker = Some(SpeakerLook::new(look));
         self
     }
 }
@@ -119,10 +114,84 @@ impl ChatLines {
 /// with the speaker and the viewer.
 type Looking = dyn Fn(&mut dyn Any, Player, Player) -> ChatSpeaker;
 
-/// SpeakerLook is the mod's say of how a viewer sees a line's speaker, as
-/// ChatLines keeps it; ChatLines::speaker makes one.
+/// SpeakerLook is the mod's say of how a viewer sees a speaker, as ChatLines
+/// and Speakers keep it; ChatLines::speaker and Speakers::speaker make one.
 #[derive(Clone)]
 pub struct SpeakerLook(Rc<Looking>);
+
+impl SpeakerLook {
+    /// new wraps a method of the mod M or a closure that takes the mod, the
+    /// speaker and the viewer.
+    pub(crate) fn new<M: 'static>(
+        look: impl Fn(&mut M, Player, Player) -> ChatSpeaker + 'static,
+    ) -> Self {
+        SpeakerLook(Rc::new(move |m, speaker, viewer| {
+            match m.downcast_mut::<M>() {
+                Some(m) => look(m, speaker, viewer),
+                None => ChatSpeaker::default(),
+            }
+        }))
+    }
+}
+
+/// Look is a speaker as one viewer sees them, ready to draw.
+pub(crate) struct Look {
+    /// name is the player's name, with the mod's note in brackets.
+    pub name: String,
+    /// color is the name's color.
+    pub color: u32,
+    /// src is the portrait's image, None for an empty square.
+    pub src: Option<&'static str>,
+    /// out greys the portrait and the name.
+    pub out: bool,
+}
+
+/// speaker_look is how viewer sees speaker: what the mod's see says, else
+/// their hero, and their name in their game team's color lifted to read on a
+/// dark band.
+pub(crate) fn speaker_look(
+    m: &mut dyn Any,
+    speaker: Player,
+    viewer: Player,
+    see: Option<&SpeakerLook>,
+) -> Look {
+    // The mod's say comes first; a name with no color of its own takes the
+    // team's, and an out speaker is greyed.
+    let pawn = speaker.pawn();
+    let seen = see
+        .map(|look| (look.0)(m, speaker, viewer))
+        .unwrap_or_default();
+    let lifted = match pawn.as_ref().map(|pawn| pawn.team) {
+        Some(2) => Some(AMBER),
+        Some(3) => Some(SAPPHIRE),
+        _ => None,
+    };
+    let color = if seen.out {
+        theme::QUIET
+    } else {
+        seen.color.or(lifted).unwrap_or(theme::TEXT)
+    };
+    let named = speaker
+        .connection()
+        .map(|held| held.name)
+        .unwrap_or_default();
+    let name = if seen.note.is_empty() {
+        named
+    } else {
+        format!("{named} ({})", seen.note)
+    };
+    let hero = seen.hero.or(pawn.map(|pawn| pawn.hero)).unwrap_or(0);
+    let src = HEROES
+        .iter()
+        .find(|held| held.id == hero)
+        .map(|held| held.portrait);
+    Look {
+        name,
+        color,
+        src,
+        out: seen.out,
+    }
+}
 
 impl std::fmt::Debug for SpeakerLook {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -297,9 +366,8 @@ fn chat_lines(m: &mut dyn Any, viewer: Player) -> Option<Element> {
     // says how a speaker is seen, since its code may show chat lines.
     let count = kept.len();
     let subtitles = kept.iter().enumerate().map(|(at, line)| {
-        let look = shown.speaker.as_ref();
-        let seen = look.map(|look| (look.0)(m, line.speaker, viewer));
-        subtitle(line, seen.unwrap_or_default(), count - 1 - at, &size)
+        let seen = speaker_look(m, line.speaker, viewer, shown.speaker.as_ref());
+        subtitle(line, seen, count - 1 - at, &size)
     });
     let lane = Style {
         flow: Flow::Down,
@@ -372,31 +440,14 @@ impl Sizes {
 /// subtitle is one line as its viewer sees it: the portrait, the name and
 /// the text, 16 pixels at scale 1, on a slim, translucent band, dimmer with
 /// age.
-fn subtitle(line: &Said, seen: ChatSpeaker, age: usize, size: &Sizes) -> Element {
-    // The speaker's look: the mod's say, else their hero and team.
-    let pawn = line.speaker.pawn();
-    let lifted = match pawn.as_ref().map(|pawn| pawn.team) {
-        Some(2) => Some(AMBER),
-        Some(3) => Some(SAPPHIRE),
-        _ => None,
-    };
-    let color = if seen.out {
-        theme::QUIET
+fn subtitle(line: &Said, seen: Look, age: usize, size: &Sizes) -> Element {
+    // The speaker's look, with a team line noted.
+    let name = if line.team != 0 {
+        format!("{} (team)", seen.name)
     } else {
-        seen.color.or(lifted).unwrap_or(theme::TEXT)
+        seen.name
     };
-    let team = if line.team != 0 { "team" } else { "" };
-    let notes = [team, seen.note.as_str()].map(|note| match note {
-        "" => String::new(),
-        note => format!(" ({note})"),
-    });
-    let named = line.speaker.connection().map(|held| held.name);
-    let name = format!("{}{}", named.unwrap_or_default(), notes.concat());
-    let hero = seen.hero.or(pawn.map(|pawn| pawn.hero)).unwrap_or(0);
-    let src = HEROES
-        .iter()
-        .find(|held| held.id == hero)
-        .map(|held| held.portrait);
+    let (color, src) = (seen.color, seen.src);
 
     // The portrait sits on a raised square, empty for a hidden or missing
     // hero.

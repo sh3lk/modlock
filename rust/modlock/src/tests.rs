@@ -560,6 +560,64 @@ fn commands_and_timers_run_on_the_mod() {
     assert_eq!(*lines.borrow(), expected);
 }
 
+/// Command names ignore case while arguments keep their case, and a
+/// different spelling replaces the same command registration.
+#[test]
+fn command_names_ignore_case() {
+    #[derive(Default)]
+    struct CaseMod {
+        seen: Vec<String>,
+    }
+    impl Mod for CaseMod {
+        fn start(&mut self, _event: &StartEvent) {
+            command(
+                "CaseFold",
+                |m: &mut CaseMod, _player: Player, args: &str| {
+                    m.seen.push(args.to_owned());
+                },
+            );
+        }
+        fn frame(&mut self, _event: &FrameEvent) {
+            SEEN.with(|seen| seen.borrow_mut().clone_from(&self.seen));
+        }
+    }
+    thread_local! {
+        static SEEN: RefCell<Vec<String>> = const { RefCell::new(Vec::new()) };
+    }
+
+    let events = events!(CaseMod::default);
+    send(CaseMod::default, &events, "Start", &StartEvent::default());
+    let run = |line: &str| {
+        let cmd = CommandEvent {
+            player: Player::of(1),
+            line: line.to_owned(),
+        };
+        send(CaseMod::default, &events, "Command", &cmd)
+    };
+    assert_eq!(run("casefold First"), "12020801");
+    assert_eq!(run("CASEFOLD Second"), "12020801");
+    assert_eq!(run("CaseFold ThIrD"), "12020801");
+    send(CaseMod::default, &events, "Frame", &at(30.0));
+    assert_eq!(
+        SEEN.with(|seen| seen.borrow().clone()),
+        ["First", "Second", "ThIrD"]
+    );
+
+    // A different spelling replaces the same command registration.
+    command(
+        "casefold",
+        |m: &mut CaseMod, _player: Player, args: &str| {
+            m.seen.push(format!("replacement {args}"));
+        },
+    );
+    assert_eq!(run("CASEFOLD MiXeD"), "12020801");
+    send(CaseMod::default, &events, "Frame", &at(30.016));
+    assert_eq!(
+        SEEN.with(|seen| seen.borrow().last().cloned()),
+        Some("replacement MiXeD".to_owned())
+    );
+}
+
 /// players answers from the list the game last reported, and a Player is
 /// equal only to a Player of the same connection.
 #[test]
@@ -1911,15 +1969,100 @@ fn the_hud_kit_draws() {
     let bob = parent(&parent(&node("BOB").id).id);
     assert_eq!(bob.kind, Kind::Button);
 
-    // The roster's key follows a row's press and selection.
+    // The roster's key follows a row's press and selection, and leaves out a
+    // row's menu.
     let plain = hud::row().name("Bob").hero(13);
     let picked = plain.clone().selected(true).on_press(Menu::ready);
-    assert_ne!(hud::roster_key(&[picked]), hud::roster_key(&[plain]));
+    assert_ne!(
+        hud::roster_key(&[picked]),
+        hud::roster_key(std::slice::from_ref(&plain))
+    );
+    let with_menu = plain
+        .clone()
+        .menu(ui! { <hud::text role={theme::Role::Label} text="menu" /> });
+    assert_eq!(hud::roster_key(&[with_menu]), hud::roster_key(&[plain]));
 
     // Without rows the roster draws nothing.
     assert!(elements(hud::roster()).is_empty());
 
+    // A row's menu hangs left of the column, its top level with its row's.
+    let menu = ui! { <hud::text role={theme::Role::Label} text="menu" /> };
+    let opened = show(
+        player,
+        ui! {
+            <panel>
+                <hud::roster>
+                    <hud::row name="One" hero={13} />
+                    <hud::row name="Two" hero={13} />
+                    <hud::row name="Three" hero={13} />
+                    <hud::row name="Four" hero={13} menu={menu} />
+                    <hud::row name="Five" hero={13} menu={ui! { <hud::text role={theme::Role::Label} text="second" /> }} />
+                </hud::roster>
+            </panel>
+        },
+    );
+    assert!(opened);
+    let menu_screen = drawn(&calls).remove(0).1;
+    let menu_label = menu_screen
+        .set
+        .iter()
+        .find(|node| node.text == "menu")
+        .unwrap();
+    assert!(!menu_screen.set.iter().any(|node| node.text == "second"));
+    let parent_of = |id: &str| {
+        menu_screen
+            .set
+            .iter()
+            .find(|node| node.children.iter().any(|child| child == id))
+            .unwrap()
+    };
+    let hang = parent_of(&menu_label.id);
+    let outer = parent_of(&hang.id);
+    assert_eq!(outer.style.flow, Flow::Right);
+    assert_eq!(outer.children.len(), 2);
+    assert_eq!(
+        hang.style.margin,
+        Some(Edges {
+            top: 3.0 * 52.0,
+            right: 8.0,
+            bottom: 0.0,
+            left: 0.0,
+        })
+    );
+
     // The pressed action and row reach the mod; the disabled action does not.
+    assert!(show(
+        player,
+        ui! {
+            <panel>
+                <hud::top_strip heading="Round 2" line="Sudden death" line_tone={theme::DANGER}>
+                    <hud::score near={2} far={1} />
+                    <hud::pips filled={2} total={3} tone={theme::AMBER} />
+                </hud::top_strip>
+                <hud::banner title="Amber wins" detail="3 rounds to 1" tone={theme::AMBER} />
+                <hud::meter value={1.5} tone={theme::GOLD} />
+                <hud::tag text="Live" tone={theme::SUCCESS} filled />
+                <hud::action text="Ready" primary on_press={Menu::ready} />
+                <hud::action text="Leave" quiet disabled on_press={Menu::ready} />
+                <hud::roster>
+                    <hud::row name="Ann the very long named player of all" own hero={13} steam_id={111u64} />
+                    <hud::row name="Bob" activity="Free roam" on_press={Menu::ready} />
+                </hud::roster>
+            </panel>
+        }
+    ));
+    let again = drawn(&calls).remove(0).1;
+    let again_node = |text: &str| again.set.iter().find(|node| node.text == text).unwrap();
+    let again_parent = |id: &str| {
+        again
+            .set
+            .iter()
+            .find(|node| node.children.iter().any(|child| child == id))
+            .unwrap()
+    };
+    let ready = again_parent(&again_node("Ready").id);
+    let leave = again_parent(&again_node("Leave").id);
+    let bob = again_parent(&again_parent(&again_node("BOB").id).id);
     for id in [&ready.id, &leave.id, &bob.id] {
         let press = UiPressEvent {
             player,

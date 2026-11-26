@@ -57,6 +57,7 @@
 mod chat;
 mod element;
 mod engine;
+mod speakers;
 mod style;
 
 pub use chat::{chat_shown, show_chat_lines, ChatLines, ChatSpeaker, SpeakerLook};
@@ -72,4 +73,5 @@ pub use engine::{
     ignore_ability_bar, route, sheet, show, sound, sound_after, toast, toast_for,
 };
 pub use modlock_macros::{component, ui};
+pub use speakers::{show_speakers, Speakers};
 pub use style::{color, gradient, percent, px, rgb, rgba, Set, FILL, FIT};

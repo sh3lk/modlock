@@ -166,7 +166,12 @@ pub fn command<M: 'static, Arguments>(name: &str, handler: impl CommandHandler<M
             handler.handle(m, player, arguments);
         }
     });
-    STATE.with(|state| state.borrow_mut().commands.insert(name.to_owned(), erased));
+    STATE.with(|state| {
+        state
+            .borrow_mut()
+            .commands
+            .insert(name.to_lowercase(), erased)
+    });
 }
 
 /// modifier_event calls handler each time the game fires the modifier event
@@ -542,7 +547,8 @@ pub(crate) fn deliver<M: Mod + 'static>(
             let event = CommandEvent::decode(request)?;
             let line = event.line.trim();
             let (name, arguments) = line.split_once(' ').unwrap_or((line, ""));
-            let handler = STATE.with(|state| state.borrow().commands.get(name).cloned());
+            let key = name.to_lowercase();
+            let handler = STATE.with(|state| state.borrow().commands.get(&key).cloned());
             let Some(handler) = handler else {
                 m.command(&event).encode(out);
                 return Ok(true);

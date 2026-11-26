@@ -487,10 +487,14 @@ pub const ROSTER_ROWS: usize = 6;
 /// ROSTER_NAME is the most characters a roster name shows.
 const ROSTER_NAME: usize = 24;
 
-/// PORTRAIT is the portrait square's side, its 1px edge included, and BADGE
-/// the side of the avatar badge on a portrait's corner.
+/// PORTRAIT is the portrait square's side, its 1px edge included, BADGE the
+/// side of the avatar badge on a portrait's corner, ROSTER_PITCH the distance
+/// from one row's top to the next, and ROSTER_MENU_GAP the space between a
+/// row's menu and the roster.
 const PORTRAIT: f32 = 44.0;
 const BADGE: f32 = 18.0;
+const ROSTER_PITCH: f32 = PORTRAIT + 8.0;
+const ROSTER_MENU_GAP: f32 = 8.0;
 
 /// row is one player as the roster shows them: name and activity, then the
 /// portrait, whose edge reads in the accent on the viewing player's own row.
@@ -507,12 +511,17 @@ pub fn row(
     /// steam_id badges the portrait's corner with the player's Steam avatar;
     /// 0 shows none.
     steam_id: u64,
-    /// selected edges the portrait in the accent, as for the row a card
+    /// selected edges the portrait in the accent, as for the row a menu
     /// shows.
     selected: bool,
     /// on_press makes the row a button the viewer presses while they have a
     /// cursor, such as to open a card about that player.
     on_press: Option<Press>,
+    /// menu draws beside the row: left of the roster, its top level with the
+    /// row's, such as the menu a press of the row opens. One menu shows at a
+    /// time, the first row's that has one, and only while that row has room.
+    /// roster_key leaves the menu out, so a caller keys its contents itself.
+    menu: Option<Element>,
 ) -> Element {
     // The name and its line align right, against the portrait.
     let right = Style {
@@ -588,33 +597,39 @@ pub fn row(
         transform: Some(slid),
         ..Style::default()
     };
-    let Some(handler) = on_press else {
-        let (style, enter, exit) = arriving(lying, from);
-        return ui! { <panel style={style} enter={enter} exit={exit}>{words}{portrait}</panel> };
+    let mut shown: Element = match on_press {
+        None => {
+            let (style, enter, exit) = arriving(lying, from);
+            ui! { <panel style={style} enter={enter} exit={exit}>{words}{portrait}</panel> }
+        }
+        Some(handler) => {
+            let lifting = Style {
+                border_radius: theme::RADIUS,
+                transition: Some(Transition {
+                    seconds: theme::HOVER_SECONDS,
+                    ..Transition::default()
+                }),
+                ..lying
+            };
+            let (style, enter, exit) = arriving(lifting, from);
+            ui! {
+                <button
+                    style={style}
+                    hover={{ background: theme::RAISED }}
+                    enter={enter}
+                    exit={exit}
+                    hover_sound={theme::HOVER_SOUND}
+                    sound={theme::PRESS_SOUND}
+                    on_press={handler}
+                >
+                    {words}
+                    {portrait}
+                </button>
+            }
+        }
     };
-    let lifting = Style {
-        border_radius: theme::RADIUS,
-        transition: Some(Transition {
-            seconds: theme::HOVER_SECONDS,
-            ..Transition::default()
-        }),
-        ..lying
-    };
-    let (style, enter, exit) = arriving(lifting, from);
-    ui! {
-        <button
-            style={style}
-            hover={{ background: theme::RAISED }}
-            enter={enter}
-            exit={exit}
-            hover_sound={theme::HOVER_SOUND}
-            sound={theme::PRESS_SOUND}
-            on_press={handler}
-        >
-            {words}
-            {portrait}
-        </button>
-    }
+    shown.roster_menu = menu.map(Box::new);
+    shown
 }
 
 /// roster stacks up to ROSTER_ROWS players down the top right corner, each
@@ -634,13 +649,41 @@ pub fn roster(
         return None;
     }
 
-    // Each row keeps its node by its place in the roster.
-    let rows = children.into_iter().take(ROSTER_ROWS).enumerate();
-    let rows = rows.map(|(index, row)| row.key(format!("row-{index}")));
+    // The rows stack down the right edge, and a row's menu hangs to their
+    // left, level with its row. The column keeps its place whether a menu
+    // shows, so opening one keeps every row's panels.
+    let mut menu = None;
+    let mut rows = Vec::with_capacity(children.len().min(ROSTER_ROWS));
+    for (index, mut row) in children.into_iter().take(ROSTER_ROWS).enumerate() {
+        let held = row.roster_menu.take();
+        if menu.is_none() {
+            if let Some(held) = held {
+                menu = Some((index as f32 * ROSTER_PITCH, *held));
+            }
+        }
+        rows.push(row.key(format!("row-{index}")));
+    }
+    let hang = menu.map(|(offset, menu)| {
+        panel()
+            .key("menu")
+            .style(Style {
+                margin: Some([offset, ROSTER_MENU_GAP, 0.0, 0.0].into()),
+                ..Style::default()
+            })
+            .child(menu)
+    });
+    let column = panel()
+        .key("column")
+        .style(Style {
+            flow: Flow::Down,
+            horizontal_align: Align::End,
+            ..Style::default()
+        })
+        .child(rows);
     let own = Style {
         width: Some(FIT),
         height: Some(FIT),
-        flow: Flow::Down,
+        flow: Flow::Right,
         horizontal_align: Align::End,
         vertical_align: Align::Start,
         margin: Some(Edges {
@@ -650,7 +693,7 @@ pub fn roster(
         }),
         ..Style::default()
     };
-    Some(panel().style(own).child(rows).into())
+    Some(panel().style(own).child(hang).child(column).into())
 }
 
 /// roster_key returns what the roster of rows shows, to redraw only when it

@@ -110,7 +110,9 @@ pub use spot::{
     decode_spot, encode_spot, load_spot, LoadedSpot, Placed, Spot, SpotObject, TRIGGERS,
 };
 pub use strays::{Stragglers, Strays, STRAGGLER_CONNECT_SECONDS, STRAY_GRACE_SECONDS};
-pub use ui::{chat_shown, show_chat_lines, ChatLines, ChatSpeaker, SpeakerLook};
+pub use ui::{
+    chat_shown, show_chat_lines, show_speakers, ChatLines, ChatSpeaker, SpeakerLook, Speakers,
+};
 
 /// prelude holds what a mod names: the calls, their types and the events.
 pub mod prelude {

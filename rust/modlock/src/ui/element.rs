@@ -120,6 +120,9 @@ pub struct Element {
     pub(crate) node: Node,
     pub(crate) children: Vec<Slot>,
     pub(crate) handlers: Handlers,
+    /// roster_menu holds the menu attached to a HUD roster row until the
+    /// roster hangs it beside the column.
+    pub(crate) roster_menu: Option<Box<Element>>,
 }
 
 /// Children is what an element may hold: an element, or any list of them,
@@ -256,6 +259,7 @@ fn of<K>(kind: Kind) -> Tag<K> {
         node,
         children: Vec::new(),
         handlers: Handlers::default(),
+        roster_menu: None,
     };
     Tag {
         element,
@@ -418,6 +422,19 @@ impl<K> Tag<K> {
     /// box open.
     pub fn hide_in_chat(mut self, hide: bool) -> Self {
         self.element.node.hide_in_chat = hide;
+        self
+    }
+
+    /// speaking shows the element only while the player hears speaker on
+    /// voice chat, and for a moment after. The player's game shows and hides
+    /// it, so voices starting and stopping draw nothing again.
+    pub fn speaking(mut self, speaker: Player) -> Self {
+        let name = speaker
+            .connection()
+            .map(|held| held.name)
+            .filter(|name| !name.is_empty())
+            .unwrap_or_else(|| format!("#{}", speaker.slot()));
+        self.element.node.speaking = name;
         self
     }
 
