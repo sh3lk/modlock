@@ -611,14 +611,6 @@ pub struct CCitadel_PickupItemSpawnerKeys {
 }
 keys!(CCitadel_PickupItemSpawnerKeys: CBaseAnimGraphKeys { });
 
-/// CCitadelItemPunchableNeutralGoldKeys are the spawn key values CCitadelItemPunchableNeutralGold adds to its base's.
-#[derive(Clone, Debug, Default, PartialEq)]
-pub struct CCitadelItemPunchableNeutralGoldKeys {
-    /// base holds the keys of CCitadelItemPickup.
-    pub base: CCitadelItemPickupKeys,
-}
-keys!(CCitadelItemPunchableNeutralGoldKeys: CCitadelItemPickupKeys { });
-
 /// CCitadel_NewYears_FireworksKeys are the spawn key values CCitadel_NewYears_Fireworks adds to its base's.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct CCitadel_NewYears_FireworksKeys {

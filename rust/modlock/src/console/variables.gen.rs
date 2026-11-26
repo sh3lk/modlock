@@ -1295,6 +1295,12 @@ pub const fn citadel_always_transmit_abilities() -> Variable<bool> {
     Variable::new("citadel_always_transmit_abilities")
 }
 
+/// Seconds to draw the Charged Shot ricochet aim cone (yellow), natural
+/// reflection (white) and biased shot (green). 0 disables.
+pub const fn citadel_archer_charged_shot_ricochet_aim_debug() -> Variable<f32> {
+    Variable::new("citadel_archer_charged_shot_ricochet_aim_debug")
+}
+
 /// Time Allowed for a full refund when buy anywhere (Auto/Quick Buy) is
 /// enabled.
 pub const fn citadel_autobuy_refund_time() -> Variable<f32> {
@@ -1587,6 +1593,88 @@ pub const fn citadel_bot_director_zipline_stable() -> Variable<f32> {
 
 pub const fn citadel_bot_disconnect_takeover_enabled() -> Variable<bool> {
     Variable::new("citadel_bot_disconnect_takeover_enabled")
+}
+
+/// Sandbox bot drill. 1: diving Danny, 2: flying Vindicta, 3: Abrams Shoulder
+/// Charge and melee, 4: Grey Talon Rain of Arrows and Charged Shot, 5: Paradox
+/// Kinetic Carbine and Paradoxical Swap, 6: Viscous Goo Ball, 7: Viscous Puddle
+/// Punch, 8: Bebop Grapple Arm, 9: Graves Borrowed Decree parry, 10: Baba
+/// Threadsap, 11: Billy combo, 12: Baba Granny Long Legs, 13: Lash Death Slam
+/// and Ground Strike, 14: Silver wolf form, 15: Holliday Bounce Pad and Powder
+/// Keg, 16: McGinnis Spectral Wall and Heavy Barrage.
+pub const fn citadel_bot_drill() -> Variable<i32> {
+    Variable::new("citadel_bot_drill")
+}
+
+/// Air jumps the Lash bot drill target makes after Grapple to gain height.
+pub const fn citadel_bot_drill_air_jumps() -> Variable<i32> {
+    Variable::new("citadel_bot_drill_air_jumps")
+}
+
+/// Longest wait in seconds between a bot drill target's attacks.
+pub const fn citadel_bot_drill_attack_delay_max() -> Variable<f32> {
+    Variable::new("citadel_bot_drill_attack_delay_max")
+}
+
+/// Shortest wait in seconds between a bot drill target's attacks.
+pub const fn citadel_bot_drill_attack_delay_min() -> Variable<f32> {
+    Variable::new("citadel_bot_drill_attack_delay_min")
+}
+
+/// Chance per flight that the Grey Talon bot drill target fires a Charged Shot.
+pub const fn citadel_bot_drill_charged_shot_chance() -> Variable<f32> {
+    Variable::new("citadel_bot_drill_charged_shot_chance")
+}
+
+/// Distance in meters from its start the bot drill target stops chasing the
+/// player at.
+pub const fn citadel_bot_drill_chase_distance() -> Variable<f32> {
+    Variable::new("citadel_bot_drill_chase_distance")
+}
+
+/// Melee attacks the Abrams and Billy bot drill targets finish their combos
+/// with.
+pub const fn citadel_bot_drill_combo_swings() -> Variable<i32> {
+    Variable::new("citadel_bot_drill_combo_swings")
+}
+
+/// Distance in meters from the player the bot drill target starts at.
+pub const fn citadel_bot_drill_distance() -> Variable<f32> {
+    Variable::new("citadel_bot_drill_distance")
+}
+
+/// Height in meters the bot drill target flies at.
+pub const fn citadel_bot_drill_height() -> Variable<f32> {
+    Variable::new("citadel_bot_drill_height")
+}
+
+/// Heavy melee charge percent at which the Graves bot drill target parries.
+pub const fn citadel_bot_drill_parry_charge_percent() -> Variable<f32> {
+    Variable::new("citadel_bot_drill_parry_charge_percent")
+}
+
+/// Seconds after landing or finishing an attack before the bot drill target
+/// returns to its start.
+pub const fn citadel_bot_drill_reset_delay() -> Variable<f32> {
+    Variable::new("citadel_bot_drill_reset_delay")
+}
+
+/// Distance in meters from the player the McGinnis bot drill target dashes away
+/// at.
+pub const fn citadel_bot_drill_retreat_distance() -> Variable<f32> {
+    Variable::new("citadel_bot_drill_retreat_distance")
+}
+
+/// Distance in meters from its start a roaming bot drill target moves around
+/// in.
+pub const fn citadel_bot_drill_roam_distance() -> Variable<f32> {
+    Variable::new("citadel_bot_drill_roam_distance")
+}
+
+/// Distance in meters behind the player the McGinnis bot drill target deploys
+/// Spectral Wall at.
+pub const fn citadel_bot_drill_wall_distance() -> Variable<f32> {
+    Variable::new("citadel_bot_drill_wall_distance")
 }
 
 /// Forces citadel bots to move back and forth.
@@ -1934,11 +2022,17 @@ pub const fn citadel_combatlog_fight_idle_time() -> Variable<f32> {
     Variable::new("citadel_combatlog_fight_idle_time")
 }
 
-/// Fraction of the comeback souls earned by a player above the enemy team's
+/// Max fraction of the comeback souls earned by a player above their own team's
 /// average net worth that is redirected to the tick gold pool for the two
-/// lowest net worth teammates.
+/// lowest net worth teammates. Ramps from 0 at the team average.
 pub const fn citadel_comeback_redirect_fraction() -> Variable<f32> {
     Variable::new("citadel_comeback_redirect_fraction")
+}
+
+/// Player net worth / own team average net worth at which
+/// citadel_comeback_redirect_fraction is reached.
+pub const fn citadel_comeback_redirect_max_ratio() -> Variable<f32> {
+    Variable::new("citadel_comeback_redirect_max_ratio")
 }
 
 pub const fn citadel_control_point_capture_rate_scale() -> Variable<f32> {
@@ -3651,14 +3745,6 @@ pub const fn citadel_player_neutral_gold_drop_min_increase_per_minute() -> Varia
     Variable::new("citadel_player_neutral_gold_drop_min_increase_per_minute")
 }
 
-pub const fn citadel_player_neutral_gold_duration() -> Variable<f32> {
-    Variable::new("citadel_player_neutral_gold_duration")
-}
-
-pub const fn citadel_player_neutral_gold_fallrate() -> Variable<f32> {
-    Variable::new("citadel_player_neutral_gold_fallrate")
-}
-
 pub const fn citadel_player_override_spawn_time() -> Variable<f32> {
     Variable::new("citadel_player_override_spawn_time")
 }
@@ -4058,6 +4144,47 @@ pub const fn citadel_sat_volume_desat_amount() -> Variable<f32> {
     Variable::new("citadel_sat_volume_desat_amount")
 }
 
+/// If enabled, the Thanksgiving parade floats spawn when the match starts.
+pub const fn citadel_seasonal_thanksgiving() -> Variable<bool> {
+    Variable::new("citadel_seasonal_thanksgiving")
+}
+
+/// Seconds after a parade float's box is broken before a new one appears on the
+/// float. Negative never respawns it.
+pub const fn citadel_seasonal_thanksgiving_float_box_respawn_time() -> Variable<f32> {
+    Variable::new("citadel_seasonal_thanksgiving_float_box_respawn_time")
+}
+
+/// Seconds of match time before a parade float gets its first box. Until then
+/// it has none, and rides at its raised height. 0 gives it one as soon as it
+/// spawns.
+pub const fn citadel_seasonal_thanksgiving_float_first_box_match_time() -> Variable<f32> {
+    Variable::new("citadel_seasonal_thanksgiving_float_first_box_match_time")
+}
+
+/// How far down the lane 4 zipline, in units along its path, from the first
+/// node inside the move range the first parade float spawns. The rest are
+/// spaced on from there.
+pub const fn citadel_seasonal_thanksgiving_float_initial_distance() -> Variable<f32> {
+    Variable::new("citadel_seasonal_thanksgiving_float_initial_distance")
+}
+
+/// World Y of the +Y end of the parade floats' path. A float driving toward +Y
+/// that passes this teleports back to the -Y end.
+pub const fn citadel_seasonal_thanksgiving_float_move_range_max_y() -> Variable<f32> {
+    Variable::new("citadel_seasonal_thanksgiving_float_move_range_max_y")
+}
+
+/// World Y of the -Y end of the parade floats' path. No path limit unless this
+/// is below citadel_seasonal_thanksgiving_float_move_range_max_y.
+pub const fn citadel_seasonal_thanksgiving_float_move_range_min_y() -> Variable<f32> {
+    Variable::new("citadel_seasonal_thanksgiving_float_move_range_min_y")
+}
+
+pub const fn citadel_seasonal_thanksgiving_float_spacing() -> Variable<f32> {
+    Variable::new("citadel_seasonal_thanksgiving_float_spacing")
+}
+
 /// Max extra secure rate (fraction of baseline) for a player behind the enemy
 /// team's average net worth.
 pub const fn citadel_secure_gold_behind_max_bonus() -> Variable<f32> {
@@ -4187,6 +4314,26 @@ pub const fn citadel_snowball_level_override() -> Variable<i32> {
 
 pub const fn citadel_solo_bot_match() -> Variable<bool> {
     Variable::new("citadel_solo_bot_match")
+}
+
+pub const fn citadel_soul_bag_extra_spawn_min_value_multiplier() -> Variable<f32> {
+    Variable::new("citadel_soul_bag_extra_spawn_min_value_multiplier")
+}
+
+pub const fn citadel_soul_bag_scale_max() -> Variable<f32> {
+    Variable::new("citadel_soul_bag_scale_max")
+}
+
+pub const fn citadel_soul_bag_scale_max_value() -> Variable<f32> {
+    Variable::new("citadel_soul_bag_scale_max_value")
+}
+
+pub const fn citadel_soul_bag_scale_min() -> Variable<f32> {
+    Variable::new("citadel_soul_bag_scale_min")
+}
+
+pub const fn citadel_soul_bag_spawn_max() -> Variable<i32> {
+    Variable::new("citadel_soul_bag_spawn_max")
 }
 
 /// Forces all players down the mid lane.
@@ -4515,7 +4662,7 @@ pub const fn citadel_track_player_vs_player_accuracy() -> Variable<bool> {
     Variable::new("citadel_track_player_vs_player_accuracy")
 }
 
-/// Max Difference between teams to get full trailing bonuses for Koth/Urn.
+/// Max Difference between teams to get full trailing bonuses for Urn.
 pub const fn citadel_trailingteam_bias_threshold_max() -> Variable<f32> {
     Variable::new("citadel_trailingteam_bias_threshold_max")
 }

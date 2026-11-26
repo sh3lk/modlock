@@ -1956,6 +1956,20 @@ impl CPhysicsProp {
     }
 }
 
+impl CPropParadeFloat {
+    /// input_SpawnBox sends SpawnBox. Spawn a new box on the attachment,
+    /// replacing the current one.
+    pub fn input_SpawnBox(self) -> bool {
+        send(self.handle, "SpawnBox", None, None)
+    }
+
+    /// input_SpawnBox_by sends SpawnBox as input_SpawnBox does, caused by the
+    /// entity of handle activator.
+    pub fn input_SpawnBox_by(self, activator: u32) -> bool {
+        send(self.handle, "SpawnBox", None, Some(activator))
+    }
+}
+
 impl CCitadel_DoorwayPortal {
     /// input_Close sends Close. Close the door.
     pub fn input_Close(self) -> bool {

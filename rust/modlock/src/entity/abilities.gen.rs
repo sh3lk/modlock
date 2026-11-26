@@ -275,6 +275,10 @@ impl CAbility_Fencer_Lunge {
         self.field("m_RecastEndTime")
     }
 
+    pub fn m_FirstCastTime(self) -> Field<f32> {
+        self.field("m_FirstCastTime")
+    }
+
     pub fn m_eLungeDirection(self) -> Field<u8> {
         self.field("m_eLungeDirection")
     }
@@ -369,6 +373,10 @@ class!(CAbility_Mirage_Tornado: CCitadelBaseAbility);
 impl CAbility_Mirage_Tornado {
     pub fn m_RecastWindowEnd(self) -> Field<f32> {
         self.field("m_RecastWindowEnd")
+    }
+
+    pub fn m_FirstCastTime(self) -> Field<f32> {
+        self.field("m_FirstCastTime")
     }
 
     pub fn m_anglesCharging(self) -> Field<Angles> {
@@ -1983,6 +1991,10 @@ impl CCitadel_Ability_Climb_Rope {
         self.field("m_bRequestJumpToRoof")
     }
 
+    pub fn m_bLatchedNearTop(self) -> Field<bool> {
+        self.field("m_bLatchedNearTop")
+    }
+
     pub fn m_flMoveDownStartTime(self) -> Field<f32> {
         self.field("m_flMoveDownStartTime")
     }
@@ -2429,8 +2441,8 @@ impl CCitadel_Ability_Fealty {
 class!(CCitadel_Ability_Fencer_Riposte: CCitadelBaseAbility);
 
 impl CCitadel_Ability_Fencer_Riposte {
-    pub fn m_hTarget(self) -> Handle<CBaseEntity> {
-        self.field("m_hTarget")
+    pub fn m_vecDeflectedTargets(self) -> List<CEntityInstance> {
+        self.field("m_vecDeflectedTargets")
     }
 
     pub fn m_vRiposteStartPosition(self) -> Field<Vector> {
@@ -2439,6 +2451,10 @@ impl CCitadel_Ability_Fencer_Riposte {
 
     pub fn m_vDashDirection(self) -> Field<Vector> {
         self.field("m_vDashDirection")
+    }
+
+    pub fn m_hDashTarget(self) -> Handle<CBaseEntity> {
+        self.field("m_hDashTarget")
     }
 
     pub fn m_flStateStartTime(self) -> Field<f32> {
@@ -2451,10 +2467,6 @@ impl CCitadel_Ability_Fencer_Riposte {
 
     pub fn m_flSuccessfulRiposteTime(self) -> Field<f32> {
         self.field("m_flSuccessfulRiposteTime")
-    }
-
-    pub fn m_vecHitEnemies(self) -> List<CEntityInstance> {
-        self.field("m_vecHitEnemies")
     }
 
     pub fn m_vecLastPosition(self) -> Field<Vector> {
@@ -2499,6 +2511,10 @@ impl CCitadel_Ability_Fencer_ThrowBlade {
 
     pub fn m_tRecastEndTime(self) -> Field<f32> {
         self.field("m_tRecastEndTime")
+    }
+
+    pub fn m_tFirstCastTime(self) -> Field<f32> {
+        self.field("m_tFirstCastTime")
     }
 }
 
@@ -3107,6 +3123,22 @@ impl CCitadel_Ability_Jump {
 
     pub fn m_flLateralInputSuppressEndTime(self) -> Field<f32> {
         self.field("m_flLateralInputSuppressEndTime")
+    }
+
+    pub fn m_bFailedAirJump(self) -> Field<bool> {
+        self.field("m_bFailedAirJump")
+    }
+
+    pub fn m_flFailedAirJumpPenaltyEndTime(self) -> Field<f32> {
+        self.field("m_flFailedAirJumpPenaltyEndTime")
+    }
+
+    pub fn m_nFailedAirJumpPenaltyStacks(self) -> Field<i8> {
+        self.field("m_nFailedAirJumpPenaltyStacks")
+    }
+
+    pub fn m_bGroundJumpAirDragPenalty(self) -> Field<bool> {
+        self.field("m_bGroundJumpAirDragPenalty")
     }
 }
 

@@ -262,10 +262,6 @@ pub const fn citadel_item_powerup_spawner() -> Designer<CCitadel_PickupItemSpawn
     Designer::new("citadel_item_powerup_spawner", "citadel_item_powerup_spawner_bounty_runes")
 }
 
-pub const fn citadel_item_punchable_gold() -> Designer<CCitadelItemPunchableNeutralGold, CCitadelItemPunchableNeutralGoldKeys> {
-    Designer::new("citadel_item_punchable_gold", "citadel_item_punchable_gold")
-}
-
 pub const fn citadel_local_player_ranked_badge_prop() -> Designer<CCitadelLocalPlayerRankedBadgeProp, CBaseEntityKeys> {
     Designer::new("citadel_local_player_ranked_badge_prop", "")
 }

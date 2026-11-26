@@ -435,6 +435,11 @@ pub const fn citadel_bot_give_team_gold() -> Command {
     Command::new("citadel_bot_give_team_gold")
 }
 
+/// \<amount\> Gives all bots unsecured souls.
+pub const fn citadel_bot_give_unsecured_souls() -> Command {
+    Command::new("citadel_bot_give_unsecured_souls")
+}
+
 /// Kick bot \<name\>.
 pub const fn citadel_bot_kick() -> Command {
     Command::new("citadel_bot_kick")
@@ -641,6 +646,11 @@ pub const fn citadel_give_player_gold() -> Command {
     Command::new("citadel_give_player_gold")
 }
 
+/// \<amount\> Gives your hero unsecured souls.
+pub const fn citadel_give_unsecured_souls() -> Command {
+    Command::new("citadel_give_unsecured_souls")
+}
+
 /// \<line\> makes the guide bot say the specified line.
 pub const fn citadel_guide_bot_say() -> Command {
     Command::new("citadel_guide_bot_say")
@@ -788,6 +798,12 @@ pub const fn citadel_spawn_midboss_breakables() -> Command {
 /// Spawns any neutral camps within 800 units (~20m).
 pub const fn citadel_spawn_nearby_neutrals() -> Command {
     Command::new("citadel_spawn_nearby_neutrals")
+}
+
+/// Spawns one of each parade float type in a line starting at the given
+/// position. Usage: citadel_spawn_parade_floats \<x\> \<y\> \<z\>.
+pub const fn citadel_spawn_parade_floats() -> Command {
+    Command::new("citadel_spawn_parade_floats")
 }
 
 /// Spawns a pickup using a pickup subclass.

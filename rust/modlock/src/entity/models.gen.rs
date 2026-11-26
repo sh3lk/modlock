@@ -2314,17 +2314,13 @@ impl CCitadelItemPickupRejuv {
     pub fn m_bPickedUp(self) -> Field<bool> {
         self.field("m_bPickedUp")
     }
+
+    pub fn m_nDropNumber(self) -> Field<i32> {
+        self.field("m_nDropNumber")
+    }
 }
 
 class!(CCitadelItemPickupRejuvHeroTest: CCitadelItemPickupRejuv);
-
-class!(CCitadelItemPunchableNeutralGold: CCitadelItemPickup);
-
-impl CCitadelItemPunchableNeutralGold {
-    pub fn m_hVictimPlayer(self) -> Handle<CBaseEntity> {
-        self.field("m_hVictimPlayer")
-    }
-}
 
 class!(CCitadel_Bounce_Pad: CCitadelAnimatingModelEntity);
 
@@ -2612,7 +2608,17 @@ impl CCitadel_BreakableProp {
 
 class!(CCitadel_BreakableProp_Hideout: CCitadel_BreakableProp);
 
+class!(CCitadel_BreakableProp_ParadeFloatBox: CCitadel_BreakableProp);
+
 class!(CCitadel_BreakableProp_PunchableTroll: CCitadel_BreakableProp);
+
+class!(CPropParadeFloat: CCitadel_BreakableProp);
+
+impl CPropParadeFloat {
+    pub fn m_iszBoxSubclass(self) -> Field<String> {
+        self.field("m_iszBoxSubclass")
+    }
+}
 
 class!(CCitadel_DeployablePreview: CBaseAnimGraph);
 
@@ -2703,12 +2709,24 @@ impl CCitadel_Pickup {
         self.field("m_hAssignedClaimer")
     }
 
-    pub fn m_bActive(self) -> Field<bool> {
-        self.field("m_bActive")
-    }
-
     pub fn m_bInteractive(self) -> Field<bool> {
         self.field("m_bInteractive")
+    }
+
+    pub fn m_vImpactVel(self) -> Field<Vector> {
+        self.field("m_vImpactVel")
+    }
+
+    pub fn m_vImpactPos(self) -> Field<Vector> {
+        self.field("m_vImpactPos")
+    }
+
+    pub fn m_flImpactTime(self) -> Field<f32> {
+        self.field("m_flImpactTime")
+    }
+
+    pub fn m_bActive(self) -> Field<bool> {
+        self.field("m_bActive")
     }
 
     pub fn m_vVacuumStartPos(self) -> Field<Vector> {
@@ -2729,18 +2747,6 @@ impl CCitadel_Pickup {
 
     pub fn m_flVacuumStartTime(self) -> Field<f32> {
         self.field("m_flVacuumStartTime")
-    }
-
-    pub fn m_vImpactVel(self) -> Field<Vector> {
-        self.field("m_vImpactVel")
-    }
-
-    pub fn m_vImpactPos(self) -> Field<Vector> {
-        self.field("m_vImpactPos")
-    }
-
-    pub fn m_flImpactTime(self) -> Field<f32> {
-        self.field("m_flImpactTime")
     }
 }
 
@@ -2803,6 +2809,20 @@ class!(CCitadel_Pickup_Health: CCitadel_Pickup);
 class!(CCitadel_Pickup_Modifier: CCitadel_Pickup);
 
 class!(CCitadel_Pickup_NecroDeath: CCitadel_Pickup);
+
+class!(CCitadel_Pickup_SoulBag: CCitadel_Pickup);
+
+impl CCitadel_Pickup_SoulBag {
+    pub fn m_iGoldReward(self) -> Field<i32> {
+        self.field("m_iGoldReward")
+    }
+
+    pub fn m_hVictimPlayer(self) -> Handle<CCitadelPlayerPawn> {
+        self.field("m_hVictimPlayer")
+    }
+}
+
+class!(CCitadel_Pickup_Turkey: CCitadel_Pickup);
 
 class!(CCitadel_PickupItemSpawner: CBaseAnimGraph);
 

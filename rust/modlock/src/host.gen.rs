@@ -5784,6 +5784,14 @@ pub struct Node {
     /// chat box's state in the player's game; a renderer that finds no chat box
     /// always shows the node.
     pub hide_in_chat: bool,
+    /// speaking shows the node only while the player sees this player name
+    /// speak on voice chat, and for a moment after, so a pause between words
+    /// does not blink it. The renderer reads the voice marks the game keeps on
+    /// the stock top bar's player panels, which stay while a mod hides the top
+    /// bar, and knows each player by the name the top bar shows; a renderer
+    /// that finds no top bar hides the node. A mod marks who is talking this
+    /// way without drawing the tree again as voices start and stop.
+    pub speaking: String,
 }
 
 /// NodeInput is the input of a Node.
@@ -5910,6 +5918,9 @@ impl Message for Node {
         if self.hide_in_chat {
             wire::bool(out, 40, self.hide_in_chat);
         }
+        if !self.speaking.is_empty() {
+            wire::string(out, 41, &self.speaking);
+        }
     }
 
     fn decode(data: &[u8]) -> Result<Self, wire::Error> {
@@ -5957,6 +5968,7 @@ impl Message for Node {
                 38 => message.ability_display.push(AbilityRow::decode(r.bytes(kind)?)?),
                 39 => message.clock = Some(Clock::decode(r.bytes(kind)?)?),
                 40 => message.hide_in_chat = r.bool(kind)?,
+                41 => message.speaking = r.string(kind)?,
                 _ => r.skip(kind)?,
             }
         }
@@ -8749,10 +8761,10 @@ impl Player {
     }
 
     /// watch points the player's camera at a hero, through the hero's own view
-    /// or chasing it, as the game's spectator camera follows it. A spectator watches through
-    /// their spectator camera, once it exists. A player with a hero watches
-    /// while the hero stays where it stands, keeping its level, souls and items,
-    /// until Unwatch returns them to it.
+    /// or chasing it, as the game's spectator camera follows it. The player's
+    /// own hero must be dead or removed: while it lives, the client keeps drawing
+    /// that hero's camera even when Watch succeeds. Use FreeCamera to position
+    /// the camera while keeping a living hero.
     pub fn watch(self, target: u32, chase: Option<bool>) -> bool {
         host::send("Watch", |out| {
             if self.slot() != 0 {
@@ -8769,8 +8781,8 @@ impl Player {
 
     /// free_camera lets the player fly their camera from a position, with the
     /// movement keys and the mouse, as the game's roaming spectator camera does.
-    /// A player with a hero leaves it where it stands, as Watch does, until
-    /// Unwatch returns them to it; Watch follows a hero again.
+    /// A player with a living hero leaves it where it stands, keeping its level,
+    /// souls and items, until Unwatch returns them to it.
     pub fn free_camera(self, position: &Vector, facing: &Angles) -> bool {
         host::send("FreeCamera", |out| {
             if self.slot() != 0 {

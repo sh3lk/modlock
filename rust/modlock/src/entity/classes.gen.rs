@@ -7547,6 +7547,18 @@ impl CCitadelGameRules {
         self.field("m_nSapphireGold")
     }
 
+    pub fn m_nKothTrailingTeam(self) -> Field<i32> {
+        self.field("m_nKothTrailingTeam")
+    }
+
+    pub fn m_nKothTrailingBonusGold(self) -> Field<i32> {
+        self.field("m_nKothTrailingBonusGold")
+    }
+
+    pub fn m_nKothTrailingBonusResist(self) -> Field<i32> {
+        self.field("m_nKothTrailingBonusResist")
+    }
+
     pub fn m_vKothCashInCurrentLocation(self) -> Field<Vector> {
         self.field("m_vKothCashInCurrentLocation")
     }
@@ -7673,6 +7685,14 @@ impl CCitadelGameRules {
 
     pub fn m_iSapphireRejuvCount(self) -> Field<i32> {
         self.field("m_iSapphireRejuvCount")
+    }
+
+    pub fn m_tAmberRejuvExpireTime(self) -> Field<f32> {
+        self.field("m_tAmberRejuvExpireTime")
+    }
+
+    pub fn m_tSapphireRejuvExpireTime(self) -> Field<f32> {
+        self.field("m_tSapphireRejuvExpireTime")
     }
 
     pub fn m_tNextMidBossSpawnTime(self) -> Field<f32> {
