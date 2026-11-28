@@ -695,6 +695,31 @@ impl CameraParam {
     }
 }
 
+/// Frame is the box a mod's root fills.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+#[repr(i32)]
+pub enum Frame {
+    /// Screen is the whole screen.
+    #[default]
+    Screen = 0,
+    /// Hud is the box the game lays its own HUD out in: the whole screen,
+    /// or its middle 16:9 when the player keeps a wide screen's HUD there. A root
+    /// aligned to its edges sits beside the stock HUD's corners.
+    Hud = 1,
+}
+
+impl Frame {
+    /// from_i32 returns the Frame numbered number, or Screen for a number the library
+    /// has no name for.
+    pub fn from_i32(number: i32) -> Self {
+        match number {
+            0 => Self::Screen,
+            1 => Self::Hud,
+            _ => Self::Screen,
+        }
+    }
+}
+
 /// ClockFormat writes a clock's time.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 #[repr(i32)]
@@ -798,6 +823,100 @@ impl HeroLook {
     }
 }
 
+/// GameAction is one of the game's own bound actions a mod may follow.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+#[repr(i32)]
+pub enum GameAction {
+    /// Unknown names no action.
+    #[default]
+    Unknown = 0,
+    /// Scoreboard holds the game's Tab screen while it is held.
+    Scoreboard = 1,
+}
+
+impl GameAction {
+    /// from_i32 returns the GameAction numbered number, or Unknown for a number the library
+    /// has no name for.
+    pub fn from_i32(number: i32) -> Self {
+        match number {
+            0 => Self::Unknown,
+            1 => Self::Scoreboard,
+            _ => Self::Unknown,
+        }
+    }
+}
+
+/// ActionPhase is where a press of a game action stands.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+#[repr(i32)]
+pub enum ActionPhase {
+    /// Unknown names no phase.
+    #[default]
+    Unknown = 0,
+    /// Pressed starts a press.
+    Pressed = 1,
+    /// Released ends a press as the player let go.
+    Released = 2,
+    /// Cancelled ends a press before the player let go, as a stock
+    /// overlay took the player's input or the screen lost the HUD. The release
+    /// that follows sends nothing.
+    Cancelled = 3,
+}
+
+impl ActionPhase {
+    /// from_i32 returns the ActionPhase numbered number, or Unknown for a number the library
+    /// has no name for.
+    pub fn from_i32(number: i32) -> Self {
+        match number {
+            0 => Self::Unknown,
+            1 => Self::Pressed,
+            2 => Self::Released,
+            3 => Self::Cancelled,
+            _ => Self::Unknown,
+        }
+    }
+}
+
+/// Overlay names the stock interface that holds the player's input. When
+/// several are open, the renderer names the first of chat, the shop, the
+/// build editor, the item draft, a popup and the escape menu.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+#[repr(i32)]
+pub enum Overlay {
+    /// None means the game has the player's input.
+    #[default]
+    None = 0,
+    /// Chat is the chat box, open for typing.
+    Chat = 1,
+    /// Shop is the item shop.
+    Shop = 2,
+    /// Builds is the build editor.
+    Builds = 3,
+    /// ItemDraft is the item draft's choice.
+    ItemDraft = 4,
+    /// Popup is a stock popup, such as a confirmation.
+    Popup = 5,
+    /// EscapeMenu is the escape menu, which pauses a local game.
+    EscapeMenu = 6,
+}
+
+impl Overlay {
+    /// from_i32 returns the Overlay numbered number, or None for a number the library
+    /// has no name for.
+    pub fn from_i32(number: i32) -> Self {
+        match number {
+            0 => Self::None,
+            1 => Self::Chat,
+            2 => Self::Shop,
+            3 => Self::Builds,
+            4 => Self::ItemDraft,
+            5 => Self::Popup,
+            6 => Self::EscapeMenu,
+            _ => Self::None,
+        }
+    }
+}
+
 /// HudPart is a part of the game's own HUD a mod may hide from a player.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 #[repr(i32)]
@@ -854,6 +973,18 @@ pub enum HudPart {
     /// reticle, the clip ring and ammo count, and the stamina pips. The ammo
     /// warnings stay.
     Crosshair = 15,
+    /// CastFailed is the notice under the crosshair that names an
+    /// ability the player could not cast and why, such as a cooldown or too
+    /// little stamina.
+    CastFailed = 16,
+    /// EventIndicators is the icons and numbers the game floats at
+    /// each event that affects the player, such as a status applied to them, an
+    /// item they used or souls they picked up.
+    EventIndicators = 17,
+    /// StatusIndicators is the event indicators that name a crowd
+    /// control status applied to the player: stunned, silenced, disarmed, asleep
+    /// or immobilized. Damage and healing numbers and items used stay.
+    StatusIndicators = 18,
 }
 
 impl HudPart {
@@ -877,6 +1008,9 @@ impl HudPart {
             13 => Self::MinimapPlayers,
             14 => Self::Inventory,
             15 => Self::Crosshair,
+            16 => Self::CastFailed,
+            17 => Self::EventIndicators,
+            18 => Self::StatusIndicators,
             _ => Self::Unknown,
         }
     }
@@ -911,6 +1045,14 @@ pub enum Kind {
     Input = 7,
     /// Avatar shows the Steam picture of the player its steam_id names.
     Avatar = 8,
+    /// Menu shows children only while its renderer-owned surface is open.
+    Menu = 9,
+    /// MenuClose dismisses the containing menu without a server event.
+    MenuClose = 10,
+    /// DocumentInput edits and explicitly submits a text document.
+    DocumentInput = 11,
+    /// DocumentOutput shows selectable, non-editable plain text.
+    DocumentOutput = 12,
 }
 
 impl Kind {
@@ -927,7 +1069,37 @@ impl Kind {
             6 => Self::HeroImage,
             7 => Self::Input,
             8 => Self::Avatar,
+            9 => Self::Menu,
+            10 => Self::MenuClose,
+            11 => Self::DocumentInput,
+            12 => Self::DocumentOutput,
             _ => Self::Panel,
+        }
+    }
+}
+
+/// MenuMode selects how the game's scoreboard input affects a menu.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+#[repr(i32)]
+pub enum MenuMode {
+    /// Manual only opens on a button press or a new OpenRequest.
+    #[default]
+    Manual = 0,
+    /// Toggle toggles on each fresh scoreboard press.
+    Toggle = 1,
+    /// Hold opens on a fresh press and closes on release.
+    Hold = 2,
+}
+
+impl MenuMode {
+    /// from_i32 returns the MenuMode numbered number, or Manual for a number the library
+    /// has no name for.
+    pub fn from_i32(number: i32) -> Self {
+        match number {
+            0 => Self::Manual,
+            1 => Self::Toggle,
+            2 => Self::Hold,
+            _ => Self::Manual,
         }
     }
 }
@@ -1200,6 +1372,39 @@ impl Align {
             1 => Self::Center,
             2 => Self::End,
             _ => Self::Start,
+        }
+    }
+}
+
+/// DocumentFailure says why a document input's submission did not arrive.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+#[repr(i32)]
+pub enum DocumentFailure {
+    #[default]
+    Unknown = 0,
+    /// TooLarge is a document longer than 262,144 UTF-8 bytes.
+    TooLarge = 1,
+    /// Expired is a transfer that did not finish within its deadline: 20
+    /// seconds and one more for each 14,400 bytes the document declares.
+    Expired = 2,
+    /// Cancelled is a transfer the player stopped, as by closing its menu.
+    Cancelled = 3,
+    /// Malformed is a transfer whose frames were missing, out of order, or
+    /// not text.
+    Malformed = 4,
+}
+
+impl DocumentFailure {
+    /// from_i32 returns the DocumentFailure numbered number, or Unknown for a number the library
+    /// has no name for.
+    pub fn from_i32(number: i32) -> Self {
+        match number {
+            0 => Self::Unknown,
+            1 => Self::TooLarge,
+            2 => Self::Expired,
+            3 => Self::Cancelled,
+            4 => Self::Malformed,
+            _ => Self::Unknown,
         }
     }
 }
@@ -5792,6 +5997,47 @@ pub struct Node {
     /// that finds no top bar hides the node. A mod marks who is talking this
     /// way without drawing the tree again as voices start and stop.
     pub speaking: String,
+    /// menu configures the local lifetime of a menu's children.
+    pub menu: Option<Menu>,
+    /// document_input configures a form that sends one whole document on submit.
+    pub document_input: Option<DocumentInput>,
+    /// document_text is the plain, selectable text of a document output, at most
+    /// 262,144 UTF-8 bytes.
+    pub document_text: String,
+    /// game_actions asks to follow the game's own bound actions: each press,
+    /// release and cancellation of one reaches the mod as a UiActionEvent, on
+    /// whichever key the player bound it to. The game keeps doing what the
+    /// action does. The renderer reports an action only while the screen may
+    /// hold the player's HUD and no stock overlay, such as chat, the shop or the
+    /// escape menu, has the player's input. Only the root's list counts.
+    pub game_actions: Vec<GameAction>,
+    /// follows_overlay asks, on the root only, for a UiOverlay event each time a
+    /// different stock overlay takes the player's input or gives it back, and
+    /// once with the current overlay when the root starts to follow.
+    pub follows_overlay: bool,
+    /// focus_order places a button or input in the order the game's keyboard
+    /// and controller navigation moves through, lowest first; zero leaves the
+    /// control to the game's own order. The panel is remade when it changes.
+    pub focus_order: u32,
+    /// initial_focus gives this button or input the keyboard when the menu that
+    /// holds it opens.
+    pub initial_focus: bool,
+    /// submits marks the button that enter in a text entry presses. The entry
+    /// and the button share a menu, or both sit outside every menu; the press
+    /// follows the entry's edit, as any press does.
+    pub submits: bool,
+    /// measure names the node in the placement reports its mod hears while
+    /// the root follows placement: letters, digits, '_', '-' and '.', at most 64 bytes.
+    /// Names are unique within a tree; of two nodes with one name, the renderer
+    /// reports one.
+    pub measure: String,
+    /// frame is the box the root fills, on the root only: the screen, or the
+    /// part of it where the game lays out its own HUD.
+    pub frame: Frame,
+    /// follows_placement asks, on the root only, for a UiPlacement event with the
+    /// screen's size, the HUD's frame and the bounds of each measured node: once
+    /// when the root starts to follow, then each time one of them changes.
+    pub follows_placement: bool,
 }
 
 /// NodeInput is the input of a Node.
@@ -5921,6 +6167,37 @@ impl Message for Node {
         if !self.speaking.is_empty() {
             wire::string(out, 41, &self.speaking);
         }
+        if let Some(v) = &self.menu {
+            wire::message(out, 42, v);
+        }
+        if let Some(v) = &self.document_input {
+            wire::message(out, 43, v);
+        }
+        if !self.document_text.is_empty() {
+            wire::string(out, 44, &self.document_text);
+        }
+        wire::packed(out, 45, &self.game_actions, |out, v| wire::raw::int32(out, *v as i32));
+        if self.follows_overlay {
+            wire::bool(out, 49, self.follows_overlay);
+        }
+        if self.focus_order != 0 {
+            wire::uint32(out, 46, self.focus_order);
+        }
+        if self.initial_focus {
+            wire::bool(out, 47, self.initial_focus);
+        }
+        if self.submits {
+            wire::bool(out, 48, self.submits);
+        }
+        if !self.measure.is_empty() {
+            wire::string(out, 50, &self.measure);
+        }
+        if self.frame as i32 != 0 {
+            wire::int32(out, 51, self.frame as i32);
+        }
+        if self.follows_placement {
+            wire::bool(out, 52, self.follows_placement);
+        }
     }
 
     fn decode(data: &[u8]) -> Result<Self, wire::Error> {
@@ -5969,6 +6246,17 @@ impl Message for Node {
                 39 => message.clock = Some(Clock::decode(r.bytes(kind)?)?),
                 40 => message.hide_in_chat = r.bool(kind)?,
                 41 => message.speaking = r.string(kind)?,
+                42 => message.menu = Some(Menu::decode(r.bytes(kind)?)?),
+                43 => message.document_input = Some(DocumentInput::decode(r.bytes(kind)?)?),
+                44 => message.document_text = r.string(kind)?,
+                45 => r.repeated(kind, wire::VARINT, &mut message.game_actions, |r, kind| Ok(GameAction::from_i32(r.int32(kind)?)))?,
+                49 => message.follows_overlay = r.bool(kind)?,
+                46 => message.focus_order = r.uint32(kind)?,
+                47 => message.initial_focus = r.bool(kind)?,
+                48 => message.submits = r.bool(kind)?,
+                50 => message.measure = r.string(kind)?,
+                51 => message.frame = Frame::from_i32(r.int32(kind)?),
+                52 => message.follows_placement = r.bool(kind)?,
                 _ => r.skip(kind)?,
             }
         }
@@ -6201,6 +6489,98 @@ impl Message for Cue {
                 2 => message.sound = r.string(kind)?,
                 3 => message.seconds = r.float(kind)?,
                 4 => message.delay = r.float(kind)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// Menu defines a local surface, not a stream of key events for the mod.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Menu {
+    /// mode selects what the scoreboard input does.
+    pub mode: MenuMode,
+    /// open_label names the optional opener shown while the children are hidden.
+    pub open_label: String,
+    /// open_request opens once when it advances within this surface's lifetime.
+    /// A request the stock interface or another open menu blocks waits, and
+    /// opens once nothing blocks it, unless the menu is gone by then. One
+    /// request waits at a time: within a mod the higher priority, otherwise the
+    /// newer.
+    pub open_request: u32,
+    /// priority orders this mod's own menus: a request waits while the mod's
+    /// open menu has a higher priority, and otherwise replaces it. Another mod's
+    /// open menu always keeps a request waiting, and the stock interface always
+    /// wins.
+    pub priority: i32,
+}
+
+impl Message for Menu {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.mode as i32 != 0 {
+            wire::int32(out, 1, self.mode as i32);
+        }
+        if !self.open_label.is_empty() {
+            wire::string(out, 2, &self.open_label);
+        }
+        if self.open_request != 0 {
+            wire::uint32(out, 3, self.open_request);
+        }
+        if self.priority != 0 {
+            wire::int32(out, 4, self.priority);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.mode = MenuMode::from_i32(r.int32(kind)?),
+                2 => message.open_label = r.string(kind)?,
+                3 => message.open_request = r.uint32(kind)?,
+                4 => message.priority = r.int32(kind)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// DocumentInput presents an initially empty, multiline draft and a submit button.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct DocumentInput {
+    /// placeholder is shown when the draft is empty.
+    pub placeholder: String,
+    /// submit_label names the submit button; empty means "Submit".
+    pub submit_label: String,
+    /// control identifies the current player and form lifetime. The host sets it
+    /// on accepted trees, never taking a value written by a mod.
+    pub control: u64,
+}
+
+impl Message for DocumentInput {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if !self.placeholder.is_empty() {
+            wire::string(out, 1, &self.placeholder);
+        }
+        if !self.submit_label.is_empty() {
+            wire::string(out, 2, &self.submit_label);
+        }
+        if self.control != 0 {
+            wire::uint64(out, 3, self.control);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.placeholder = r.string(kind)?,
+                2 => message.submit_label = r.string(kind)?,
+                3 => message.control = r.uint64(kind)?,
                 _ => r.skip(kind)?,
             }
         }
@@ -7382,6 +7762,316 @@ impl Message for UiInputEvent {
                 5 => message.value = Some(UiInputEventValue::On(r.bool(kind)?)),
                 6 => message.value = Some(UiInputEventValue::Choice(r.uint32(kind)?)),
                 7 => message.value = Some(UiInputEventValue::Wheel(Wheel::decode(r.bytes(kind)?)?)),
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// UiDocumentEvent ends one submission from a player's document input: the
+/// whole document, or why it did not arrive.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct UiDocumentEvent {
+    /// player is the player who submitted.
+    pub player: Player,
+    /// node is the id of the document input.
+    pub node: String,
+    /// result is the submission's outcome.
+    pub result: Option<UiDocumentEventResult>,
+}
+
+/// UiDocumentEventResult is the result of an UiDocumentEvent.
+#[derive(Clone, Debug, PartialEq)]
+pub enum UiDocumentEventResult {
+    /// Delivered holds the whole document.
+    Delivered(DocumentDelivered),
+    /// Failed says why the document did not arrive. The player can submit
+    /// again.
+    Failed(DocumentFailed),
+}
+
+impl Message for UiDocumentEvent {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.player.slot() != 0 {
+            wire::int32(out, 1, self.player.slot());
+        }
+        if !self.node.is_empty() {
+            wire::string(out, 2, &self.node);
+        }
+        match &self.result {
+            Some(UiDocumentEventResult::Delivered(v)) => wire::message(out, 3, v),
+            Some(UiDocumentEventResult::Failed(v)) => wire::message(out, 4, v),
+            None => {}
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.player = Player::of(r.int32(kind)?),
+                2 => message.node = r.string(kind)?,
+                3 => message.result = Some(UiDocumentEventResult::Delivered(DocumentDelivered::decode(r.bytes(kind)?)?)),
+                4 => message.result = Some(UiDocumentEventResult::Failed(DocumentFailed::decode(r.bytes(kind)?)?)),
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// DocumentDelivered is a submission that arrived whole.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct DocumentDelivered {
+    /// text is the document the player submitted, at most 262,144 UTF-8 bytes.
+    pub text: String,
+}
+
+impl Message for DocumentDelivered {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if !self.text.is_empty() {
+            wire::string(out, 1, &self.text);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.text = r.string(kind)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// DocumentFailed is a submission that ended without its document.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct DocumentFailed {
+    /// reason says why it ended.
+    pub reason: DocumentFailure,
+}
+
+impl Message for DocumentFailed {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.reason as i32 != 0 {
+            wire::int32(out, 1, self.reason as i32);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.reason = DocumentFailure::from_i32(r.int32(kind)?),
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// UiActionEvent reports one phase of a game action the mod's root follows.
+/// Each press reaches the mod once as pressed, then once as released or
+/// cancelled.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct UiActionEvent {
+    /// player is the player who pressed.
+    pub player: Player,
+    /// action is the game action.
+    pub action: GameAction,
+    /// phase is where the press stands.
+    pub phase: ActionPhase,
+}
+
+impl Message for UiActionEvent {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.player.slot() != 0 {
+            wire::int32(out, 1, self.player.slot());
+        }
+        if self.action as i32 != 0 {
+            wire::int32(out, 2, self.action as i32);
+        }
+        if self.phase as i32 != 0 {
+            wire::int32(out, 3, self.phase as i32);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.player = Player::of(r.int32(kind)?),
+                2 => message.action = GameAction::from_i32(r.int32(kind)?),
+                3 => message.phase = ActionPhase::from_i32(r.int32(kind)?),
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// UiOverlayEvent reports the stock overlay that now holds a player's input,
+/// to a mod whose root follows overlays.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct UiOverlayEvent {
+    /// player is the player whose input moved.
+    pub player: Player,
+    /// overlay is the overlay that holds it, or OVERLAY_NONE.
+    pub overlay: Overlay,
+}
+
+impl Message for UiOverlayEvent {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.player.slot() != 0 {
+            wire::int32(out, 1, self.player.slot());
+        }
+        if self.overlay as i32 != 0 {
+            wire::int32(out, 2, self.overlay as i32);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.player = Player::of(r.int32(kind)?),
+                2 => message.overlay = Overlay::from_i32(r.int32(kind)?),
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// Bounds is a box on a player's screen in layout units, the units of a
+/// style's pixels, measured from the screen's top left corner. The screen is
+/// 1080 layout units tall at every resolution.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Bounds {
+    /// x is the box's left edge.
+    pub x: i32,
+    /// y is the box's top edge.
+    pub y: i32,
+    /// width is the box's width.
+    pub width: i32,
+    /// height is the box's height.
+    pub height: i32,
+}
+
+impl Message for Bounds {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.x != 0 {
+            wire::int32(out, 1, self.x);
+        }
+        if self.y != 0 {
+            wire::int32(out, 2, self.y);
+        }
+        if self.width != 0 {
+            wire::int32(out, 3, self.width);
+        }
+        if self.height != 0 {
+            wire::int32(out, 4, self.height);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.x = r.int32(kind)?,
+                2 => message.y = r.int32(kind)?,
+                3 => message.width = r.int32(kind)?,
+                4 => message.height = r.int32(kind)?,
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// UiPlacementEvent reports where a player's screen places a mod's
+/// interface, to a mod whose root follows placement. Each event holds the
+/// whole placement.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct UiPlacementEvent {
+    /// player is the player whose screen this is.
+    pub player: Player,
+    /// screen is the whole screen, at the origin.
+    pub screen: Bounds,
+    /// hud is the frame the game lays its own HUD out in.
+    pub hud: Bounds,
+    /// measured holds the bounds of each node the tree names with measure,
+    /// once the renderer has laid it out, in the order of their names.
+    pub measured: Vec<Measured>,
+}
+
+impl Message for UiPlacementEvent {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if self.player.slot() != 0 {
+            wire::int32(out, 1, self.player.slot());
+        }
+        if self.screen != Bounds::default() {
+            wire::message(out, 2, &self.screen);
+        }
+        if self.hud != Bounds::default() {
+            wire::message(out, 3, &self.hud);
+        }
+        for v in &self.measured {
+            wire::message(out, 4, v);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.player = Player::of(r.int32(kind)?),
+                2 => message.screen = Bounds::decode(r.bytes(kind)?)?,
+                3 => message.hud = Bounds::decode(r.bytes(kind)?)?,
+                4 => message.measured.push(Measured::decode(r.bytes(kind)?)?),
+                _ => r.skip(kind)?,
+            }
+        }
+        Ok(message)
+    }
+}
+
+/// Measured is the bounds of the node a tree names with measure.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Measured {
+    /// name is the node's measure.
+    pub name: String,
+    /// bounds is where the screen laid the node out.
+    pub bounds: Bounds,
+}
+
+impl Message for Measured {
+    fn encode(&self, out: &mut Vec<u8>) {
+        if !self.name.is_empty() {
+            wire::string(out, 1, &self.name);
+        }
+        if self.bounds != Bounds::default() {
+            wire::message(out, 2, &self.bounds);
+        }
+    }
+
+    fn decode(data: &[u8]) -> Result<Self, wire::Error> {
+        let mut message = Self::default();
+        let mut r = wire::Reader::new(data);
+        while let Some((number, kind)) = r.field()? {
+            match number {
+                1 => message.name = r.string(kind)?,
+                2 => message.bounds = Bounds::decode(r.bytes(kind)?)?,
                 _ => r.skip(kind)?,
             }
         }
@@ -11681,6 +12371,8 @@ pub(crate) fn round_trip(name: &str, data: &[u8]) -> Option<Result<Vec<u8>, wire
         "AbilityRow" => AbilityRow::decode(data).map(|m| m.encode(&mut out)),
         "ShownAbility" => ShownAbility::decode(data).map(|m| m.encode(&mut out)),
         "Cue" => Cue::decode(data).map(|m| m.encode(&mut out)),
+        "Menu" => Menu::decode(data).map(|m| m.encode(&mut out)),
+        "DocumentInput" => DocumentInput::decode(data).map(|m| m.encode(&mut out)),
         "TextEntry" => TextEntry::decode(data).map(|m| m.encode(&mut out)),
         "Slider" => Slider::decode(data).map(|m| m.encode(&mut out)),
         "Wheel" => Wheel::decode(data).map(|m| m.encode(&mut out)),
@@ -11702,6 +12394,14 @@ pub(crate) fn round_trip(name: &str, data: &[u8]) -> Option<Result<Vec<u8>, wire
         "Change" => Change::decode(data).map(|m| m.encode(&mut out)),
         "UiPressEvent" => UiPressEvent::decode(data).map(|m| m.encode(&mut out)),
         "UiInputEvent" => UiInputEvent::decode(data).map(|m| m.encode(&mut out)),
+        "UiDocumentEvent" => UiDocumentEvent::decode(data).map(|m| m.encode(&mut out)),
+        "DocumentDelivered" => DocumentDelivered::decode(data).map(|m| m.encode(&mut out)),
+        "DocumentFailed" => DocumentFailed::decode(data).map(|m| m.encode(&mut out)),
+        "UiActionEvent" => UiActionEvent::decode(data).map(|m| m.encode(&mut out)),
+        "UiOverlayEvent" => UiOverlayEvent::decode(data).map(|m| m.encode(&mut out)),
+        "Bounds" => Bounds::decode(data).map(|m| m.encode(&mut out)),
+        "UiPlacementEvent" => UiPlacementEvent::decode(data).map(|m| m.encode(&mut out)),
+        "Measured" => Measured::decode(data).map(|m| m.encode(&mut out)),
         "UiRequest" => UiRequest::decode(data).map(|m| m.encode(&mut out)),
         "StartEvent" => StartEvent::decode(data).map(|m| m.encode(&mut out)),
         "StartResult" => StartResult::decode(data).map(|m| m.encode(&mut out)),

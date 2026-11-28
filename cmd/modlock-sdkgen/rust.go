@@ -512,16 +512,18 @@ var rustSpare = map[string]bool{
 // such a field as an Option, so one a mod set travels even when every part of
 // it is zero, and one it left unset does not.
 var rustPresent = map[string]bool{
-	"Node.clock":        true,
-	"Style.margin":      true,
-	"Style.padding":     true,
-	"Style.gradient":    true,
-	"Style.box_shadow":  true,
-	"Style.text_shadow": true,
-	"Style.transform":   true,
-	"Style.transition":  true,
-	"Transition.curve":  true,
-	"Steering.position": true,
+	"Node.clock":          true,
+	"Node.menu":           true,
+	"Node.document_input": true,
+	"Style.margin":        true,
+	"Style.padding":       true,
+	"Style.gradient":      true,
+	"Style.box_shadow":    true,
+	"Style.text_shadow":   true,
+	"Style.transform":     true,
+	"Style.transition":    true,
+	"Transition.curve":    true,
+	"Steering.position":   true,
 }
 
 // boxed reports whether the struct of m holds the field f behind a pointer:
@@ -1070,6 +1072,10 @@ var rustHandled = map[string]bool{
 	"ServiceReplied": true,
 	"UiPress":        true,
 	"UiInput":        true,
+	"UiDocument":     true,
+	"UiAction":       true,
+	"UiOverlay":      true,
+	"UiPlacement":    true,
 }
 
 // rustMade are the events the handwritten library makes from the game's. Each
