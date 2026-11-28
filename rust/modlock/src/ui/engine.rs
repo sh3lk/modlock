@@ -12,9 +12,10 @@ use std::rc::Rc;
 use super::element::{label, panel, Children, Element, Handlers, Slot};
 use super::style::FIT;
 use crate::generated::{
-    read_field, AbilityRow, Align, Change, Connection, Cue, Easing, Edges, FieldType, FieldValue,
-    Flow, HudPart, Kind, Node, NodeInput, Style, Transform, Transition, UiInputEvent,
-    UiInputEventValue, UiPressEvent,
+    read_field, AbilityRow, ActionPhase, Align, Bounds, Change, Connection, Cue, Easing, Edges,
+    FieldType, FieldValue, Flow, Frame, GameAction, HudPart, Kind, Node, NodeInput, Overlay, Style,
+    Transform, Transition, UiActionEvent, UiDocumentEvent, UiDocumentEventResult, UiInputEvent,
+    UiInputEventValue, UiOverlayEvent, UiPlacementEvent, UiPressEvent,
 };
 use crate::heroes::HEROES;
 use crate::runtime::{self, players, Interface};
@@ -33,6 +34,31 @@ const MAX_DISPLAY: usize = 64;
 
 /// Bar runs the mod's handler of a click on the game's ability bar.
 type Bar = Rc<dyn Fn(&mut dyn Any, Player, usize)>;
+
+/// ActionFollow runs the mod's handler of a followed game action phase.
+type ActionFollow = Rc<dyn Fn(&mut dyn Any, Player, ActionPhase)>;
+
+/// OverlayFollow runs the mod's handler of a stock overlay change.
+type OverlayFollow = Rc<dyn Fn(&mut dyn Any, Player, Overlay)>;
+
+/// PlacementFollow runs the mod's handler of a placement report.
+type PlacementFollow = Rc<dyn Fn(&mut dyn Any, Player, &Placement)>;
+
+/// Placement is where a player's screen places the interface, in layout
+/// units from the screen's top left, where the screen is 1080 units tall:
+/// the screen's size, the HUD's frame, and the box of each element whose
+/// measure names it.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Placement {
+    /// screen is the whole screen, at 0, 0.
+    pub screen: Bounds,
+    /// hud is the HUD's frame: the screen, or the middle 16:9 of a wider
+    /// screen whose player keeps the HUD there.
+    pub hud: Bounds,
+    /// measured holds the box of each element whose measure names it, once
+    /// the screen has laid it out.
+    pub measured: HashMap<String, Bounds>,
+}
 
 /// Notice is one toast, shown until the game clock passes until.
 struct Notice {
@@ -61,6 +87,15 @@ struct View {
     /// bar takes clicks on the game's ability bar, while the mod asks for
     /// them.
     bar: Option<Bar>,
+    /// actions maps each followed game action to its handler.
+    actions: HashMap<GameAction, ActionFollow>,
+    /// overlay takes each stock overlay change, while the mod follows them.
+    overlay: Option<OverlayFollow>,
+    /// placement takes each placement report, while the mod follows
+    /// placement.
+    placement: Option<PlacementFollow>,
+    /// hud_frame is true while the interface is drawn in the HUD's frame.
+    hud_frame: bool,
     /// display is the abilities shown on Tab's rows and the ability bar.
     display: Vec<AbilityRow>,
     /// notices are the toasts showing, oldest first.
@@ -160,6 +195,10 @@ fn join() {
         tick,
         press,
         changed,
+        submitted,
+        acted,
+        overlaid,
+        placed,
         forget,
         returned,
     };
@@ -275,6 +314,10 @@ impl Library {
             routes: Vec::new(),
             cues: Vec::new(),
             bar: None,
+            actions: HashMap::new(),
+            overlay: None,
+            placement: None,
+            hud_frame: false,
             display: Vec::new(),
             notices: Vec::new(),
         });
@@ -406,7 +449,11 @@ impl Layout<'_> {
         }
         self.at.truncate(own);
 
-        // A disabled element's handlers run nothing, whoever sends its press.
+        // A document input without on_submit is disabled, and a disabled
+        // element's handlers run nothing, whoever sends its event.
+        if element.node.kind == Kind::DocumentInput && element.handlers.document_submit.is_none() {
+            element.node.disabled = true;
+        }
         let live = element.handlers.any() && !element.node.disabled;
         if let Some(NodeInput::Slider(slider)) = &mut element.node.input {
             slider.wheel = live && element.handlers.wheel.is_some();
@@ -523,6 +570,8 @@ fn render(
     // The root is the full-screen panel the elements hang from, and it lists
     // the parts of the game's HUD to hide, whether the cursor is free, the
     // mod's sheets and its last sounds.
+    let mut game_actions: Vec<GameAction> = view.actions.keys().copied().collect();
+    game_actions.sort_by_key(|action| *action as i32);
     let root = Node {
         kind: Kind::Panel,
         hide_hud: view.hud.clone(),
@@ -531,6 +580,14 @@ fn render(
         sheets: sheets.to_vec(),
         cues: view.cues.clone(),
         ability_bar_presses: view.bar.is_some(),
+        game_actions,
+        follows_overlay: view.overlay.is_some(),
+        follows_placement: view.placement.is_some(),
+        frame: if view.hud_frame {
+            Frame::Hud
+        } else {
+            Frame::Screen
+        },
         ability_display: display.to_vec(),
         ..Node::default()
     };
@@ -779,6 +836,92 @@ pub fn ignore_ability_bar(player: Player) -> bool {
     change(player, |library, slot| library.view(slot).bar = None)
 }
 
+/// follow_action runs handler on the mod with each phase of action, a game
+/// action such as GameAction::Scoreboard, each time player uses it, on
+/// whichever key they bound it to: Pressed once, then Released or Cancelled
+/// once. The game still does what the action does. A press made while a
+/// stock overlay, such as chat, the shop or the escape menu, has the
+/// player's input reports nothing, and one held as such an overlay opens is
+/// cancelled. Actions reach the mod only while its screen holds the player's
+/// HUD.
+pub fn follow_action<M: 'static>(
+    player: Player,
+    action: GameAction,
+    handler: impl Fn(&mut M, Player, ActionPhase) + 'static,
+) -> bool {
+    let run: ActionFollow = Rc::new(move |m, player, phase| {
+        if let Some(m) = m.downcast_mut::<M>() {
+            handler(m, player, phase);
+        }
+    });
+    change(player, |library, slot| {
+        library.view(slot).actions.insert(action, run);
+    })
+}
+
+/// ignore_action stops following action for player.
+pub fn ignore_action(player: Player, action: GameAction) -> bool {
+    change(player, |library, slot| {
+        library.view(slot).actions.remove(&action);
+    })
+}
+
+/// follow_overlay runs handler on the mod with the stock overlay, such as
+/// Overlay::Chat, Overlay::Shop or Overlay::EscapeMenu, that holds player's
+/// input: first the current one, then each time a different one takes it, or
+/// Overlay::None as the game gets it back. When several are open it names
+/// the first of chat, the shop, the build editor, the item draft, a popup
+/// and the escape menu.
+pub fn follow_overlay<M: 'static>(
+    player: Player,
+    handler: impl Fn(&mut M, Player, Overlay) + 'static,
+) -> bool {
+    let run: OverlayFollow = Rc::new(move |m, player, overlay| {
+        if let Some(m) = m.downcast_mut::<M>() {
+            handler(m, player, overlay);
+        }
+    });
+    change(player, |library, slot| {
+        library.view(slot).overlay = Some(run);
+    })
+}
+
+/// ignore_overlay stops following stock overlays for player.
+pub fn ignore_overlay(player: Player) -> bool {
+    change(player, |library, slot| library.view(slot).overlay = None)
+}
+
+/// follow_placement runs handler on the mod with where player's screen
+/// places the interface: the whole placement first, then again each time any
+/// part of it moves, such as when the player changes resolution or an
+/// element's layout settles. Elements that share a measure report one box.
+pub fn follow_placement<M: 'static>(
+    player: Player,
+    handler: impl Fn(&mut M, Player, &Placement) + 'static,
+) -> bool {
+    let run: PlacementFollow = Rc::new(move |m, player, placement| {
+        if let Some(m) = m.downcast_mut::<M>() {
+            handler(m, player, placement);
+        }
+    });
+    change(player, |library, slot| {
+        library.view(slot).placement = Some(run);
+    })
+}
+
+/// ignore_placement stops following placement reports for player.
+pub fn ignore_placement(player: Player) -> bool {
+    change(player, |library, slot| library.view(slot).placement = None)
+}
+
+/// in_hud_frame draws player's interface inside the HUD's frame instead of
+/// the whole screen. The frame is the screen itself, except on a screen
+/// wider than 16:9 where the player keeps the HUD in its middle 16:9, so an
+/// interface aligned to the frame's edges lines up with the game's HUD.
+pub fn in_hud_frame(player: Player, on: bool) -> bool {
+    change(player, |library, slot| library.view(slot).hud_frame = on)
+}
+
 /// ability_display shows viewer each row's abilities in place of the ones the
 /// game shows for that row's player: on the player's row of the game's Tab
 /// screen, and for viewer's own row on viewer's ability bar too, in the game's
@@ -983,6 +1126,92 @@ pub(crate) fn changed(m: &mut dyn Any, event: &UiInputEvent) {
             },
         ) => run(m, player, wheel),
         _ => {}
+    }
+}
+
+/// submitted runs on the mod the handler of the document input whose
+/// submission ended, with the whole document or why it failed.
+pub(crate) fn submitted(m: &mut dyn Any, event: &UiDocumentEvent) {
+    let Some(held) = handlers(event.player.slot(), &event.node) else {
+        return;
+    };
+    match (&event.result, held) {
+        (
+            Some(UiDocumentEventResult::Delivered(delivered)),
+            Handlers {
+                document_submit: Some(run),
+                ..
+            },
+        ) => run(m, event.player, &delivered.text),
+        (
+            Some(UiDocumentEventResult::Failed(failed)),
+            Handlers {
+                document_failure: Some(run),
+                ..
+            },
+        ) => run(m, event.player, failed.reason),
+        _ => {}
+    }
+}
+
+/// acted runs on the mod the handler of the game action the player used.
+pub(crate) fn acted(m: &mut dyn Any, event: &UiActionEvent) {
+    if event.action == GameAction::Unknown || event.phase == ActionPhase::Unknown {
+        return;
+    }
+    let handler = LIBRARY.with(|library| {
+        library
+            .borrow()
+            .views
+            .get(&event.player.slot())?
+            .actions
+            .get(&event.action)
+            .cloned()
+    });
+    if let Some(handler) = handler {
+        handler(m, event.player, event.phase);
+    }
+}
+
+/// overlaid runs on the mod the handler of the mod that follows a player's
+/// overlays.
+pub(crate) fn overlaid(m: &mut dyn Any, event: &UiOverlayEvent) {
+    let handler = LIBRARY.with(|library| {
+        library
+            .borrow()
+            .views
+            .get(&event.player.slot())?
+            .overlay
+            .clone()
+    });
+    if let Some(handler) = handler {
+        handler(m, event.player, event.overlay);
+    }
+}
+
+/// placed runs on the mod the handler of the mod that follows a player's
+/// placement.
+pub(crate) fn placed(m: &mut dyn Any, event: &UiPlacementEvent) {
+    let handler = LIBRARY.with(|library| {
+        library
+            .borrow()
+            .views
+            .get(&event.player.slot())?
+            .placement
+            .clone()
+    });
+    if let Some(handler) = handler {
+        let measured = event
+            .measured
+            .iter()
+            .map(|entry| (entry.name.clone(), entry.bounds.clone()))
+            .collect();
+        let placement = Placement {
+            screen: event.screen.clone(),
+            hud: event.hud.clone(),
+            measured,
+        };
+        handler(m, event.player, &placement);
     }
 }
 

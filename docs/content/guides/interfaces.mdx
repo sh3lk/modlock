@@ -132,9 +132,9 @@ capitalizes it. In Go, `toast` with seconds is `ToastFor`, and `uiSound` is
 | `showSpeakers(options?)`                       | Show who each player hears on voice chat, as portraits and names at the left edge. TypeScript and Rust only.                                                                                                  |
 | `freeCursor(player, free)`                     | Show the mouse cursor without Tab, so the player can click; `false` gives the mouse back to aiming.                                                                                                           |
 | `abilityBarPresses(player, onPress?)`          | Take clicks on the game's ability bar by slot; see [Abilities](/guides/abilities).                                                                                                                            |
-| `followAction(player, action, onPhase?)`       | Follow a game action, such as `'scoreboard'`, on whichever key the player bound it to: `'pressed'`, then `'released'` or `'cancelled'`; see [Follow a game action](#follow-a-game-action).                    |
-| `followOverlay(player, onChange?)`             | Hear which stock overlay holds the player's input, such as `'chat'`, `'shop'` or `'escapeMenu'`, and `'none'` once the game has it back; see [Follow the stock overlays](#follow-the-stock-overlays).         |
-| `followPlacement(player, onPlace?)`            | Hear the screen's size, the HUD's frame and the box of each element named with `measure`; see [Place by the screen](#place-by-the-screen).                                                                    |
+| `followAction(player, action, onPhase?)`       | Follow a game action, such as `'scoreboard'`, on whichever key the player bound it to: `'pressed'`, then `'released'` or `'cancelled'`; see [Follow a game action](#follow-a-game-action). In Rust, `ignore_action` stops following. |
+| `followOverlay(player, onChange?)`             | Hear which stock overlay holds the player's input, such as `'chat'`, `'shop'` or `'escapeMenu'`, and `'none'` once the game has it back; see [Follow the stock overlays](#follow-the-stock-overlays). In Rust, `ignore_overlay` stops following. |
+| `followPlacement(player, onPlace?)`            | Hear the screen's size, the HUD's frame and the box of each element named with `measure`; see [Place by the screen](#place-by-the-screen). In Rust, `ignore_placement` stops following. |
 | `inHudFrame(player, on)`                       | Draw the interface in the HUD's frame, the middle 16:9 of a wider screen whose player keeps the HUD there.                                                                                                    |
 | `abilityDisplay(viewer, rows?)`                | Show players' replaced abilities on Tab and the ability bar; no rows brings back the game's own.                                                                                                              |
 | `cursorFree(player)`                           | Read whether the player's cursor is up now, however it got there.                                                                                                                                             |
@@ -360,16 +360,17 @@ last. It sends at once when it loses the keyboard or when the player presses a
 button in the same interface, so a Save or Apply button's `onPress` runs after
 every `onChange` for the values the player sees.
 
-In TypeScript, a form can direct the keyboard. `focusOrder` on a button or
-input sets its place in the game's keyboard and controller navigation, lowest
-first. `initialFocus` gives a control the keyboard when its menu opens. A
+In TypeScript and Rust, a form can direct the keyboard. `focusOrder`
+(`focus_order` in Rust) on a button or input sets its place in the game's
+keyboard and controller navigation, lowest first. `initialFocus`
+(`initial_focus` in Rust) gives a control the keyboard when its menu opens. A
 button with `submits` is pressed when the player presses Enter in an entry of
 the same menu, after the entry's edit, so the player can type a name and press
 Enter to save. Escape still closes the menu without calling the mod.
 
 ## Local menus and portable text
 
-Use a TypeScript `<menu>` when settings or a result should give the player a
+Use a TypeScript or Rust `<menu>` when settings or a result should give the player a
 cursor and then return it without a server round trip. `mode="toggle"` opens
 and closes on successive presses of the game's scoreboard binding (Tab by
 default). `mode="hold"` opens while that binding is held. The default,
@@ -383,12 +384,12 @@ stopped drawing it by then. One request waits at a time. Give a menu a
 higher priority, and otherwise replaces it, so an alert at priority 2 can
 interrupt a warning at priority 1 and the warning can wait behind the alert.
 Another mod's open menu always keeps your request waiting, and the stock
-interface always wins. Put a `<menuClose>` inside the menu for an explicit
+interface always wins. Put a `<menuClose>` (`<menu_close>` in Rust) inside the menu for an explicit
 dismiss button. Escape, stock overlays taking focus, and loss of the surface dismiss it
 locally. A dismissal never calls the mod.
 
-Use `<documentOutput text={text} />` for a plain-text export the player can
-select and copy with the game's usual controls. `<documentInput>` gives the
+Use `<documentOutput text={text} />` (`<document_output text={text} />` in Rust) for a plain-text export the player can
+select and copy with the game's usual controls. `<documentInput>` (`<document_input>` in Rust) gives the
 player a multiline draft. It sends nothing while they type or paste, or when
 they press Enter in the draft. The form's button, named by `submitLabel`
 (`"Submit"` by default), sends the whole draft to `onSubmit(player, text)`.
@@ -402,6 +403,9 @@ Each submission ends in exactly one callback. A whole document reaches
 with its reason: `tooLarge` for a draft past the limit, `expired` for a
 transfer that did not finish in time, `cancelled` when the player closed the
 menu while it sent, and `malformed` for frames that were missing or not text.
+Rust spells these attributes in `snake_case` (`open_label`, `open_request`,
+`submit_label`, `on_submit`, `on_failure`), takes `MenuMode` for `mode`, and
+hands `on_failure` a `DocumentFailure`.
 A transfer has 20 seconds plus its sending time, about one second for each
 14,400 bytes, so a full-size document has about 38 seconds. Show the outcome
 from these callbacks, since the renderer knows only that it sent the draft.

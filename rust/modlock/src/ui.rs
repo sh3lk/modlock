@@ -62,15 +62,17 @@ mod style;
 
 pub use chat::{chat_shown, show_chat_lines, ChatLines, ChatSpeaker, SpeakerLook};
 pub use element::{
-    avatar, button, dropdown, entry, hero, image, label, layout, panel, slider, tag, text, toggle,
-    Children, Element, Tag,
+    avatar, button, document_input, document_output, dropdown, entry, hero, image, label, layout,
+    menu, menu_close, panel, slider, tag, text, toggle, Children, Element, Tag,
 };
 #[doc(hidden)]
 pub use element::{elements, slot_of, SlotOf};
 pub use element::{Press, Pressed};
 pub use engine::{
-    ability_bar_presses, ability_display, cursor_free, free_cursor, hide, hide_hud,
-    ignore_ability_bar, route, sheet, show, sound, sound_after, toast, toast_for,
+    ability_bar_presses, ability_display, cursor_free, follow_action, follow_overlay,
+    follow_placement, free_cursor, hide, hide_hud, ignore_ability_bar, ignore_action,
+    ignore_overlay, ignore_placement, in_hud_frame, route, sheet, show, sound, sound_after, toast,
+    toast_for, Placement,
 };
 pub use modlock_macros::{component, ui};
 pub use speakers::{show_speakers, Speakers};

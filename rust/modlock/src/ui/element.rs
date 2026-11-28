@@ -6,8 +6,8 @@ use std::marker::PhantomData;
 use std::rc::Rc;
 
 use crate::generated::{
-    Clock, Cycle, Dropdown, HeroLook, Kind, Node, NodeInput, NodeVariablesEntry, Scaling, Slider,
-    Style, TextEntry, Toggle, Wheel,
+    Clock, Cycle, DocumentFailure, DocumentInput, Dropdown, HeroLook, Kind, Menu, MenuMode, Node,
+    NodeInput, NodeVariablesEntry, Scaling, Slider, Style, TextEntry, Toggle, Wheel,
 };
 use crate::items::item_id;
 use crate::Player;
@@ -25,6 +25,10 @@ type Turned = Rc<dyn Fn(&mut dyn Any, Player, &Wheel)>;
 /// Action runs a layout's handler on the mod with the player, the action and
 /// its payload.
 type Action = Rc<dyn Fn(&mut dyn Any, Player, &str, &str)>;
+
+/// DocumentFailed runs a document input's failure handler on the mod with the
+/// player and why the submission ended.
+type DocumentFailed = Rc<dyn Fn(&mut dyn Any, Player, DocumentFailure)>;
 
 /// Pressing runs a press's handler on the mod with the player who pressed.
 type Pressing = dyn Fn(&mut dyn Any, Player);
@@ -85,6 +89,11 @@ pub(crate) struct Handlers {
     pub choice: Option<Run<usize>>,
     /// wheel runs when the player turns the wheel over a slider.
     pub wheel: Option<Turned>,
+    /// document_submit runs when a document input submits a whole document.
+    pub document_submit: Option<Typed>,
+    /// document_failure runs when a document input's submission ends without
+    /// a document.
+    pub document_failure: Option<DocumentFailed>,
 }
 
 impl Handlers {
@@ -97,6 +106,8 @@ impl Handlers {
             || self.on.is_some()
             || self.choice.is_some()
             || self.wheel.is_some()
+            || self.document_submit.is_some()
+            || self.document_failure.is_some()
     }
 }
 
@@ -224,6 +235,14 @@ pub mod tag {
     pub struct Dropdown;
     /// Layout loads a layout from the mod's content addon.
     pub struct Layout;
+    /// Menu shows its children only while its local surface is open.
+    pub struct Menu;
+    /// MenuClose dismisses the containing menu without a server event.
+    pub struct MenuClose;
+    /// DocumentInput edits a multiline draft and submits it whole.
+    pub struct DocumentInput;
+    /// DocumentOutput shows selectable, non-editable plain text.
+    pub struct DocumentOutput;
 }
 
 /// Tag builds one element of kind K: each method sets a property and returns
@@ -340,6 +359,34 @@ pub fn layout() -> Tag<tag::Layout> {
     of(Kind::Layout)
 }
 
+/// menu returns a surface whose visibility and focus stay local in the
+/// player's game.
+pub fn menu() -> Tag<tag::Menu> {
+    let mut tag = of(Kind::Menu);
+    tag.element.node.menu = Some(Menu::default());
+    tag
+}
+
+/// menu_close returns a control that dismisses the menu holding it without a
+/// server event.
+pub fn menu_close() -> Tag<tag::MenuClose> {
+    of(Kind::MenuClose)
+}
+
+/// document_input returns a multiline draft that submits its whole text when
+/// the player presses its submit button.
+pub fn document_input() -> Tag<tag::DocumentInput> {
+    let mut tag = of(Kind::DocumentInput);
+    tag.element.node.document_input = Some(DocumentInput::default());
+    tag
+}
+
+/// document_output returns a selectable, non-editable plain text export of
+/// up to 262,144 UTF-8 bytes.
+pub fn document_output() -> Tag<tag::DocumentOutput> {
+    of(Kind::DocumentOutput)
+}
+
 /// The properties every element takes.
 impl<K> Tag<K> {
     /// key keeps the element's node in a list while the list changes: an
@@ -415,6 +462,13 @@ impl<K> Tag<K> {
     /// hover_sound is the game's sound event played as the pointer enters.
     pub fn hover_sound(mut self, sound: impl Into<String>) -> Self {
         self.element.node.hover_sound = sound.into();
+        self
+    }
+
+    /// measure names the element in the placement reports of
+    /// follow_placement.
+    pub fn measure(mut self, name: impl Into<String>) -> Self {
+        self.element.node.measure = name.into();
         self
     }
 
@@ -534,6 +588,26 @@ impl Tag<tag::Button> {
         self.element.node.disabled = disabled;
         self
     }
+
+    /// focus_order places the button in the game's keyboard and controller
+    /// navigation order, lowest first; zero leaves it to the game's order.
+    pub fn focus_order(mut self, order: u32) -> Self {
+        self.element.node.focus_order = order;
+        self
+    }
+
+    /// initial_focus gives the button the keyboard when the menu holding it
+    /// opens.
+    pub fn initial_focus(mut self, initial: bool) -> Self {
+        self.element.node.initial_focus = initial;
+        self
+    }
+
+    /// submits makes Enter in an entry of the button's menu press it.
+    pub fn submits(mut self, submits: bool) -> Self {
+        self.element.node.submits = submits;
+        self
+    }
 }
 
 impl Tag<tag::Hero> {
@@ -598,6 +672,20 @@ impl Tag<tag::Entry> {
         self
     }
 
+    /// focus_order places the entry in the game's keyboard and controller
+    /// navigation order, lowest first; zero leaves it to the game's order.
+    pub fn focus_order(mut self, order: u32) -> Self {
+        self.element.node.focus_order = order;
+        self
+    }
+
+    /// initial_focus gives the entry the keyboard when the menu holding it
+    /// opens.
+    pub fn initial_focus(mut self, initial: bool) -> Self {
+        self.element.node.initial_focus = initial;
+        self
+    }
+
     /// on_change runs handler on the mod with the player and the text they
     /// typed.
     pub fn on_change<M: 'static>(
@@ -644,6 +732,20 @@ impl Tag<tag::Slider> {
     /// disabled makes the slider take no changes.
     pub fn disabled(mut self, disabled: bool) -> Self {
         self.element.node.disabled = disabled;
+        self
+    }
+
+    /// focus_order places the slider in the game's keyboard and controller
+    /// navigation order, lowest first; zero leaves it to the game's order.
+    pub fn focus_order(mut self, order: u32) -> Self {
+        self.element.node.focus_order = order;
+        self
+    }
+
+    /// initial_focus gives the slider the keyboard when the menu holding it
+    /// opens.
+    pub fn initial_focus(mut self, initial: bool) -> Self {
+        self.element.node.initial_focus = initial;
         self
     }
 
@@ -695,6 +797,20 @@ impl Tag<tag::Toggle> {
         self
     }
 
+    /// focus_order places the toggle in the game's keyboard and controller
+    /// navigation order, lowest first; zero leaves it to the game's order.
+    pub fn focus_order(mut self, order: u32) -> Self {
+        self.element.node.focus_order = order;
+        self
+    }
+
+    /// initial_focus gives the toggle the keyboard when the menu holding it
+    /// opens.
+    pub fn initial_focus(mut self, initial: bool) -> Self {
+        self.element.node.initial_focus = initial;
+        self
+    }
+
     /// on_change runs handler on the mod with the player and whether they
     /// checked the box.
     pub fn on_change<M: 'static>(
@@ -737,6 +853,20 @@ impl Tag<tag::Dropdown> {
         self
     }
 
+    /// focus_order places the dropdown in the game's keyboard and controller
+    /// navigation order, lowest first; zero leaves it to the game's order.
+    pub fn focus_order(mut self, order: u32) -> Self {
+        self.element.node.focus_order = order;
+        self
+    }
+
+    /// initial_focus gives the dropdown the keyboard when the menu holding it
+    /// opens.
+    pub fn initial_focus(mut self, initial: bool) -> Self {
+        self.element.node.initial_focus = initial;
+        self
+    }
+
     /// on_change runs handler on the mod with the player and the index of the
     /// option they picked.
     pub fn on_change<M: 'static>(
@@ -776,6 +906,118 @@ impl Tag<tag::Layout> {
                 handler(m, player, action, payload);
             }
         }));
+        self
+    }
+}
+
+impl Tag<tag::Menu> {
+    /// config returns the menu's configuration.
+    fn config(&mut self) -> &mut Menu {
+        self.element.node.menu.get_or_insert_with(Menu::default)
+    }
+
+    /// child adds to the menu an element, or a list of them, shown while the
+    /// menu is open.
+    pub fn child(self, children: impl Children) -> Self {
+        self.held(children)
+    }
+
+    /// mode selects how the game's scoreboard input affects the menu.
+    pub fn mode(mut self, mode: MenuMode) -> Self {
+        self.config().mode = mode;
+        self
+    }
+
+    /// open_label names the optional opener button shown while the menu's
+    /// children are hidden.
+    pub fn open_label(mut self, label: impl Into<String>) -> Self {
+        self.config().open_label = label.into();
+        self
+    }
+
+    /// open_request opens the menu once when it advances to a higher
+    /// positive number within this menu's lifetime.
+    pub fn open_request(mut self, request: u32) -> Self {
+        self.config().open_request = request;
+        self
+    }
+
+    /// priority orders this mod's own menus: a request waits while an open
+    /// menu has a higher priority, and otherwise replaces it.
+    pub fn priority(mut self, priority: i32) -> Self {
+        self.config().priority = priority;
+        self
+    }
+}
+
+impl Tag<tag::MenuClose> {
+    /// child adds to the dismiss control an element, or a list of them.
+    pub fn child(self, children: impl Children) -> Self {
+        self.held(children)
+    }
+}
+
+impl Tag<tag::DocumentInput> {
+    /// config returns the document input's configuration.
+    fn config(&mut self) -> &mut DocumentInput {
+        self.element
+            .node
+            .document_input
+            .get_or_insert_with(DocumentInput::default)
+    }
+
+    /// placeholder is the faint text shown when the draft is empty.
+    pub fn placeholder(mut self, text: impl Into<String>) -> Self {
+        self.config().placeholder = text.into();
+        self
+    }
+
+    /// submit_label names the submit button; empty means "Submit".
+    pub fn submit_label(mut self, label: impl Into<String>) -> Self {
+        self.config().submit_label = label.into();
+        self
+    }
+
+    /// disabled suspends editing and submission.
+    pub fn disabled(mut self, disabled: bool) -> Self {
+        self.element.node.disabled = disabled;
+        self
+    }
+
+    /// on_submit runs handler on the mod with the player and each whole
+    /// document that arrives.
+    pub fn on_submit<M: 'static>(
+        mut self,
+        handler: impl Fn(&mut M, Player, &str) + 'static,
+    ) -> Self {
+        self.element.handlers.document_submit = Some(Rc::new(move |m, player, text| {
+            if let Some(m) = m.downcast_mut::<M>() {
+                handler(m, player, text);
+            }
+        }));
+        self
+    }
+
+    /// on_failure runs handler on the mod with the player and why a
+    /// submission ended without a document.
+    pub fn on_failure<M: 'static>(
+        mut self,
+        handler: impl Fn(&mut M, Player, DocumentFailure) + 'static,
+    ) -> Self {
+        self.element.handlers.document_failure = Some(Rc::new(move |m, player, reason| {
+            if let Some(m) = m.downcast_mut::<M>() {
+                handler(m, player, reason);
+            }
+        }));
+        self
+    }
+}
+
+impl Tag<tag::DocumentOutput> {
+    /// text is the plain, selectable document text, up to 262,144 UTF-8
+    /// bytes.
+    pub fn text(mut self, text: impl Into<String>) -> Self {
+        self.element.node.document_text = text.into();
         self
     }
 }

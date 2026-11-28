@@ -13,7 +13,8 @@ use crate::generated::{
     serve_mod, ChatEvent, CommandEvent, CommandResult, Connection, DamageEvent, DamageResult,
     Events, FrameEvent, Mod, ModifierFiredEvent, Pawn, PlayerAwayEvent, PlayerReturnedEvent,
     PlayersChangedEvent, PlayersResponse, RestoredEvent, ServiceCall, ServiceRepliedEvent,
-    StartEvent, StartResult, UiInputEvent, UiPressEvent,
+    StartEvent, StartResult, UiActionEvent, UiDocumentEvent, UiInputEvent, UiOverlayEvent,
+    UiPlacementEvent, UiPressEvent,
 };
 use crate::wire::{Error, Message};
 use crate::{host, seating, services, Player};
@@ -117,6 +118,10 @@ pub(crate) struct Interface {
     pub tick: fn(&mut dyn Any, f64),
     pub press: fn(&mut dyn Any, &UiPressEvent),
     pub changed: fn(&mut dyn Any, &UiInputEvent),
+    pub submitted: fn(&mut dyn Any, &UiDocumentEvent),
+    pub acted: fn(&mut dyn Any, &UiActionEvent),
+    pub overlaid: fn(&mut dyn Any, &UiOverlayEvent),
+    pub placed: fn(&mut dyn Any, &UiPlacementEvent),
     pub forget: fn(&mut dyn Any, &[Connection]),
     pub returned: fn(&mut dyn Any, Player),
 }
@@ -592,6 +597,38 @@ pub(crate) fn deliver<M: Mod + 'static>(
             after(0.0, move |m: &mut M| {
                 if let Some(interface) = INTERFACE.get() {
                     (interface.changed)(m, &event);
+                }
+            });
+        }
+        "UiDocument" => {
+            let event = UiDocumentEvent::decode(request)?;
+            after(0.0, move |m: &mut M| {
+                if let Some(interface) = INTERFACE.get() {
+                    (interface.submitted)(m, &event);
+                }
+            });
+        }
+        "UiAction" => {
+            let event = UiActionEvent::decode(request)?;
+            after(0.0, move |m: &mut M| {
+                if let Some(interface) = INTERFACE.get() {
+                    (interface.acted)(m, &event);
+                }
+            });
+        }
+        "UiOverlay" => {
+            let event = UiOverlayEvent::decode(request)?;
+            after(0.0, move |m: &mut M| {
+                if let Some(interface) = INTERFACE.get() {
+                    (interface.overlaid)(m, &event);
+                }
+            });
+        }
+        "UiPlacement" => {
+            let event = UiPlacementEvent::decode(request)?;
+            after(0.0, move |m: &mut M| {
+                if let Some(interface) = INTERFACE.get() {
+                    (interface.placed)(m, &event);
                 }
             });
         }

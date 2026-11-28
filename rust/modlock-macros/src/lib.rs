@@ -56,9 +56,22 @@ pub fn ui(input: TokenStream) -> TokenStream {
 
 /// ELEMENTS are the elements of modlock::ui, which a tag names without a
 /// path. Any other tag is a component, named as the mod's code names it.
-const ELEMENTS: [&str; 11] = [
-    "panel", "label", "image", "button", "hero", "avatar", "entry", "slider", "toggle", "dropdown",
+const ELEMENTS: [&str; 15] = [
+    "panel",
+    "label",
+    "image",
+    "button",
+    "hero",
+    "avatar",
+    "entry",
+    "slider",
+    "toggle",
+    "dropdown",
     "layout",
+    "menu",
+    "menu_close",
+    "document_input",
+    "document_output",
 ];
 
 /// spelled returns the tokens as text without spaces, to compare two paths.
